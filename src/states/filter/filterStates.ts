@@ -18,6 +18,8 @@ class FilterStates {
     query: any = {};
 
     isLoadingFilter: boolean = false;
+    // for back page
+    categoryLevel: number = 0;
 
     constructor() {
         makeAutoObservable(this)
@@ -64,15 +66,21 @@ class FilterStates {
         })
     }
 
-    setQuery = (query: any) => {
+    setQuery = (key: string, val: any,) => {
         runInAction(() => {
-            this.query = query
+            this.query[key] = val
         })
     }
 
     setIsLoadingFilter = (isLoadingFilter: boolean) => {
         runInAction(() => {
             this.isLoadingFilter = isLoadingFilter
+        })
+    }
+
+    setCategoryLevel = (categoryLevel: number) => {
+        runInAction(() => {
+            this.categoryLevel = categoryLevel
         })
     }
 
