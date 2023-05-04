@@ -5,7 +5,6 @@ export const primaryColor = '#F70F4B'
 export const mainBackgroundColor = '#fff';
 export const inactiveColor = '#787979';
 export const blueColor = '#116BFE';
-
 export const creamColor = '#F7F9F8';
 export const f5Color = '#F5F5F5';
 export const greenColor = "#00D65B";

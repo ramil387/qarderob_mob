@@ -1,5 +1,5 @@
 
-export type CategoryType = {
+export type CityType = {
     id: number;
     name_az: string;
     name_en: string;
@@ -7,10 +7,6 @@ export type CategoryType = {
     slug_az: string;
     slug_en: string;
     slug_ru: string;
-    parent_id: number;
-    index: number;
     createdAt: string;
     updatedAt: string;
-    level: number,
-    childCount: number
 }

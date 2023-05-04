@@ -4,6 +4,9 @@ import React from 'react';
 import HomePageHeader from '@/components/common/HomePageHeader';
 import ProductDetailPage from '@/pages/products/ProductDetailPage';
 import ProductDetailPageHeader from '@/components/headers/ProductDetailPageHeader';
+import FilterPage from '@/pages/filter/FilterPage';
+import FilterPageHeader from '@/components/headers/FilterPageHeader';
+import CategoryFilterPage from '@/pages/filter/parts/CategoryFilterPage';
 
 type StackListType = {
     name: string;
@@ -28,6 +31,28 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <ProductDetailPageHeader />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'FilterPage',
+        component: FilterPage,
+        options: {
+            headerShown: true,
+            header: () => <FilterPageHeader title='Filtrləmə' />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'CategoryFilterPage',
+        component: CategoryFilterPage,
+        options: {
+            headerShown: true,
+            header: () => <FilterPageHeader title='Kateqoriya' />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',

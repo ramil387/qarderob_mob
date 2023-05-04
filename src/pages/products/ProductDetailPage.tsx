@@ -1,11 +1,12 @@
-import { View, Text, Image } from 'react-native';
-import React, { memo } from 'react';
+import { View, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { memo, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import productStates from '@/states/product/productStates';
 import { toJS } from 'mobx';
 import Carousel from 'react-native-reanimated-carousel';
 import {
     NunitoBold,
+    e0Color,
     inactiveColor,
     mainTextColor,
     phoneWidth,
@@ -20,13 +21,22 @@ import TagIcon from '@/icons/product/TagIcon';
 import SizeIcon from '@/icons/product/SizeIcon';
 import ColorIcon from '@/icons/product/ColorIcon';
 import { defineProductStatus } from '@/components/helper/defineProductStatus';
+import { Avatar } from '@rneui/themed';
+import PhoneIcon from '@/icons/product/PhoneIcon';
+import MailIcon from '@/icons/product/MailIcon';
+import { increaseViewCount } from '@/states/product/increaseViewCount';
+import moment from 'moment';
+import CustomMainButton from '@/components/ui/CustomMainButton';
+import RocketIcon from '@/icons/product/RocketIcon';
+import filterStates from '@/states/filter/filterStates';
 
 const ProductImages = memo(
     observer(() => {
         const product = toJS(productStates.selectedProduct);
+        console.log(product?.images.length);
         return (
             <Carousel<any>
-                style={{ height: 400, backgroundColor: 'red' }}
+                style={{ height: 400 }}
                 loop={false}
                 enabled={product?.images.length === 1 ? false : true}
                 width={phoneWidth}
@@ -67,49 +77,202 @@ const ProductImages = memo(
     }),
 );
 
+const TopInfoContainer = () => {
+    const product = toJS(productStates.selectedProduct);
+    return (
+        <View style={internalStyles.topInfoContainer}>
+            <View>
+                <View style={internalStyles.brandNameContainer}>
+                    <CustomText style={internalStyles.brandName}>{product?.brand?.name}</CustomText>
+                    <View style={{ display: product?.isVip ? 'flex' : 'none' }}>
+                        <VipIcon />
+                    </View>
+                </View>
+                <View>
+                    <CustomText style={internalStyles.price}>{product?.price}₼</CustomText>
+                </View>
+            </View>
+            <View>
+                <OutlineHeartIcon style={{ color: mainTextColor }} />
+            </View>
+        </View>
+    );
+};
+
+const SpecContainer = () => {
+    const product = toJS(productStates.selectedProduct);
+    return (
+        <View style={internalStyles.specContainer}>
+            <View style={internalStyles.specItemContainer}>
+                <TagIcon />
+                <CustomText>{defineProductStatus(product?.product_status ?? null)}</CustomText>
+            </View>
+            <View style={internalStyles.specItemContainer}>
+                <SizeIcon />
+                <CustomText>{product?._size?.size}</CustomText>
+            </View>
+            <View style={internalStyles.specItemContainer}>
+                <ColorIcon />
+                <CustomText>{product?._color?.name}</CustomText>
+            </View>
+        </View>
+    );
+};
+
+const ServiceContainer = () => {
+    const product = toJS(productStates.selectedProduct);
+    return (
+        <View style={internalStyles.servicesContainer}>
+            <View style={{ width: '48%' }}>
+                <CustomMainButton
+                    func={() => {}}
+                    title={
+                        <View
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                flexDirection: 'row',
+                                gap: 8,
+                            }}
+                        >
+                            <CustomText
+                                style={{
+                                    color: '#fff',
+                                    fontFamily: NunitoBold,
+                                    lineHeight: 21,
+                                    fontSize: 16,
+                                }}
+                            >
+                                Elanı irəli çək
+                            </CustomText>
+                            <RocketIcon />
+                        </View>
+                    }
+                />
+            </View>
+            <View style={{ width: '48%' }}>
+                <CustomMainButton
+                    style={{
+                        backgroundColor: 'transparent',
+                        borderWidth: 1,
+                        borderColor: primaryColor,
+                    }}
+                    func={() => {}}
+                    title={
+                        <View
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                flexDirection: 'row',
+                                gap: 8,
+                            }}
+                        >
+                            <CustomText
+                                style={{
+                                    color: primaryColor,
+                                    fontFamily: NunitoBold,
+                                    lineHeight: 21,
+                                    fontSize: 16,
+                                }}
+                            >
+                                Vip et
+                            </CustomText>
+                            <VipIcon style={{ color: primaryColor }} />
+                        </View>
+                    }
+                />
+            </View>
+        </View>
+    );
+};
+
+const ContactContainer = () => {
+    const product = toJS(productStates.selectedProduct);
+    return (
+        <View style={internalStyles.contactContainer}>
+            <View style={internalStyles.avatarContainer}>
+                <TouchableOpacity>
+                    <Avatar size={52} source={{ uri: product?._user.photo }} rounded />
+                </TouchableOpacity>
+                <View>
+                    <CustomText style={internalStyles.ownerHeadText}>Elanın sahibi</CustomText>
+                    <TouchableOpacity>
+                        <CustomText style={internalStyles.username}>
+                            {product?._user.username}
+                        </CustomText>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <View style={internalStyles.contactItemContainer}>
+                <TouchableOpacity>
+                    <PhoneIcon />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <MailIcon />
+                </TouchableOpacity>
+            </View>
+        </View>
+    );
+};
+
+const StatsContainer = () => {
+    const product = toJS(productStates.selectedProduct);
+    return (
+        <View style={internalStyles.statsContainer}>
+            <CustomText>
+                Elanın nömrəsi:{' '}
+                <CustomText style={{ fontFamily: NunitoBold }}>{product?.id}</CustomText>
+            </CustomText>
+            <CustomText>
+                Baxış sayı: <CustomText style={{ fontFamily: NunitoBold }}>20</CustomText>
+            </CustomText>
+            <CustomText>
+                Yeniləndi:{' '}
+                <CustomText style={{ fontFamily: NunitoBold }}>
+                    {moment(product?.publishedAt).format('lll')}
+                </CustomText>
+            </CustomText>
+            <CustomText>
+                Şəhər:{' '}
+                <CustomText style={{ fontFamily: NunitoBold }}>
+                    {filterStates.cities.length > 0 &&
+                        filterStates?.cities.find((city) => city?.id === product?.city)?.name_az}
+                </CustomText>
+            </CustomText>
+        </View>
+    );
+};
+
 const ProductDetailPage = () => {
     const product = toJS(productStates.selectedProduct);
 
+    useEffect(() => {
+        increaseViewCount(product?.id || null, product?.slug || null);
+    }, []);
+
     return (
-        <View>
-            <ProductImages />
-            <View style={internalStyles.contentContainer}>
-                <CustomText style={internalStyles.catName}>{product?.category?.name_az}</CustomText>
-                <View style={internalStyles.topInfoContainer}>
-                    <View>
-                        <View style={internalStyles.brandNameContainer}>
-                            <CustomText style={internalStyles.brandName}>
-                                {product?.brand?.name}
-                            </CustomText>
-                            <View style={{ display: product?.isVip ? 'flex' : 'none' }}>
-                                <VipIcon />
-                            </View>
-                        </View>
-                        <View>
-                            <CustomText style={internalStyles.price}>{product?.price}₼</CustomText>
-                        </View>
+        <View style={{ flex: 1 }}>
+            <ScrollView>
+                <ProductImages />
+                <View style={internalStyles.contentContainer}>
+                    <CustomText style={internalStyles.catName}>
+                        {product?.category?.name_az}
+                    </CustomText>
+                    <TopInfoContainer />
+                    <SpecContainer />
+                    <View
+                        style={{
+                            ...internalStyles.descContainer,
+                            display: product?.description ? 'flex' : 'none',
+                        }}
+                    >
+                        <CustomText style={internalStyles.desc}>{product?.description}</CustomText>
                     </View>
-                    <View>
-                        <OutlineHeartIcon style={{ color: mainTextColor }} />
-                    </View>
+                    <ServiceContainer />
+                    <ContactContainer />
+                    <StatsContainer />
                 </View>
-                <View style={internalStyles.specContainer}>
-                    <View style={internalStyles.specItemContainer}>
-                        <TagIcon />
-                        <CustomText>
-                            {defineProductStatus(product?.product_status ?? null)}
-                        </CustomText>
-                    </View>
-                    <View style={internalStyles.specItemContainer}>
-                        <SizeIcon />
-                        <CustomText>{product?._size?.size}</CustomText>
-                    </View>
-                    <View style={internalStyles.specItemContainer}>
-                        <ColorIcon />
-                        <CustomText>{product?._color?.name}</CustomText>
-                    </View>
-                </View>
-            </View>
+            </ScrollView>
         </View>
     );
 };
@@ -146,6 +309,7 @@ const internalStyles = StyleSheet.create({
     price: {
         fontFamily: NunitoBold,
         fontSize: 20,
+        color: primaryColor,
     },
     specContainer: {
         display: 'flex',
@@ -160,5 +324,53 @@ const internalStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
+    },
+    descContainer: {
+        marginTop: 16,
+    },
+    desc: {
+        fontSize: 16,
+    },
+    contactContainer: {
+        marginTop: 16,
+        backgroundColor: e0Color,
+        height: 100,
+        borderRadius: 8,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
+        paddingHorizontal: 16,
+    },
+    avatarContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 16,
+    },
+    ownerHeadText: {
+        fontSize: 16,
+        color: inactiveColor,
+        lineHeight: 21,
+    },
+    username: {
+        fontSize: 16,
+        width: phoneWidth / 2,
+    },
+    contactItemContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 16,
+    },
+    statsContainer: {
+        marginTop: 16,
+    },
+    servicesContainer: {
+        marginTop: 16,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
 });

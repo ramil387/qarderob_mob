@@ -1,31 +1,25 @@
-import { View, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import OutlineLogo from '@/icons/logo/OutlineLogo';
-import ShareIcon from '@/icons/product/ShareIcon';
 import BackIcon from '@/icons/product/BackIcon';
+import CustomText from '../ui/CustomText';
+import { NunitoBold, primaryColor } from '@/styles/variables';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
-const ProductDetailPageHeader = () => {
+const FilterPageHeader = ({ title }: { title?: string }) => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
-    const shareAd = () => {};
+
     return (
         <View style={internalStyles.container}>
             <TouchableOpacity onPress={() => navigate.goBack()}>
                 <BackIcon />
             </TouchableOpacity>
-            <View>
-                <OutlineLogo />
-            </View>
-            <View>
-                <ShareIcon />
-            </View>
+            <CustomText style={internalStyles.midText}>{title}</CustomText>
+            <CustomText style={internalStyles.rightText}>Təmizlə</CustomText>
         </View>
     );
 };
 
-export default ProductDetailPageHeader;
-
+export default FilterPageHeader;
 const internalStyles = StyleSheet.create({
     container: {
         display: 'flex',
@@ -33,5 +27,14 @@ const internalStyles = StyleSheet.create({
         justifyContent: 'space-between',
         flexDirection: 'row',
         padding: 16,
+    },
+    midText: {
+        fontSize: 20,
+        fontFamily: NunitoBold,
+    },
+    rightText: {
+        fontSize: 15,
+        lineHeight: 20,
+        color: primaryColor,
     },
 });

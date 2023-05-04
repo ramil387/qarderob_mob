@@ -1,3 +1,4 @@
+import { CityType } from "@/types/cityType";
 import { makeAutoObservable, runInAction } from "mobx"
 
 class GeneralStates {
@@ -7,6 +8,7 @@ class GeneralStates {
     footerVisible: boolean = true;
     screenSize: string = 'sm'
     homeDatas: any | null = null;
+
 
     constructor() {
         makeAutoObservable(this)
@@ -46,6 +48,8 @@ class GeneralStates {
             this.homeDatas = datas
         })
     }
+
+
 
 }
 
