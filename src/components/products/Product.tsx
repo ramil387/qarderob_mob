@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React, { memo } from 'react';
 import { AdListType } from '@/types/adListType';
 import styled from 'styled-components';
@@ -9,6 +9,8 @@ import CustomText from '../ui/CustomText';
 import VipIcon from '@/icons/home/VipIcon';
 import FillHeartIcon from '@/icons/home/FillHeartIcon';
 import OutlineHeartIcon from '@/icons/home/OutlineHeartIcon';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import productStates from '@/states/product/productStates';
 
 type ProductType = {
     item: AdListType;
@@ -27,42 +29,51 @@ const ImageCard = styled(Image)`
 `;
 
 const Product = ({ item }: ProductType) => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
+    const goProduct = () => {
+        productStates.setSelectedProduct(item);
+        navigate.navigate('ProductDetailPage', { id: item.id });
+    };
     return (
-        <ProductCard phoneWidth={phoneWidth}>
-            <View>
-                <ImageCard source={{ uri: getAdImageBySize('md', item?.id, item?.images[0]) }} />
-                <View
-                    style={{
-                        ...internalStyles.heartIcon,
-                        display: item.isFavourite === '0' ? 'none' : 'flex',
-                    }}
-                >
-                    <FillHeartIcon />
-                </View>
-                <View
-                    style={{
-                        ...internalStyles.heartIcon,
-                        display: item.isFavourite === '0' ? 'flex' : 'none',
-                    }}
-                >
-                    <OutlineHeartIcon />
-                </View>
-            </View>
-            <View>
-                <CustomText style={internalStyles.categoryName}>
-                    {item?.category?.name_az}
-                </CustomText>
-                <View style={internalStyles.priceContainer}>
-                    <CustomText style={internalStyles.brandName}>
-                        {item?.brand.name}
-                        <CustomText style={internalStyles.price}> / {item.price}₼</CustomText>
-                    </CustomText>
-                    <View style={{ display: item.isVip ? 'flex' : 'none' }}>
-                        <VipIcon />
+        <TouchableOpacity onPress={goProduct}>
+            <ProductCard phoneWidth={phoneWidth}>
+                <View>
+                    <ImageCard
+                        source={{ uri: getAdImageBySize('md', item?.id, item?.images[0]) }}
+                    />
+                    <View
+                        style={{
+                            ...internalStyles.heartIcon,
+                            display: item.isFavourite === '0' ? 'none' : 'flex',
+                        }}
+                    >
+                        <FillHeartIcon />
+                    </View>
+                    <View
+                        style={{
+                            ...internalStyles.heartIcon,
+                            display: item.isFavourite === '0' ? 'flex' : 'none',
+                        }}
+                    >
+                        <OutlineHeartIcon />
                     </View>
                 </View>
-            </View>
-        </ProductCard>
+                <View>
+                    <CustomText style={internalStyles.categoryName}>
+                        {item?.category?.name_az}
+                    </CustomText>
+                    <View style={internalStyles.priceContainer}>
+                        <CustomText style={internalStyles.brandName}>
+                            {item?.brand.name}
+                            <CustomText style={internalStyles.price}> / {item.price}₼</CustomText>
+                        </CustomText>
+                        <View style={{ display: item.isVip ? 'flex' : 'none' }}>
+                            <VipIcon />
+                        </View>
+                    </View>
+                </View>
+            </ProductCard>
+        </TouchableOpacity>
     );
 };
 

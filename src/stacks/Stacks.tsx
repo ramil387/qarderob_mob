@@ -2,6 +2,8 @@ import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import HomePage from '../pages/HomePage';
 import React from 'react';
 import HomePageHeader from '@/components/common/HomePageHeader';
+import ProductDetailPage from '@/pages/products/ProductDetailPage';
+import ProductDetailPageHeader from '@/components/headers/ProductDetailPageHeader';
 
 type StackListType = {
     name: string;
@@ -15,6 +17,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <HomePageHeader />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'ProductDetailPage',
+        component: ProductDetailPage,
+        options: {
+            headerShown: true,
+            header: () => <ProductDetailPageHeader />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',

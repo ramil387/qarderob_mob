@@ -1,6 +1,7 @@
 import { Dimensions, Platform } from "react-native";
 
 export const mainTextColor = '#303030';
+export const primaryColor = '#F70F4B'
 export const mainBackgroundColor = '#fff';
 export const inactiveColor = '#787979';
 export const blueColor = '#116BFE';
