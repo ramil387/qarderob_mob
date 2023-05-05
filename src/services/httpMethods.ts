@@ -2,12 +2,13 @@ import axios from 'axios';
 import { SERVER_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { errorHandlers } from './errorHandlers';
+import { baseUrl } from '@/constants';
 
 export const clientRequest = axios.create({ baseURL: SERVER_URL });
 
 clientRequest.interceptors.request.use(
     function (config: any) {
-        // console.log(config)
+        console.log({ requestedUrl: baseUrl + config.url })
         return config;
     },
     function (error: any) {

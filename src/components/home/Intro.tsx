@@ -19,8 +19,6 @@ const Intro = () => {
                 data={banners}
                 scrollAnimationDuration={4000}
                 renderItem={({ data, index }: any) => {
-                    console.log({ data });
-
                     return (
                         <View
                             style={{
