@@ -9,6 +9,7 @@ import FilterPageHeader from '@/components/headers/FilterPageHeader';
 import CategoryFilterPage from '@/pages/filter/parts/CategoryFilterPage';
 import BrandFilterPage from '@/pages/filter/parts/BrandFilterPage';
 import PriceFilterPage from '@/pages/filter/parts/PriceFilterPage';
+import ProductStatusFilterPage from '@/pages/filter/parts/ProductStatusFilterPage';
 
 type StackListType = {
     name: string;
@@ -77,6 +78,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <FilterPageHeader title='Qiymət' />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'ProductStatusFilterPage',
+        component: ProductStatusFilterPage,
+        options: {
+            headerShown: true,
+            header: () => <FilterPageHeader title='Məhsulun vəziyyəti' />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',
