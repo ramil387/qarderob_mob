@@ -7,8 +7,7 @@ import CustomMainButton from '@/components/ui/CustomMainButton';
 import EyeIcon from '@/icons/user/EyeIcon';
 import ClosedEyeIcon from '@/icons/user/ClosedEyeIcon';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
-import CustomSelectBox from '@/components/ui/CustomSelectBox';
-import { providers } from '@/constants';
+import validator from 'validator';
 
 const SuffixIcon = ({ hide, showPassword }: { hide: boolean; showPassword: () => void }) => {
     return (
@@ -24,6 +23,7 @@ const RegisterPage = () => {
     const [phoneNumber, setPhoneNumber] = useState<string>('+994');
 
     const handlePhoneNumberChange = (value: string) => {
+        if (validator.isNumeric(value) === false) return;
         if (value.length > 13) return;
         if (value.length === 3) return setPhoneNumber('+994');
         setPhoneNumber('+994' + value.split('+994').join(''));

@@ -10,6 +10,8 @@ export const APIS = {
     banners: 'banners',
     influencers: 'auth/influencers',
     STORES: 'stores',
+    login: 'auth/login',
+    me: 'auth/me',
 }
 
 export const providers = ['050', '051', '055', '077', '010', '099', '070', '077', '060']

@@ -4,9 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { errorHandlers } from './errorHandlers';
 import { baseUrl } from '@/constants';
 
-export const clientRequest = axios.create({ baseURL: SERVER_URL });
+export const api = axios.create({ baseURL: SERVER_URL });
 
-clientRequest.interceptors.request.use(
+api.interceptors.request.use(
     function (config: any) {
         console.log({ requestedUrl: baseUrl + config.url })
         return config;
@@ -16,7 +16,7 @@ clientRequest.interceptors.request.use(
     },
 );
 
-clientRequest.interceptors.response.use(
+api.interceptors.response.use(
     function (response: any) {
         console.log(`_RESPONSE_${response?.status}`, response.config.url)
         // success200(response)
@@ -26,9 +26,9 @@ clientRequest.interceptors.response.use(
 );
 
 const http = {
-    get: (url: string) => clientRequest.get(url),
-    post: (url: string, body?: any) => clientRequest.post(url, body),
-    patch: (url: string, body?: any) => clientRequest.patch(url, body),
+    get: (url: string) => api.get(url),
+    post: (url: string, body?: any) => api.post(url, body),
+    patch: (url: string, body?: any) => api.patch(url, body),
     upload: async (url: string, body: any) =>
         axios.post(url, body, {
             headers: {
@@ -36,7 +36,7 @@ const http = {
                 Authorization: `Bearer ${await AsyncStorage.getItem('token')}`,
             },
         }),
-    delete: (url: string) => clientRequest.delete(url)
+    delete: (url: string) => api.delete(url)
 };
 
 export { http };
