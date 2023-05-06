@@ -4,7 +4,7 @@ import CustomText from '@/components/ui/CustomText';
 import { NunitoMedium, e5Color, primaryColor } from '@/styles/variables';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
-import { useFilterDatas } from '@/hooks/useFilterDatas';
+
 import { observer } from 'mobx-react-lite';
 import filterStates from '@/states/filter/filterStates';
 import LoadingComponent from '@/components/common/LoadingComponent';
@@ -20,7 +20,6 @@ const FilterPage = () => {
         { label: 'Ölçü', func: () => navigate.navigate('SizeFilterPage') },
         { label: 'Şəhər', func: () => navigate.navigate('CityFilterPage') },
     ];
-    useFilterDatas();
 
     if (filterStates.isLoadingFilter) {
         return <LoadingComponent />;

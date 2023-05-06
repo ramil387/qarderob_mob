@@ -41,7 +41,7 @@ const CateogrySection = () => {
             label: 'Brendlər',
             icon: <BrandCircleIcon />,
             func: () => {
-                // navigate.navigate('Filter_brand');
+                navigate.navigate('BrandFilterPage');
             },
         },
     ];

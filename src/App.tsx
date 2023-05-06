@@ -8,11 +8,13 @@ import { observer } from 'mobx-react-lite';
 import { fetchHome } from './states/general/fetchHome';
 import moment from 'moment';
 import 'moment/locale/az';
+import { useFilterDatas } from './hooks/useFilterDatas';
 
 generateStyles(phoneWidth);
 generalStates.setScreenSize(phoneWidth >= 428 ? 'lg' : phoneWidth >= 390 ? 'md' : 'sm');
 
 const App = () => {
+    useFilterDatas();
     useEffect(() => {
         moment.locale('az');
         fetchHome();
