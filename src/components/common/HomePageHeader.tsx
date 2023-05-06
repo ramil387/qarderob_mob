@@ -1,23 +1,24 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
 import BurgerMenuIcon from '@/icons/home/BurgerMenuIcon';
 import FilterIcon from '@/icons/home/FilterIcon';
 import NotificationIcon from '@/icons/home/NotificationIcon';
 import { observer } from 'mobx-react-lite';
-import generalStates from '@/states/general/generalStates';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
 const HomePageHeader = () => {
-    console.log(generalStates.screenSize);
     const navigate: NavigationProp<ParamListBase> = useNavigation();
     const goFilter = () => {
         navigate.navigate('FilterPage');
     };
+    const goBurgerMenu = () => {
+        navigate.navigate('BurgerMenuPage');
+    };
     return (
         <View style={internalStyles.container}>
-            <View>
+            <TouchableOpacity onPress={goBurgerMenu}>
                 <BurgerMenuIcon />
-            </View>
+            </TouchableOpacity>
             <View style={internalStyles.rightContainer}>
                 <TouchableOpacity onPress={goFilter}>
                     <FilterIcon />
@@ -35,7 +36,7 @@ export default observer(HomePageHeader);
 const internalStyles = StyleSheet.create({
     container: {
         padding: 16,
-        paddingBottom: 0,
+        paddingBottom: 8,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
