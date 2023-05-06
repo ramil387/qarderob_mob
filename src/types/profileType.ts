@@ -1,7 +1,7 @@
 export type ProfileType = {
 
     _store: {
-        _active_package: [],
+        _active_package: any,
         active_package_id: number,
         address: string,
         cover: string,

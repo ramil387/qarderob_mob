@@ -23,6 +23,8 @@ import BurgerMenuPage from '@/pages/BurgerMenuPage';
 import BurgerMenuPageHeader from '@/components/headers/BurgerMenuPageHeader';
 import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
+import ProfilePage from '@/pages/user/ProfilePage';
+import ProfilePageHeader from '@/components/headers/ProfilePageHeader';
 
 type StackListType = {
     name: string;
@@ -201,6 +203,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: false,
             header: () => null,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'ProfilePage',
+        component: ProfilePage,
+        options: {
+            headerShown: true,
+            header: () => <ProfilePageHeader />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',

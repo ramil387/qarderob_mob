@@ -3,7 +3,7 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import CustomText from '@/components/ui/CustomText';
 import LoginIcon from '@/icons/burger/LoginIcon';
-import { NunitoMedium, e0Color, e5Color, inactiveColor, primaryColor } from '@/styles/variables';
+import { NunitoMedium, e0Color, e5Color, primaryColor } from '@/styles/variables';
 import PhoneIcon from '@/icons/product/PhoneIcon';
 import DealIcon from '@/icons/burger/DealIcon';
 import RuleIcon from '@/icons/burger/RuleIcon';
@@ -16,6 +16,8 @@ import { toJS } from 'mobx';
 import KeyIcon from '@/icons/user/KeyIcon';
 import UserSquareIcon from '@/icons/user/UserSquareIcon';
 import LogoutIcon from '@/icons/user/LogoutIcon';
+import { api } from '@/services/httpMethods';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BurgerMenuPage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
@@ -101,17 +103,26 @@ const ProfileBurgerMenu = observer(() => {
         {
             label: 'Çıxış',
             icon: <LogoutIcon style={{ color: primaryColor }} />,
+            func: () => logOut(),
         },
     ];
 
-    const goUserPage = () => {
-        navigate.navigate('UserPage');
+    const goProfilePage = () => {
+        navigate.navigate('ProfilePage');
+    };
+
+    const logOut = () => {
+        console.log('salam');
+        profileStates.setUser(null);
+        profileStates.setToken(null);
+        api.defaults.headers.common['Authorization'] = null;
+        AsyncStorage.removeItem('token');
     };
 
     return (
         <View style={internalStyles.container}>
             <TouchableOpacity
-                onPress={goUserPage}
+                onPress={goProfilePage}
                 style={{
                     ...internalStyles.avatarContainer,
                     borderBottomWidth: 1,
@@ -120,9 +131,17 @@ const ProfileBurgerMenu = observer(() => {
                 }}
             >
                 <View style={internalStyles.menuLeftContainer}>
-                    <Avatar size={60} rounded source={{ uri: profileStates.user?.photo }} />
+                    <Avatar
+                        size={60}
+                        rounded
+                        source={{
+                            uri: storeMode
+                                ? profileStates.user?._store.img
+                                : profileStates.user?.photo,
+                        }}
+                    />
                     <CustomText style={internalStyles.menuName}>
-                        {profileStates.user?.username}
+                        {storeMode ? profileStates.user?._store.name : profileStates.user?.username}
                     </CustomText>
                 </View>
                 <ChevronRightIcon />
@@ -150,7 +169,13 @@ const ProfileBurgerMenu = observer(() => {
             {menu.map((item, index) => {
                 return (
                     <View key={index}>
-                        <TouchableOpacity style={internalStyles.menuItemContainer}>
+                        <TouchableOpacity
+                            style={{
+                                ...internalStyles.menuItemContainer,
+                                borderBottomWidth: index === menu.length - 1 ? 0 : 1,
+                            }}
+                            onPress={item.func}
+                        >
                             <View style={internalStyles.menuLeftContainer}>
                                 {item.icon}
                                 <CustomText style={internalStyles.menuName}>
@@ -202,7 +227,7 @@ const internalStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: 16,
+        marginVertical: 16,
     },
     btn: {
         width: '48%',
