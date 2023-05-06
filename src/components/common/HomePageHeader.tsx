@@ -35,6 +35,7 @@ export default observer(HomePageHeader);
 const internalStyles = StyleSheet.create({
     container: {
         padding: 16,
+        paddingBottom: 0,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',

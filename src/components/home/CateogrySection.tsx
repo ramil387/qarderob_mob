@@ -6,22 +6,25 @@ import ShopCircleIcon from '@/icons/categories/ShopCircleIcon';
 import { ScrollView } from 'react-native';
 import { NunitoBold, NunitoMedium, phoneWidth } from '@/styles/variables';
 import CustomText from '../ui/CustomText';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import InfluencersCircleIcon from '@/icons/categories/InfluencersCircleIcon';
 
 const CateogrySection = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
+
     const cats = [
         {
             label: 'Kateqoriyalar',
             icon: <CategoryCircleIcon />,
             func: () => {
-                // navigate.navigate('Categories');
+                navigate.navigate('CategoriesPage');
             },
         },
         {
             label: 'İnfluenserlər',
-            icon: <BrandCircleIcon />,
+            icon: <InfluencersCircleIcon />,
             func: () => {
-                // searchStates.setSearchKey('');
-                // navigate.navigate('Inf');
+                navigate.navigate('InfluencerPage');
             },
         },
         // {label:"Məşhurlar",icon:require("@/assets/images/celebrity.png")},
@@ -58,7 +61,7 @@ const CateogrySection = () => {
                 {cats.map((cat) => {
                     return (
                         <TouchableOpacity
-                            onPress={() => console.log('salam')}
+                            onPress={cat.func}
                             style={internalStyles.itemContainer}
                             key={cat.label}
                         >

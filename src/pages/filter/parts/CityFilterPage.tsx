@@ -10,6 +10,8 @@ import FillSquareIcon from '@/icons/filter/FillSquareIcon';
 import OutlineSquareIcon from '@/icons/filter/OutlineSquareIcon';
 import CustomTextInput from '@/components/ui/CustomTextInput';
 import SearchIcon from '@/icons/home/SearchIcon';
+import { CityType } from '@/types/cityType';
+import slugify from 'slugify';
 import { makeSlugify } from '@/components/helper/makeSlugify';
 
 const PrefixIcon = () => {
@@ -20,7 +22,7 @@ const PrefixIcon = () => {
     );
 };
 
-const BrandItem = React.memo(({ item, onSelect, selected }: any) => {
+const CityItem = React.memo(({ item, onSelect, selected }: any) => {
     const shownFillSquare = selected;
 
     const handleSelect = useCallback(() => {
@@ -29,7 +31,7 @@ const BrandItem = React.memo(({ item, onSelect, selected }: any) => {
 
     return (
         <TouchableOpacity onPress={handleSelect} style={internalStyles.item}>
-            <CustomText style={internalStyles.brandName}>{item.name}</CustomText>
+            <CustomText style={internalStyles.brandName}>{item.name_az}</CustomText>
             <View style={{ display: shownFillSquare ? 'flex' : 'none' }}>
                 <FillSquareIcon />
             </View>
@@ -40,40 +42,40 @@ const BrandItem = React.memo(({ item, onSelect, selected }: any) => {
     );
 });
 
-const BrandFilterPage = () => {
-    const brands = useMemo(() => toJS(filterStates.brands), []);
+const CityFilterPage = () => {
+    const cities = useMemo(() => toJS(filterStates.cities), []);
     const [searchKey, setSearchKey] = useState('');
-    const [selectedBrands, setSelectedBrands] = useState<Record<number, boolean>>({});
+    const [selectedCities, setSelectedCities] = useState<Record<number, boolean>>({});
 
-    const selectBrand = useCallback((brand: BrandType) => {
-        setSelectedBrands((prev) => {
-            const selected = prev[brand.id];
-            return { ...prev, [brand.id]: !selected };
+    const selectCity = useCallback((city: CityType) => {
+        setSelectedCities((prev) => {
+            const selected = prev[city.id];
+            return { ...prev, [city.id]: !selected };
         });
     }, []);
     const renderedBrand = useCallback(
-        ({ item }: { item: BrandType }) => {
-            const selected = Boolean(selectedBrands[item.id]);
-            return <BrandItem item={item} onSelect={selectBrand} selected={selected} />;
+        ({ item }: { item: CityType }) => {
+            const selected = Boolean(selectedCities[item.id]);
+            return <CityItem item={item} onSelect={selectCity} selected={selected} />;
         },
-        [selectedBrands, selectBrand],
+        [selectedCities, selectCity],
     );
 
-    const filteredBrands = useMemo(
-        () => brands.filter((brand) => makeSlugify(brand.name).includes(makeSlugify(searchKey))),
-        [brands, searchKey],
+    const filteredCities = useMemo(
+        () => cities.filter((city) => makeSlugify(city.name_az).includes(makeSlugify(searchKey))),
+        [cities, searchKey],
     );
 
     useEffect(() => {
-        filterStates.setQuery('brand', selectedBrands);
-    }, [selectedBrands]);
+        filterStates.setQuery('city', selectedCities);
+    }, [selectedCities]);
 
     return (
         <View style={internalStyles.container}>
             <View style={internalStyles.searchContainer}>
                 <CustomTextInput
                     onChangeText={(text) => setSearchKey(text)}
-                    placeholder='Brend axtar'
+                    placeholder='Şəhər axtar'
                     style={internalStyles.inputStyle}
                     icon={<PrefixIcon />}
                 />
@@ -82,8 +84,8 @@ const BrandFilterPage = () => {
                 windowSize={10}
                 initialNumToRender={20}
                 showsVerticalScrollIndicator={false}
-                data={filteredBrands}
-                extraData={selectedBrands}
+                data={filteredCities}
+                extraData={selectedCities}
                 renderItem={renderedBrand}
                 keyExtractor={(item) => item.id.toString()}
             />
@@ -91,7 +93,7 @@ const BrandFilterPage = () => {
     );
 };
 
-export default observer(BrandFilterPage);
+export default observer(CityFilterPage);
 
 const internalStyles = StyleSheet.create({
     container: {

@@ -12,6 +12,7 @@ import CustomTextInput from '@/components/ui/CustomTextInput';
 import SearchIcon from '@/icons/home/SearchIcon';
 import { NunitoBold, NunitoRegular, e5Color, f5Color, phoneHeight } from '@/styles/variables';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
+import { makeSlugify } from '@/components/helper/makeSlugify';
 
 const PrefixIcon = () => {
     return (
@@ -118,7 +119,7 @@ const MacroCategories = memo(
         const searchedCategories =
             searchKey.length > 0
                 ? categories.filter((cat) =>
-                      cat.name_az.toLowerCase().includes(searchKey.toLowerCase()),
+                      makeSlugify(cat.name_az).includes(makeSlugify(searchKey)),
                   )
                 : macroCategories;
 

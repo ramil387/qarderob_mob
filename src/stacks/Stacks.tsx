@@ -10,6 +10,12 @@ import CategoryFilterPage from '@/pages/filter/parts/CategoryFilterPage';
 import BrandFilterPage from '@/pages/filter/parts/BrandFilterPage';
 import PriceFilterPage from '@/pages/filter/parts/PriceFilterPage';
 import ProductStatusFilterPage from '@/pages/filter/parts/ProductStatusFilterPage';
+import ColorFilterPage from '@/pages/filter/parts/ColorFilterPage';
+import SizesFilterPage from '@/pages/filter/parts/SizesFilterPage';
+import CityFilterPage from '@/pages/filter/parts/CityFilterPage';
+import CategoriesPage from '@/pages/CategoriesPage';
+import CategoriesPageHeader from '@/components/headers/CategoriesPageHeader';
+import InfluencerPage from '@/pages/user/InfluencerPage';
 
 type StackListType = {
     name: string;
@@ -55,7 +61,7 @@ export const StackList: StackListType[] = [
         component: CategoryFilterPage,
         options: {
             headerShown: true,
-            header: () => <FilterPageHeader title='Kateqoriya' />,
+            header: () => <FilterPageHeader title='Kateqoriyalar' />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',
@@ -66,7 +72,7 @@ export const StackList: StackListType[] = [
         component: BrandFilterPage,
         options: {
             headerShown: true,
-            header: () => <FilterPageHeader title='Brend' />,
+            header: () => <FilterPageHeader title='Brendlər' />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',
@@ -77,7 +83,7 @@ export const StackList: StackListType[] = [
         component: PriceFilterPage,
         options: {
             headerShown: true,
-            header: () => <FilterPageHeader title='Qiymət' />,
+            header: () => <FilterPageHeader title='Qiymət aralığı' />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',
@@ -89,6 +95,61 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <FilterPageHeader title='Məhsulun vəziyyəti' />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'ColorFilterPage',
+        component: ColorFilterPage,
+        options: {
+            headerShown: true,
+            header: () => <FilterPageHeader title='Rənglər' />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'SizeFilterPage',
+        component: SizesFilterPage,
+        options: {
+            headerShown: true,
+            header: () => <FilterPageHeader title='Ölçülər' />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'CityFilterPage',
+        component: CityFilterPage,
+        options: {
+            headerShown: true,
+            header: () => <FilterPageHeader title='Şəhərlər' />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'CategoriesPage',
+        component: CategoriesPage,
+        options: {
+            headerShown: true,
+            header: () => <CategoriesPageHeader />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'InfluencerPage',
+        component: InfluencerPage,
+        options: {
+            headerShown: true,
+            header: () => <CategoriesPageHeader />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',
