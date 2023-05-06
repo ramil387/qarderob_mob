@@ -22,6 +22,7 @@ import ShopPageHeader from '@/components/headers/ShopPageHeader';
 import BurgerMenuPage from '@/pages/BurgerMenuPage';
 import BurgerMenuPageHeader from '@/components/headers/BurgerMenuPageHeader';
 import LoginPage from '@/pages/auth/LoginPage';
+import RegisterPage from '@/pages/auth/RegisterPage';
 
 type StackListType = {
     name: string;
@@ -186,6 +187,17 @@ export const StackList: StackListType[] = [
     {
         name: 'LoginPage',
         component: LoginPage,
+        options: {
+            headerShown: false,
+            header: () => null,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'RegisterPage',
+        component: RegisterPage,
         options: {
             headerShown: false,
             header: () => null,

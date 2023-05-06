@@ -1,5 +1,5 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import CustomText from '@/components/ui/CustomText';
 import { NunitoBold, NunitoMedium, f5Color, inactiveColor } from '@/styles/variables';
 import CustomTextInput from '@/components/ui/CustomTextInput';
@@ -7,6 +7,8 @@ import CustomMainButton from '@/components/ui/CustomMainButton';
 import EyeIcon from '@/icons/user/EyeIcon';
 import ClosedEyeIcon from '@/icons/user/ClosedEyeIcon';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import CustomSelectBox from '@/components/ui/CustomSelectBox';
+import { providers } from '@/constants';
 
 const SuffixIcon = ({ hide, showPassword }: { hide: boolean; showPassword: () => void }) => {
     return (
@@ -16,18 +18,23 @@ const SuffixIcon = ({ hide, showPassword }: { hide: boolean; showPassword: () =>
     );
 };
 
-const LoginPage = () => {
+const RegisterPage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
     const [hide, setHide] = React.useState<boolean>(true);
+    const [phoneNumber, setPhoneNumber] = useState<string>('+994');
+
+    const handlePhoneNumberChange = (value: string) => {
+        if (value.length > 13) return;
+        if (value.length === 3) return setPhoneNumber('+994');
+        setPhoneNumber('+994' + value.split('+994').join(''));
+    };
+
     const showPassword = () => {
         setHide(!hide);
     };
 
-    const goRegisterPage = () => {
+    const goLoginPage = () => {
         navigate.navigate('RegisterPage');
-    };
-    const goForgotPasswordPage = () => {
-        navigate.navigate('ForgotPasswordPage');
     };
 
     return (
@@ -36,7 +43,19 @@ const LoginPage = () => {
             <CustomText style={internalStyles.continueText}>Davam etmək üçün daxil olun</CustomText>
             <View style={{ marginTop: 16 }}>
                 <View style={internalStyles.inputContainer}>
+                    <CustomTextInput placeholder='Ad / soyad' />
+                </View>
+                <View style={internalStyles.inputContainer}>
                     <CustomTextInput placeholder='E-mail' />
+                </View>
+                <View style={internalStyles.inputContainer}>
+                    <CustomTextInput
+                        keyboardType='numeric'
+                        onChangeText={handlePhoneNumberChange}
+                        value={phoneNumber}
+                        placeholder='Telefon'
+                        maxLength={13}
+                    />
                 </View>
                 <View style={internalStyles.inputContainer}>
                     <CustomTextInput
@@ -46,17 +65,14 @@ const LoginPage = () => {
                     />
                 </View>
             </View>
-            <TouchableOpacity onPress={goForgotPasswordPage}>
-                <CustomText style={internalStyles.forgotText}>Şifrəni unutmusunuz?</CustomText>
-            </TouchableOpacity>
             <View style={internalStyles.btnContainer}>
                 <CustomMainButton func={() => {}} title='Daxil ol' />
             </View>
             <View style={internalStyles.authFooter}>
                 <CustomText>
-                    Hesabınız yoxdur?{' '}
-                    <CustomText onPress={goRegisterPage} style={{ fontFamily: NunitoBold }}>
-                        Qeydiyyatdan keçin
+                    Hesabınız mövcuddur?{' '}
+                    <CustomText onPress={goLoginPage} style={{ fontFamily: NunitoBold }}>
+                        Daxil olun
                     </CustomText>
                 </CustomText>
             </View>
@@ -64,7 +80,7 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default RegisterPage;
 
 const internalStyles = StyleSheet.create({
     container: {
