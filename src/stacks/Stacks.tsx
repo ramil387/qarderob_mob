@@ -21,6 +21,7 @@ import InfluencerPageHeader from '@/components/headers/InfluencerPageHeader';
 import ShopPageHeader from '@/components/headers/ShopPageHeader';
 import BurgerMenuPage from '@/pages/BurgerMenuPage';
 import BurgerMenuPageHeader from '@/components/headers/BurgerMenuPageHeader';
+import LoginPage from '@/pages/auth/LoginPage';
 
 type StackListType = {
     name: string;
@@ -177,6 +178,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <BurgerMenuPageHeader />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'LoginPage',
+        component: LoginPage,
+        options: {
+            headerShown: false,
+            header: () => null,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',

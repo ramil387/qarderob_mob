@@ -8,11 +8,17 @@ import PhoneIcon from '@/icons/product/PhoneIcon';
 import DealIcon from '@/icons/burger/DealIcon';
 import RuleIcon from '@/icons/burger/RuleIcon';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
 const BurgerMenuPage = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
+
+    const goLoginPage = () => {
+        navigate.navigate('LoginPage');
+    };
     return (
         <View style={internalStyles.container}>
-            <TouchableOpacity style={internalStyles.menuItemContainer}>
+            <TouchableOpacity onPress={goLoginPage} style={internalStyles.menuItemContainer}>
                 <View style={internalStyles.menuLeftContainer}>
                     <LoginIcon style={{ color: primaryColor }} />
 
