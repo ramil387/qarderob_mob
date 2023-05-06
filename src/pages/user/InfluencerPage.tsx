@@ -46,6 +46,7 @@ const InfluencerPage = () => {
                 />
             </View>
             <FlatList
+                showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ marginTop: 16, rowGap: 8 }}
                 data={influencers}
                 keyExtractor={(item) => item.id.toString()}

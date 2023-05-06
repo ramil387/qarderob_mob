@@ -32,6 +32,7 @@ const CateogrySection = () => {
             label: 'Mağazalar',
             icon: <ShopCircleIcon />,
             func: () => {
+                navigate.navigate('ShopPage');
                 // searchStates.setSearchKey('');
                 // navigate.navigate('Stories');
             },

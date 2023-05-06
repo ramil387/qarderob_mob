@@ -9,4 +9,5 @@ export const APIS = {
     home: 'home/mobile',
     banners: 'banners',
     influencers: 'auth/influencers',
+    STORES: 'stores',
 }

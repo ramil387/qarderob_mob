@@ -16,6 +16,9 @@ import CityFilterPage from '@/pages/filter/parts/CityFilterPage';
 import CategoriesPage from '@/pages/CategoriesPage';
 import CategoriesPageHeader from '@/components/headers/CategoriesPageHeader';
 import InfluencerPage from '@/pages/user/InfluencerPage';
+import ShopPage from '@/pages/shop/ShopPage';
+import InfluencerPageHeader from '@/components/headers/InfluencerPageHeader';
+import ShopPageHeader from '@/components/headers/ShopPageHeader';
 
 type StackListType = {
     name: string;
@@ -149,7 +152,18 @@ export const StackList: StackListType[] = [
         component: InfluencerPage,
         options: {
             headerShown: true,
-            header: () => <CategoriesPageHeader />,
+            header: () => <InfluencerPageHeader />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'ShopPage',
+        component: ShopPage,
+        options: {
+            headerShown: true,
+            header: () => <ShopPageHeader />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',

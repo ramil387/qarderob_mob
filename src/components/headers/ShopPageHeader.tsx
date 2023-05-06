@@ -5,7 +5,7 @@ import CustomText from '../ui/CustomText';
 import { NunitoBold, primaryColor } from '@/styles/variables';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
-const InfluencerPageHeader = ({ title }: { title?: string }) => {
+const ShopPageHeader = ({ title }: { title?: string }) => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
 
     return (
@@ -17,13 +17,13 @@ const InfluencerPageHeader = ({ title }: { title?: string }) => {
             >
                 <BackIcon />
             </TouchableOpacity>
-            <CustomText style={internalStyles.midText}>İnfluenserlər</CustomText>
+            <CustomText style={internalStyles.midText}>Mağazalar</CustomText>
             <CustomText style={internalStyles.rightText}>Təmizlə</CustomText>
         </View>
     );
 };
 
-export default InfluencerPageHeader;
+export default ShopPageHeader;
 
 const internalStyles = StyleSheet.create({
     container: {
