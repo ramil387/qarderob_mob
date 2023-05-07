@@ -64,6 +64,17 @@ class ErrorState {
         })
     }
 
+    resetErrorStates = () => {
+        runInAction(() => {
+            this.commonErrorVisible = false;
+            this.errorHeader = "";
+            this.errorBody = "";
+            this.errorAction = false;
+            this.okText = "";
+            this.cancelText = "";
+        })
+    }
+
 }
 
 export default new ErrorState();

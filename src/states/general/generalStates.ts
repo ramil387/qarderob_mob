@@ -8,6 +8,7 @@ class GeneralStates {
     screenSize: string = 'sm'
     homeDatas: any | null = null;
 
+    homeScrollRef: any = null
 
     constructor() {
         makeAutoObservable(this)
@@ -48,6 +49,11 @@ class GeneralStates {
         })
     }
 
+    setHomeScrollRef(ref: any) {
+        runInAction(() => {
+            this.homeScrollRef = ref
+        })
+    }
 
 
 }

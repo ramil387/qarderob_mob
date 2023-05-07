@@ -10,7 +10,9 @@ import profileStates from '@/states/profile/profileStates';
 
 const ProfilePageHeader = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
-
+    const goBurgerMenuPage = () => {
+        navigate.navigate('BurgerMenuPage');
+    };
     return (
         <View style={internalStyles.container}>
             <TouchableOpacity
@@ -21,7 +23,7 @@ const ProfilePageHeader = () => {
                 <BackIcon />
             </TouchableOpacity>
             <CustomText style={internalStyles.midText}>{profileStates.user?.username}</CustomText>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={goBurgerMenuPage}>
                 <CogIcon style={{ color: 'black' }} />
             </TouchableOpacity>
         </View>

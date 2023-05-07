@@ -1,5 +1,5 @@
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import generalStates from '@/states/general/generalStates';
 import { AdListType } from '@/types/adListType';
@@ -13,10 +13,18 @@ import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
 
 const LastAds = () => {
     const products: AdListType[] = generalStates.homeDatas?.last_ads;
+    const scrollRef = React.useRef<FlatList>(null);
+
+    useEffect(() => {
+        if (scrollRef.current) {
+            generalStates.setHomeScrollRef(scrollRef);
+        }
+    }, [scrollRef]);
 
     return (
         <View>
             <FlatList
+                ref={scrollRef}
                 ListHeaderComponent={() => (
                     <View>
                         <View style={{ marginBottom: 24 }}>

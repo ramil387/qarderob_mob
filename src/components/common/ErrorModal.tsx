@@ -1,11 +1,12 @@
-import { Modal, StyleSheet, View } from 'react-native';
+import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import React, { memo } from 'react';
 import CustomText from '../ui/CustomText';
 import { observer } from 'mobx-react-lite';
 import errorStates from '@/states/error/errorStates';
 import WarningIcon from '@/icons/error/WarningIcon';
-import { NunitoBold, e5Color, inactiveColor, primaryColor } from '@/styles/variables';
+import { NunitoBold, inactiveColor, primaryColor } from '@/styles/variables';
 import CustomMainButton from '../ui/CustomMainButton';
+import CloseIcon from '@/icons/error/CloseIcon';
 
 const ErrorModal = () => {
     const ActionBody = () => {
@@ -34,6 +35,12 @@ const ErrorModal = () => {
         <Modal animationType='fade' visible={errorStates.commonErrorVisible} transparent={true}>
             <View style={internalStyles.container}>
                 <View style={internalStyles.contentContainer}>
+                    <TouchableOpacity
+                        onPress={errorStates.resetErrorStates}
+                        style={internalStyles.closeIcon}
+                    >
+                        <CloseIcon />
+                    </TouchableOpacity>
                     <View style={internalStyles.iconContainer}>
                         <WarningIcon />
                     </View>
@@ -43,7 +50,6 @@ const ErrorModal = () => {
                     </CustomText>
                     <CustomText style={internalStyles.errorBody}>
                         {errorStates.errorBody}
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil, distinctio.
                     </CustomText>
                     <ActionBody />
                 </View>
@@ -64,7 +70,7 @@ const internalStyles = StyleSheet.create({
     contentContainer: {
         backgroundColor: 'white',
         marginHorizontal: 16,
-        padding: 40,
+        padding: 30,
         borderRadius: 8,
         display: 'flex',
         justifyContent: 'center',
@@ -82,7 +88,7 @@ const internalStyles = StyleSheet.create({
         color: inactiveColor,
         textAlign: 'center',
         fontSize: 16,
-        marginTop: 8,
+        marginVertical: 16,
     },
     actionContainer: {
         display: 'flex',
@@ -93,5 +99,10 @@ const internalStyles = StyleSheet.create({
     },
     btnItemContainer: {
         width: '48%',
+    },
+    closeIcon: {
+        position: 'absolute',
+        top: 16,
+        right: 16,
     },
 });

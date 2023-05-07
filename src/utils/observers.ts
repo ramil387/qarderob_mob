@@ -30,7 +30,7 @@ export const routerObserver = (e: any) => {
 
 export const footerVisibleObserver = () => {
     const isVisiable = generalStates.curPage === 'LoginPage' ||
-        generalStates.curPage === 'RegisterPage'
+        generalStates.curPage === 'RegisterPage' || generalStates.curPage === 'BurgerMenuPage';
 
     generalStates.setFooterVisible(
         isVisiable

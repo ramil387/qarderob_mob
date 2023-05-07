@@ -1,7 +1,7 @@
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import React from 'react';
 import CustomText from '@/components/ui/CustomText';
-import { NunitoBold, NunitoMedium, f5Color, inactiveColor } from '@/styles/variables';
+import { NunitoBold, NunitoMedium, f5Color, inactiveColor, primaryColor } from '@/styles/variables';
 import CustomTextInput from '@/components/ui/CustomTextInput';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import EyeIcon from '@/icons/user/EyeIcon';
@@ -25,7 +25,7 @@ const SuffixIcon = ({ hide, showPassword }: { hide: boolean; showPassword: () =>
 const LoginPage = () => {
     const [email, setEmail] = React.useState<string>('');
     const [password, setPassword] = React.useState<string>('');
-
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const [emailValidationMessage, setEmailValidationMessage] = React.useState<string>('');
     const [passwordValidationMessage, setPasswordValidationMessage] = React.useState<string>('');
     const navigate: NavigationProp<ParamListBase> = useNavigation();
@@ -67,26 +67,33 @@ const LoginPage = () => {
     };
 
     const login = async () => {
-        emailRef.current?.blur();
-        passwordRef.current?.blur();
-        const data = {
-            email,
-            password,
-        };
-        if (validator.isEmail(email) === false) {
-            setEmailValidationMessage('Email düzgün deyil');
-            return;
-        }
-        if (validator.isLength(password, { min: 6 }) === false) {
-            setPasswordValidationMessage('Şifrə 6 simvoldan az ola bilməz');
-            return;
-        }
-        const resp = await http.post(APIS.login, data);
-        if (resp.status === 200 && resp.data.token) {
-            api.defaults.headers.common.Authorization = `Bearer ${resp.data.token}`;
-            profileStates.setUser(resp.data.user);
-            AsyncStorage.setItem('token', resp.data.token);
-            navigate.navigate('HomePage');
+        try {
+            setIsLoading(true);
+            emailRef.current?.blur();
+            passwordRef.current?.blur();
+            const data = {
+                email,
+                password,
+            };
+            if (validator.isEmail(email) === false) {
+                setEmailValidationMessage('Email düzgün deyil');
+                return;
+            }
+            if (validator.isLength(password, { min: 6 }) === false) {
+                setPasswordValidationMessage('Şifrə 6 simvoldan az ola bilməz');
+                return;
+            }
+            const resp = await http.post(APIS.login, data);
+            if (resp.status === 200 && resp.data.token) {
+                api.defaults.headers.common.Authorization = `Bearer ${resp.data.token}`;
+                profileStates.setUser(resp.data.user);
+                AsyncStorage.setItem('token', resp.data.token);
+                navigate.navigate('HomePage');
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -136,7 +143,10 @@ const LoginPage = () => {
                 <CustomText style={internalStyles.forgotText}>Şifrəni unutmusunuz?</CustomText>
             </TouchableOpacity>
             <View style={internalStyles.btnContainer}>
-                <CustomMainButton func={login} title='Daxil ol' />
+                <CustomMainButton
+                    func={login}
+                    title={isLoading ? <ActivityIndicator color='#fff' /> : 'Daxil ol'}
+                />
             </View>
             <View style={internalStyles.authFooter}>
                 <CustomText>

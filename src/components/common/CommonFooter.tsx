@@ -1,6 +1,6 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { memo } from 'react';
-import { e5Color, phoneWidth } from '@/styles/variables';
+import { e5Color, f5Color, phoneWidth } from '@/styles/variables';
 import HomeIcon from '@/icons/footer/HomeIcon';
 import HeartFooterIcon from '@/icons/footer/HeartFooterIcon';
 import MailFooterIcon from '@/icons/footer/MailFooterIcon';
@@ -8,6 +8,9 @@ import UserIcon from '@/icons/footer/UserIcon';
 import PlusCircleIcon from '@/icons/footer/PlusCircleIcon';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import generalStates from '@/states/general/generalStates';
+import profileStates from '@/states/profile/profileStates';
+import errorStates from '@/states/error/errorStates';
+import { observer } from 'mobx-react-lite';
 
 const CommonFooter = () => {
     const navigate: NavigationProp<ParamListBase> = generalStates.navigationRef.current;
@@ -16,22 +19,55 @@ const CommonFooter = () => {
         navigate.navigate('ProfilePage');
     };
 
+    const goAddProductPage = () => {
+        if (profileStates.token) {
+            // navigate.navigate('AddProductPage');
+            return;
+        }
+        errorStates.setCommonErrorVisible(true);
+        errorStates.setErrorHeader('Elan yerləşdirmək üçün hesabınıza daxil olun');
+        errorStates.setErrorBody('Hesabınız yoxdursa qeydiyyatdan keçin');
+        errorStates.setOkText('Daxil ol');
+        errorStates.setCancelText('Qeydiyyat');
+        errorStates.setOkFunc(() => {
+            navigate.navigate('LoginPage');
+            errorStates.resetErrorStates();
+        });
+        errorStates.setCancelFunc(() => {
+            navigate.navigate('RegisterPage');
+            errorStates.resetErrorStates();
+        });
+    };
+
+    const goHomePage = () => {
+        generalStates.homeScrollRef.current.scrollToOffset({ animated: true, offset: 0 });
+        navigate.navigate('HomePage');
+    };
+
+    const goFavouritePage = () => {
+        navigate.navigate('FavouritePage');
+    };
+
+    const goMessagesPage = () => {
+        navigate.navigate('MessagesPage');
+    };
+
     return (
         <View style={internalStyles.container}>
-            <View>
+            <TouchableOpacity onPress={goHomePage}>
                 <HomeIcon />
-            </View>
-            <View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goFavouritePage}>
                 <HeartFooterIcon />
-            </View>
+            </TouchableOpacity>
             <View style={internalStyles.plusBtn}>
-                <TouchableOpacity activeOpacity={0.8}>
+                <TouchableOpacity onPress={goAddProductPage} activeOpacity={0.8}>
                     <PlusCircleIcon />
                 </TouchableOpacity>
             </View>
-            <View>
+            <TouchableOpacity onPress={goMessagesPage}>
                 <MailFooterIcon />
-            </View>
+            </TouchableOpacity>
             <TouchableOpacity onPress={goProfilePage}>
                 <UserIcon />
             </TouchableOpacity>
@@ -39,12 +75,12 @@ const CommonFooter = () => {
     );
 };
 
-export default memo(CommonFooter);
+export default memo(observer(CommonFooter));
 
 const internalStyles = StyleSheet.create({
     container: {
         padding: 18,
-        backgroundColor: e5Color,
+        backgroundColor: '#eee',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
