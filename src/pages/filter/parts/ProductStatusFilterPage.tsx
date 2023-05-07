@@ -6,6 +6,7 @@ import CustomText from '@/components/ui/CustomText';
 import { NunitoMedium, e5Color } from '@/styles/variables';
 import FillSquareIcon from '@/icons/filter/FillSquareIcon';
 import OutlineSquareIcon from '@/icons/filter/OutlineSquareIcon';
+import CustomMainButton from '@/components/ui/CustomMainButton';
 
 const ProductStatusFilterPage = () => {
     const [selectedProductStatus, setSelectedProductStatus] = useState<any[]>([]);
@@ -47,6 +48,9 @@ const ProductStatusFilterPage = () => {
                     </TouchableOpacity>
                 );
             })}
+            <View style={internalStyles.btn}>
+                <CustomMainButton func={() => {}} title='Təsdiqlə' />
+            </View>
         </View>
     );
 };
@@ -71,5 +75,12 @@ const internalStyles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 21,
         fontFamily: NunitoMedium,
+    },
+    btn: {
+        position: 'absolute',
+        bottom: 16,
+        width: '100%',
+        alignSelf: 'center',
+        backgroundColor: 'white',
     },
 });

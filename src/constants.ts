@@ -7,6 +7,7 @@ export const assetUrl = ASSET_URL
 
 export const APIS = {
     home: 'home/mobile',
+    filter: 'home/filter-data',
     banners: 'banners',
     influencers: 'auth/influencers',
     STORES: 'stores',
@@ -14,6 +15,7 @@ export const APIS = {
     me: 'auth/me',
     ads: 'ads',
     stats: "stats",
+
 }
 
 export const providers = ['050', '051', '055', '077', '010', '099', '070', '077', '060']

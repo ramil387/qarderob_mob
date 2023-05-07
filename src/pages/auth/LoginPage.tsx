@@ -13,6 +13,8 @@ import { APIS } from '@/constants';
 import { TextInput } from 'react-native-gesture-handler';
 import profileStates from '@/states/profile/profileStates';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import generalStates from '@/states/general/generalStates';
+import { observer } from 'mobx-react-lite';
 
 const SuffixIcon = ({ hide, showPassword }: { hide: boolean; showPassword: () => void }) => {
     return (
@@ -47,8 +49,12 @@ const LoginPage = () => {
         setEmail(value);
     };
     const onEmailBlur = () => {
+        if (email.length === 0) {
+            setEmailValidationMessage('E-mail boş ola bilməz');
+            return;
+        }
         if (validator.isEmail(email) === false) {
-            setEmailValidationMessage('Email düzgün deyil');
+            setEmailValidationMessage('E-mail düzgün deyil');
             return;
         }
         setEmailValidationMessage('');
@@ -87,6 +93,7 @@ const LoginPage = () => {
             if (resp.status === 200 && resp.data.token) {
                 api.defaults.headers.common.Authorization = `Bearer ${resp.data.token}`;
                 profileStates.setUser(resp.data.user);
+                profileStates.setToken(resp.data.token);
                 AsyncStorage.setItem('token', resp.data.token);
                 navigate.navigate('HomePage');
             }
@@ -148,7 +155,12 @@ const LoginPage = () => {
                     title={isLoading ? <ActivityIndicator color='#fff' /> : 'Daxil ol'}
                 />
             </View>
-            <View style={internalStyles.authFooter}>
+            <View
+                style={{
+                    ...internalStyles.authFooter,
+                    display: generalStates.authFooterVisible ? 'flex' : 'none',
+                }}
+            >
                 <CustomText>
                     Hesabınız yoxdur?{' '}
                     <CustomText onPress={goRegisterPage} style={{ fontFamily: NunitoBold }}>
@@ -160,7 +172,7 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default observer(LoginPage);
 
 const internalStyles = StyleSheet.create({
     container: {

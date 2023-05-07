@@ -62,6 +62,9 @@ export type AdListType = {
         is_store: boolean;
     };
     _store: null;
+    viewCount: {
+        count: number;
+    } | null
 }
 
 

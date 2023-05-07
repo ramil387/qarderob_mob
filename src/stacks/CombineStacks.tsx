@@ -5,13 +5,16 @@ import { StackList } from './Stacks';
 import generalStates from '@/states/general/generalStates';
 import { routerObserver } from '@/utils/observers';
 import { f8Color } from '@/styles/variables';
+
 const Stack = createNativeStackNavigator();
 
 const CombineStacks = () => {
     const navigationRef = useRef(null);
+
     useEffect(() => {
         generalStates.setNavigationRef(navigationRef);
     }, []);
+
     return (
         <NavigationContainer ref={navigationRef} onStateChange={routerObserver}>
             <Stack.Navigator
@@ -27,7 +30,7 @@ const CombineStacks = () => {
                             key={index}
                             name={item.name}
                             component={item.component}
-                            options={item.options}
+                            options={{ ...item.options, animation: 'slide_from_right' }}
                         />
                     );
                 })}

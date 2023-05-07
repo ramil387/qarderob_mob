@@ -5,6 +5,8 @@ import FilterIcon from '@/icons/home/FilterIcon';
 import NotificationIcon from '@/icons/home/NotificationIcon';
 import { observer } from 'mobx-react-lite';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import profileStates from '@/states/profile/profileStates';
+import errorStates from '@/states/error/errorStates';
 
 const HomePageHeader = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
@@ -13,6 +15,22 @@ const HomePageHeader = () => {
     };
     const goBurgerMenu = () => {
         navigate.navigate('BurgerMenuPage');
+    };
+    const goNotification = () => {
+        if (!profileStates.token) {
+            errorStates.setCommonErrorVisible(true);
+            errorStates.setErrorHeader('Bildiriş');
+            errorStates.setErrorBody('Bildirişləri görmək üçün daxil olmalısınız.');
+            errorStates.setOkText('Daxil ol');
+            errorStates.setCancelText('Qeydiyyat');
+            errorStates.setOkFunc(() => {
+                navigate.navigate('LoginPage');
+            });
+            errorStates.setCancelFunc(() => {
+                navigate.navigate('RegisterPage');
+            });
+            return;
+        }
     };
     return (
         <View style={internalStyles.container}>
@@ -23,7 +41,7 @@ const HomePageHeader = () => {
                 <TouchableOpacity onPress={goFilter}>
                     <FilterIcon />
                 </TouchableOpacity>
-                <TouchableOpacity style={{ marginLeft: 26 }}>
+                <TouchableOpacity onPress={goNotification} style={{ marginLeft: 26 }}>
                     <NotificationIcon />
                 </TouchableOpacity>
             </View>

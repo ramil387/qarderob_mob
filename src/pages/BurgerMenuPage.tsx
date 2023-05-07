@@ -112,7 +112,6 @@ const ProfileBurgerMenu = observer(() => {
     };
 
     const logOut = () => {
-        console.log('salam');
         profileStates.setUser(null);
         profileStates.setToken(null);
         api.defaults.headers.common['Authorization'] = null;
@@ -136,17 +135,24 @@ const ProfileBurgerMenu = observer(() => {
                         rounded
                         source={{
                             uri: storeMode
-                                ? profileStates.user?._store.img
+                                ? profileStates.user?._store?.img
                                 : profileStates.user?.photo,
                         }}
                     />
                     <CustomText style={internalStyles.menuName}>
-                        {storeMode ? profileStates.user?._store.name : profileStates.user?.username}
+                        {storeMode
+                            ? profileStates.user?._store?.name
+                            : profileStates.user?.username}
                     </CustomText>
                 </View>
                 <ChevronRightIcon />
             </TouchableOpacity>
-            <View style={internalStyles.btnContainer}>
+            <View
+                style={{
+                    ...internalStyles.btnContainer,
+                    display: profileStates.user?.is_store ? 'flex' : 'none',
+                }}
+            >
                 <View style={internalStyles.btn}>
                     <CustomMainButton
                         style={{ backgroundColor: !storeMode ? primaryColor : e0Color }}

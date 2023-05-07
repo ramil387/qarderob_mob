@@ -14,8 +14,23 @@ import { observer } from 'mobx-react-lite';
 
 const CommonFooter = () => {
     const navigate: NavigationProp<ParamListBase> = generalStates.navigationRef.current;
-
     const goProfilePage = () => {
+        if (!profileStates.token) {
+            errorStates.setCommonErrorVisible(true);
+            errorStates.setErrorHeader('Hesabınıza daxil olun');
+            errorStates.setErrorBody('Hesabınız yoxdursa qeydiyyatdan keçin');
+            errorStates.setOkText('Daxil ol');
+            errorStates.setCancelText('Qeydiyyat');
+            errorStates.setOkFunc(() => {
+                navigate.navigate('LoginPage');
+                errorStates.resetErrorStates();
+            });
+            errorStates.setCancelFunc(() => {
+                navigate.navigate('RegisterPage');
+                errorStates.resetErrorStates();
+            });
+            return;
+        }
         navigate.navigate('ProfilePage');
     };
 
@@ -45,10 +60,42 @@ const CommonFooter = () => {
     };
 
     const goFavouritePage = () => {
+        if (!profileStates.token) {
+            errorStates.setCommonErrorVisible(true);
+            errorStates.setErrorHeader('Bəyəndiklərinizə baxmaq üçün hesabınıza daxil olun');
+            errorStates.setErrorBody('Hesabınız yoxdursa qeydiyyatdan keçin');
+            errorStates.setOkText('Daxil ol');
+            errorStates.setCancelText('Qeydiyyat');
+            errorStates.setOkFunc(() => {
+                navigate.navigate('LoginPage');
+                errorStates.resetErrorStates();
+            });
+            errorStates.setCancelFunc(() => {
+                navigate.navigate('RegisterPage');
+                errorStates.resetErrorStates();
+            });
+            return;
+        }
         navigate.navigate('FavouritePage');
     };
 
     const goMessagesPage = () => {
+        if (!profileStates.token) {
+            errorStates.setCommonErrorVisible(true);
+            errorStates.setErrorHeader('Mesajlara baxmaq üçün hesabınıza daxil olun');
+            errorStates.setErrorBody('Hesabınız yoxdursa qeydiyyatdan keçin');
+            errorStates.setOkText('Daxil ol');
+            errorStates.setCancelText('Qeydiyyat');
+            errorStates.setOkFunc(() => {
+                navigate.navigate('LoginPage');
+                errorStates.resetErrorStates();
+            });
+            errorStates.setCancelFunc(() => {
+                navigate.navigate('RegisterPage');
+                errorStates.resetErrorStates();
+            });
+            return;
+        }
         navigate.navigate('MessagesPage');
     };
 

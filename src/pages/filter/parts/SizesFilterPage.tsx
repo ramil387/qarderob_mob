@@ -5,12 +5,13 @@ import { toJS } from 'mobx';
 import filterStates from '@/states/filter/filterStates';
 import CustomText from '@/components/ui/CustomText';
 import { NunitoMedium, e5Color } from '@/styles/variables';
+import CustomMainButton from '@/components/ui/CustomMainButton';
 
 const SizesFilterPage = () => {
     const sizes = toJS(filterStates.sizes);
 
     return (
-        <View style={internlStyles.container}>
+        <View style={internalStyles.container}>
             <FlatList
                 showsVerticalScrollIndicator={false}
                 columnWrapperStyle={{ justifyContent: 'space-between' }}
@@ -21,21 +22,24 @@ const SizesFilterPage = () => {
                 data={sizes}
                 renderItem={({ item }) => {
                     return (
-                        <View style={internlStyles.itemContainer}>
-                            <View style={internlStyles.badge}>
-                                <CustomText style={internlStyles.name}>{item.size}</CustomText>
+                        <View style={internalStyles.itemContainer}>
+                            <View style={internalStyles.badge}>
+                                <CustomText style={internalStyles.name}>{item.size}</CustomText>
                             </View>
                         </View>
                     );
                 }}
             />
+            <View style={internalStyles.btn}>
+                <CustomMainButton func={() => {}} title='Təsdiqlə' />
+            </View>
         </View>
     );
 };
 
 export default observer(SizesFilterPage);
 
-const internlStyles = StyleSheet.create({
+const internalStyles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
@@ -62,5 +66,12 @@ const internlStyles = StyleSheet.create({
         marginTop: 4,
         fontFamily: NunitoMedium,
         fontSize: 13,
+    },
+    btn: {
+        position: 'absolute',
+        bottom: 16,
+        width: '100%',
+        alignSelf: 'center',
+        backgroundColor: 'white',
     },
 });

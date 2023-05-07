@@ -46,7 +46,6 @@ const ErrorModal = () => {
                     </View>
                     <CustomText style={internalStyles.errorHeader}>
                         {errorStates.errorHeader}
-                        Lorem ipsum dolor sit amet.
                     </CustomText>
                     <CustomText style={internalStyles.errorBody}>
                         {errorStates.errorBody}

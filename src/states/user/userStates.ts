@@ -1,11 +1,10 @@
 import { AdListType } from "@/types/adListType";
 import { InfluencerType } from "@/types/influencerType";
+import { ProdListType } from "@/types/productListType";
 import { makeAutoObservable, runInAction } from "mobx";
 
 
-type ProdListType = {
-    data: AdListType[], count: number, has_next_page: boolean, next_page: number
-}
+
 
 class UserStates {
     influencers: InfluencerType[] = [];

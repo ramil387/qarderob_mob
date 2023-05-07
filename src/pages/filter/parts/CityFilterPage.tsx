@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { NunitoMedium, e5Color, f5Color } from '@/styles/variables';
 import { toJS } from 'mobx';
 import filterStates from '@/states/filter/filterStates';
-import { BrandType } from '@/types/brandType';
 import CustomText from '@/components/ui/CustomText';
 import { observer } from 'mobx-react-lite';
 import FillSquareIcon from '@/icons/filter/FillSquareIcon';
@@ -11,8 +10,8 @@ import OutlineSquareIcon from '@/icons/filter/OutlineSquareIcon';
 import CustomTextInput from '@/components/ui/CustomTextInput';
 import SearchIcon from '@/icons/home/SearchIcon';
 import { CityType } from '@/types/cityType';
-import slugify from 'slugify';
 import { makeSlugify } from '@/components/helper/makeSlugify';
+import CustomMainButton from '@/components/ui/CustomMainButton';
 
 const PrefixIcon = () => {
     return (
@@ -80,15 +79,20 @@ const CityFilterPage = () => {
                     icon={<PrefixIcon />}
                 />
             </View>
-            <FlatList
-                windowSize={10}
-                initialNumToRender={20}
-                showsVerticalScrollIndicator={false}
-                data={filteredCities}
-                extraData={selectedCities}
-                renderItem={renderedBrand}
-                keyExtractor={(item) => item.id.toString()}
-            />
+            <View style={{ flex: 1 }}>
+                <FlatList
+                    windowSize={10}
+                    initialNumToRender={20}
+                    showsVerticalScrollIndicator={false}
+                    data={filteredCities}
+                    extraData={selectedCities}
+                    renderItem={renderedBrand}
+                    keyExtractor={(item) => item.id.toString()}
+                />
+            </View>
+            <View style={internalStyles.btn}>
+                <CustomMainButton func={() => {}} title='Təsdiqlə' />
+            </View>
         </View>
     );
 };
@@ -129,5 +133,11 @@ const internalStyles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 21,
         fontFamily: NunitoMedium,
+    },
+    btn: {
+        marginTop: 16,
+        width: '100%',
+        alignSelf: 'center',
+        backgroundColor: 'white',
     },
 });

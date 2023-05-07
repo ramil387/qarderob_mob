@@ -19,8 +19,6 @@ const FavouritePage = () => {
     const [toggleCheckLike, setToggleCheckLike] = React.useState<boolean>(false);
     const isFocused = useIsFocused();
 
-    if (!isFocused) return null;
-
     useEffect(() => {
         setIsLoading(true);
         fetchLikedAds(1).finally(() => {
@@ -63,6 +61,7 @@ const FavouritePage = () => {
                 renderItem={({ item }) => {
                     return (
                         <Product
+                            type='liked'
                             toggleCheckLike={toggleCheckLike}
                             setToggleCheckLike={setToggleCheckLike}
                             item={item?.ad}

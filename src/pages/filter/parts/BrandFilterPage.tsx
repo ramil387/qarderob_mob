@@ -11,6 +11,7 @@ import OutlineSquareIcon from '@/icons/filter/OutlineSquareIcon';
 import CustomTextInput from '@/components/ui/CustomTextInput';
 import SearchIcon from '@/icons/home/SearchIcon';
 import { makeSlugify } from '@/components/helper/makeSlugify';
+import CustomMainButton from '@/components/ui/CustomMainButton';
 
 const PrefixIcon = () => {
     return (
@@ -43,17 +44,17 @@ const BrandItem = React.memo(({ item, onSelect, selected }: any) => {
 const BrandFilterPage = () => {
     const brands = useMemo(() => toJS(filterStates.brands), []);
     const [searchKey, setSearchKey] = useState('');
-    const [selectedBrands, setSelectedBrands] = useState<Record<number, boolean>>({});
+    const [selectedBrands, setSelectedBrands] = useState<Record<string, boolean>>({});
 
     const selectBrand = useCallback((brand: BrandType) => {
         setSelectedBrands((prev) => {
-            const selected = prev[brand.id];
-            return { ...prev, [brand.id]: !selected };
+            const selected = prev[brand?.slug];
+            return { ...prev, [brand.slug]: !selected };
         });
     }, []);
     const renderedBrand = useCallback(
         ({ item }: { item: BrandType }) => {
-            const selected = Boolean(selectedBrands[item.id]);
+            const selected = Boolean(selectedBrands[item.slug]);
             return <BrandItem item={item} onSelect={selectBrand} selected={selected} />;
         },
         [selectedBrands, selectBrand],
@@ -68,6 +69,8 @@ const BrandFilterPage = () => {
         filterStates.setQuery('brand', selectedBrands);
     }, [selectedBrands]);
 
+    console.log(filterStates.query);
+
     return (
         <View style={internalStyles.container}>
             <View style={internalStyles.searchContainer}>
@@ -78,15 +81,20 @@ const BrandFilterPage = () => {
                     icon={<PrefixIcon />}
                 />
             </View>
-            <FlatList
-                windowSize={10}
-                initialNumToRender={20}
-                showsVerticalScrollIndicator={false}
-                data={filteredBrands}
-                extraData={selectedBrands}
-                renderItem={renderedBrand}
-                keyExtractor={(item) => item.id.toString()}
-            />
+            <View style={{ flex: 1 }}>
+                <FlatList
+                    windowSize={10}
+                    initialNumToRender={20}
+                    showsVerticalScrollIndicator={false}
+                    data={filteredBrands}
+                    extraData={selectedBrands}
+                    renderItem={renderedBrand}
+                    keyExtractor={(item) => item.id.toString()}
+                />
+            </View>
+            <View style={internalStyles.btn}>
+                <CustomMainButton func={() => {}} title='Təsdiqlə' />
+            </View>
         </View>
     );
 };
@@ -127,5 +135,11 @@ const internalStyles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 21,
         fontFamily: NunitoMedium,
+    },
+    btn: {
+        width: '100%',
+        alignSelf: 'center',
+        backgroundColor: 'white',
+        marginTop: 16,
     },
 });

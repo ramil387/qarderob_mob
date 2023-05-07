@@ -33,7 +33,6 @@ import filterStates from '@/states/filter/filterStates';
 const ProductImages = memo(
     observer(() => {
         const product = toJS(productStates.selectedProduct);
-        console.log(product?.images.length);
         return (
             <Carousel<any>
                 style={{ height: 400 }}
@@ -120,7 +119,6 @@ const SpecContainer = () => {
 };
 
 const ServiceContainer = () => {
-    const product = toJS(productStates.selectedProduct);
     return (
         <View style={internalStyles.servicesContainer}>
             <View style={{ width: '48%' }}>
@@ -205,7 +203,7 @@ const ContactContainer = () => {
             </View>
             <View style={internalStyles.contactItemContainer}>
                 <TouchableOpacity>
-                    <PhoneIcon />
+                    <PhoneIcon style={{ color: 'black' }} />
                 </TouchableOpacity>
                 <TouchableOpacity>
                     <MailIcon />
@@ -224,7 +222,10 @@ const StatsContainer = () => {
                 <CustomText style={{ fontFamily: NunitoBold }}>{product?.id}</CustomText>
             </CustomText>
             <CustomText>
-                Baxış sayı: <CustomText style={{ fontFamily: NunitoBold }}>20</CustomText>
+                Baxış sayı:{' '}
+                <CustomText style={{ fontFamily: NunitoBold }}>
+                    {product?.viewCount?.count ?? 0}
+                </CustomText>
             </CustomText>
             <CustomText>
                 Yeniləndi:{' '}

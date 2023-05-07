@@ -6,10 +6,16 @@ export const keyboardObserver = () => {
         if (generalStates.curPage === 'HomePage') {
             generalStates.setFooterVisible(true);
         }
+        if (generalStates.curPage === 'LoginPage' || generalStates.curPage === 'RegisterPage') {
+            generalStates.setAuthFooterVisible(false);
+        }
     });
     Keyboard.addListener('keyboardDidHide', () => {
         if (generalStates.curPage === 'HomePage') {
             generalStates.setFooterVisible(false);
+        }
+        if (generalStates.curPage === 'LoginPage' || generalStates.curPage === 'RegisterPage') {
+            generalStates.setAuthFooterVisible(true);
         }
     });
 }
@@ -28,9 +34,25 @@ export const routerObserver = (e: any) => {
 
 }
 
+
+
 export const footerVisibleObserver = () => {
-    const isVisiable = generalStates.curPage === 'LoginPage' ||
-        generalStates.curPage === 'RegisterPage' || generalStates.curPage === 'BurgerMenuPage';
+    const footerVisibles = [
+        "LoginPage",
+        "RegisterPage",
+        "BurgerMenuPage",
+        "FilterPage",
+        "ProductDetailPage",
+        "CategoryFilterPage",
+        "BrandFilterPage",
+        "PriceFilterPage",
+        "ProductStatusFilterPage",
+        "ColorFilterPage",
+        "SizeFilterPage",
+        "CityFilterPage"
+    ]
+    const isVisiable = footerVisibles.includes(generalStates.curPage);
+
 
     generalStates.setFooterVisible(
         isVisiable

@@ -13,6 +13,7 @@ import SearchIcon from '@/icons/home/SearchIcon';
 import { NunitoBold, NunitoRegular, e5Color, f5Color, phoneHeight } from '@/styles/variables';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
 import { makeSlugify } from '@/components/helper/makeSlugify';
+import CustomMainButton from '@/components/ui/CustomMainButton';
 
 const PrefixIcon = () => {
     return (
@@ -46,7 +47,7 @@ const CategoryFilterPage = () => {
                     />
                 </View>
             )}
-            <View style={{ flex: 1, minHeight: phoneHeight, width: '100%' }}>
+            <View style={{ flex: 1 }}>
                 {!mainCategoryId ? (
                     <FlatList
                         contentContainerStyle={{ paddingVertical: mainCategoryId ? 24 : 0 }}
@@ -77,6 +78,9 @@ const CategoryFilterPage = () => {
                 ) : (
                     <MacroCategories mainCategoryId={mainCategoryId} searchKey={searchKey} />
                 )}
+            </View>
+            <View style={internalStyles.btn}>
+                <CustomMainButton func={() => {}} title='Təsdiqlə' />
             </View>
         </View>
     );
@@ -234,5 +238,12 @@ const internalStyles = StyleSheet.create({
     catName: {
         fontSize: 16,
         lineHeight: 21,
+    },
+    btn: {
+        position: 'absolute',
+        bottom: 16,
+        width: '100%',
+        alignSelf: 'center',
+        backgroundColor: 'white',
     },
 });

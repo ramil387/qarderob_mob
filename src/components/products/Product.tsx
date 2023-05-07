@@ -15,11 +15,16 @@ import { http } from '@/services/httpMethods';
 import { APIS } from '@/constants';
 import { runInAction, toJS } from 'mobx';
 import generalStates from '@/states/general/generalStates';
+import { fetchSingleProduct } from '@/states/product/fetchSingleProduct';
+import profileStates from '@/states/profile/profileStates';
+import errorStates from '@/states/error/errorStates';
+import { getImageRotations } from '../helper/getImageRotations';
 
 type ProductType = {
     item: AdListType;
     setToggleCheckLike?: (toggleCheckLike: boolean) => void;
     toggleCheckLike?: boolean;
+    type?: string;
 };
 
 const ProductCard = styled(View)<{ phoneWidth: number }>`
@@ -34,12 +39,22 @@ const ImageCard = styled(Image)`
     border-radius: 16px;
 `;
 
-const Product = ({ item, setToggleCheckLike, toggleCheckLike }: ProductType) => {
+const Product = ({ item, setToggleCheckLike, toggleCheckLike, type }: ProductType) => {
     const [disableHeart, setDisableHeart] = React.useState(false);
     const navigate: NavigationProp<ParamListBase> = useNavigation();
-    const goProduct = () => {
-        productStates.setSelectedProduct(item);
-        navigate.navigate('ProductDetailPage', { id: item.id });
+    const goProduct = (data: AdListType) => {
+        if (type === 'liked') {
+            fetchSingleProduct(data.id, data.slug).then((resp) => {
+                if (resp?.data) {
+                    console.log(resp.data);
+                    productStates.setSelectedProduct({ ...data, ...resp?.data });
+                    navigate.navigate('ProductDetailPage');
+                }
+            });
+            return;
+        }
+        navigate.navigate('ProductDetailPage');
+        productStates.setSelectedProduct(data);
     };
 
     const checkLikeByPage = (id: any, like: number) => {
@@ -47,8 +62,10 @@ const Product = ({ item, setToggleCheckLike, toggleCheckLike }: ProductType) => 
             // update homeDatas last_ads and vip_ads
             const lastAds = toJS(generalStates.homeDatas?.last_ads);
             const vipAds = toJS(generalStates.homeDatas?.vip_ads);
+            const products: any = toJS(productStates.products);
             const lastAdsIndex = lastAds.findIndex((item: any) => item.id === id);
             const vipAdsIndex = vipAds.findIndex((item: any) => item.id === id);
+            const productsIndex = products?.data.findIndex((item: any) => item.id === id);
             if (lastAdsIndex !== -1) {
                 lastAds[lastAdsIndex].isFavourite = like.toString();
                 runInAction(() => {
@@ -61,10 +78,34 @@ const Product = ({ item, setToggleCheckLike, toggleCheckLike }: ProductType) => 
                     generalStates.homeDatas!.vip_ads = vipAds;
                 });
             }
+            if (productsIndex !== -1) {
+                products.data[productsIndex].isFavourite = like.toString();
+                runInAction(() => {
+                    productStates.products = products;
+                });
+            }
         }
     };
     const toggleLike = async (id: number) => {
         try {
+            if (!profileStates.token) {
+                errorStates.setCommonErrorVisible(true);
+                errorStates.setErrorHeader('Bildiriş');
+                errorStates.setErrorBody('Favorilərə əlavə etmək üçün hesabınıza daxil olun');
+                errorStates.setOkText('Daxil ol');
+                errorStates.setCancelText('Qeydiyyat');
+                errorStates.setOkFunc(() => {
+                    navigate.navigate('LoginPage');
+                });
+                errorStates.setCancelFunc(() => {
+                    navigate.navigate('RegisterPage');
+                });
+
+                return;
+            }
+
+            if (setToggleCheckLike) setToggleCheckLike(!toggleCheckLike);
+
             setDisableHeart(true);
             const resp = await http.post(`${APIS.stats}/like/${id}`);
             if (resp.data.fav === 1) {
@@ -83,14 +124,16 @@ const Product = ({ item, setToggleCheckLike, toggleCheckLike }: ProductType) => 
         } finally {
             setDisableHeart(false);
         }
-        if (setToggleCheckLike) setToggleCheckLike(!toggleCheckLike);
     };
 
     return (
         <ProductCard phoneWidth={phoneWidth}>
             <View>
-                <TouchableOpacity onPress={goProduct}>
+                <TouchableOpacity onPress={() => goProduct(item)}>
                     <ImageCard
+                        style={{
+                            transform: getImageRotations(item),
+                        }}
                         source={{ uri: getAdImageBySize('md', item?.id, item?.images[0]) }}
                     />
                 </TouchableOpacity>

@@ -1,10 +1,12 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import CustomTextInput from '@/components/ui/CustomTextInput';
 import { NunitoMedium, e5Color, f5Color, mainTextColor } from '@/styles/variables';
 import CustomText from '@/components/ui/CustomText';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
+import CustomMainButton from '@/components/ui/CustomMainButton';
+import filterStates from '@/states/filter/filterStates';
 
 const PriceFilterPage = () => {
     const prices = [
@@ -29,6 +31,11 @@ const PriceFilterPage = () => {
             max: '1500₼',
         },
     ];
+
+    const handleSelect = (min: string, max: string) => {
+        filterStates.setQuery('price', [min, max]);
+    };
+
     return (
         <View style={internalStyles.container}>
             <View style={internalStyles.inputContainer}>
@@ -42,18 +49,25 @@ const PriceFilterPage = () => {
             <View style={internalStyles.pricesContainer}>
                 {prices.map((price, index) => {
                     return (
-                        <View style={internalStyles.itemContainer} key={index}>
+                        <TouchableOpacity
+                            onPress={() => handleSelect(price.min, price.max)}
+                            style={internalStyles.itemContainer}
+                            key={index}
+                        >
                             <CustomText style={internalStyles.price}>
                                 {price.min} - {price.max}
                             </CustomText>
                             <ChevronRightIcon style={{ color: mainTextColor }} />
-                        </View>
+                        </TouchableOpacity>
                     );
                 })}
                 <View style={{ ...internalStyles.itemContainer, borderBottomWidth: 0 }}>
                     <CustomText style={internalStyles.price}>Sıfırla</CustomText>
                     <ChevronRightIcon style={{ color: mainTextColor }} />
                 </View>
+            </View>
+            <View style={internalStyles.btn}>
+                <CustomMainButton func={() => {}} title='Təsdiqlə' />
             </View>
         </View>
     );
@@ -93,5 +107,12 @@ const internalStyles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 21,
         fontFamily: NunitoMedium,
+    },
+    btn: {
+        position: 'absolute',
+        bottom: 16,
+        width: '100%',
+        alignSelf: 'center',
+        backgroundColor: 'white',
     },
 });

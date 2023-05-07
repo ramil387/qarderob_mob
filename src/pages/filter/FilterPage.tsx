@@ -8,6 +8,7 @@ import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/
 import { observer } from 'mobx-react-lite';
 import filterStates from '@/states/filter/filterStates';
 import LoadingComponent from '@/components/common/LoadingComponent';
+import CustomMainButton from '@/components/ui/CustomMainButton';
 
 const FilterPage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
@@ -39,6 +40,14 @@ const FilterPage = () => {
                     </TouchableOpacity>
                 );
             })}
+            <View style={internalStyles.btn}>
+                <CustomMainButton
+                    func={() => {
+                        navigate.navigate('ProductsPage');
+                    }}
+                    title='Filtrlə'
+                />
+            </View>
         </View>
     );
 };
@@ -48,6 +57,7 @@ export default observer(FilterPage);
 const internalStyles = StyleSheet.create({
     container: {
         padding: 16,
+        flex: 1,
     },
     itemContainer: {
         display: 'flex',
@@ -62,5 +72,11 @@ const internalStyles = StyleSheet.create({
         fontFamily: NunitoMedium,
         fontSize: 16,
         lineHeight: 22,
+    },
+    btn: {
+        position: 'absolute',
+        bottom: 16,
+        width: '100%',
+        alignSelf: 'center',
     },
 });

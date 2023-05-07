@@ -1,4 +1,4 @@
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
 import React, { memo, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import generalStates from '@/states/general/generalStates';
@@ -10,6 +10,9 @@ import CateogrySection from './CateogrySection';
 import CustomText from '../ui/CustomText';
 import { NunitoBold, NunitoMedium } from '@/styles/variables';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
+import { RefreshControl } from 'react-native';
+import { fetchHome } from '@/states/general/fetchHome';
+import LoadingComponent from '../common/LoadingComponent';
 
 const HomeTopContainer = memo(() => {
     return (
@@ -35,6 +38,7 @@ const HomeTopContainer = memo(() => {
 const LastAds = () => {
     const products: AdListType[] = generalStates.homeDatas?.last_ads;
     const scrollRef = React.useRef<FlatList>(null);
+    const [refreshing, setRefreshing] = React.useState(false);
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -42,9 +46,20 @@ const LastAds = () => {
         }
     }, [scrollRef]);
 
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        fetchHome();
+        setRefreshing(false);
+    }, []);
+
+    if (refreshing) {
+        return <LoadingComponent />;
+    }
+
     return (
         <View>
             <FlatList
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 ref={scrollRef}
                 ListHeaderComponent={<HomeTopContainer />}
                 data={products}

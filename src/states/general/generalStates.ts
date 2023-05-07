@@ -2,9 +2,10 @@ import { makeAutoObservable, runInAction } from "mobx"
 
 class GeneralStates {
     navigationRef: any = null
-    curPage: string = ''
+    curPage: string = 'HomePage'
     prevPage: string = ''
     footerVisible: boolean = true;
+    authFooterVisible: boolean = true;
     screenSize: string = 'sm'
     homeDatas: any | null = null;
 
@@ -52,6 +53,12 @@ class GeneralStates {
     setHomeScrollRef(ref: any) {
         runInAction(() => {
             this.homeScrollRef = ref
+        })
+    }
+
+    setAuthFooterVisible(visible: boolean) {
+        runInAction(() => {
+            this.authFooterVisible = visible
         })
     }
 

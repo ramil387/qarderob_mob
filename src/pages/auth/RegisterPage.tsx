@@ -8,6 +8,8 @@ import EyeIcon from '@/icons/user/EyeIcon';
 import ClosedEyeIcon from '@/icons/user/ClosedEyeIcon';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import validator from 'validator';
+import generalStates from '@/states/general/generalStates';
+import { observer } from 'mobx-react-lite';
 
 const SuffixIcon = ({ hide, showPassword }: { hide: boolean; showPassword: () => void }) => {
     return (
@@ -68,7 +70,12 @@ const RegisterPage = () => {
             <View style={internalStyles.btnContainer}>
                 <CustomMainButton func={() => {}} title='Daxil ol' />
             </View>
-            <View style={internalStyles.authFooter}>
+            <View
+                style={{
+                    ...internalStyles.authFooter,
+                    display: !generalStates.authFooterVisible ? 'none' : 'flex',
+                }}
+            >
                 <CustomText>
                     Hesabınız mövcuddur?{' '}
                     <CustomText onPress={goLoginPage} style={{ fontFamily: NunitoBold }}>
@@ -80,7 +87,7 @@ const RegisterPage = () => {
     );
 };
 
-export default RegisterPage;
+export default observer(RegisterPage);
 
 const internalStyles = StyleSheet.create({
     container: {

@@ -13,11 +13,13 @@ import { useFetchMe } from './hooks/useFetchMe';
 import CommonFooter from './components/common/CommonFooter';
 import { useFooterVisible } from './hooks/useFooterVisible';
 import ErrorModal from './components/common/ErrorModal';
+import { useKeyboardObserver } from './hooks/useKeyboardObserver';
 
 generateStyles(phoneWidth);
 generalStates.setScreenSize(phoneWidth >= 428 ? 'lg' : phoneWidth >= 390 ? 'md' : 'sm');
 
 const App = () => {
+    useKeyboardObserver();
     useFetchMe();
     useFilterDatas();
     useEffect(() => {
@@ -26,7 +28,6 @@ const App = () => {
     }, []);
 
     useFooterVisible();
-
     return (
         <Layout>
             <CombineStacks />
