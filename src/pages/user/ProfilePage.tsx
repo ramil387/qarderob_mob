@@ -9,6 +9,7 @@ import {
     NunitoBold,
     NunitoMedium,
     e5Color,
+    f5Color,
     f8Color,
     inactiveColor,
     primaryColor,
@@ -20,20 +21,15 @@ import CustomMainButton from '@/components/ui/CustomMainButton';
 import EditIcon from '@/icons/user/EditIcon';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import {
-    NavigationProp,
-    ParamListBase,
-    RouteProp,
-    useIsFocused,
-    useNavigation,
-    useRoute,
-} from '@react-navigation/native';
+import { useIsFocused, useRoute } from '@react-navigation/native';
 import { fetchUserProducts } from '@/states/user/fetchUserProducts';
 import ProductList from '@/components/products/ProductList';
 import productStates from '@/states/product/productStates';
 import LoadingComponent from '@/components/common/LoadingComponent';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import userStates from '@/states/user/userStates';
+import NotFoundIcon from '@/icons/user/NotFoundIcon';
+
 const Tab = createMaterialTopTabNavigator();
 
 const ProductSection = observer(() => {
@@ -41,31 +37,32 @@ const ProductSection = observer(() => {
     const [isMoreLoading, setIsMoreLoading] = useState<boolean>(false);
     const isFocused = useIsFocused();
     const user = toJS(profileStates.user);
-    const [page, setPage] = useState<number>(1);
-    const navigation: NavigationProp<ParamListBase> = useNavigation();
     const route: any = useRoute();
     const key = route.params?.key;
 
     useEffect(() => {
-        setIsLoading(true);
-        const unsubscribe = navigation.addListener('focus', (state) => {
-            // define which page
-            fetchUserProducts(user!.id, key, page)
+        if (isFocused) {
+            setIsLoading(true);
+            fetchUserProducts(user!.id, key, 1, profileStates.storeMode)
                 .then((resp) => {
                     userStates.setUserProducts(resp);
                 })
                 .finally(() => {
                     setIsLoading(false);
                 });
-        });
-        return unsubscribe;
-    }, []);
+        }
+    }, [profileStates.storeMode]);
 
     const loadMore = () => {
         if (isFocused) {
             if (userStates.userProducts?.has_next_page) {
                 setIsMoreLoading(true);
-                fetchUserProducts(user!.id, key, userStates.userProducts?.next_page)
+                fetchUserProducts(
+                    user!.id,
+                    key,
+                    userStates.userProducts?.next_page,
+                    profileStates.storeMode,
+                )
                     .then((resp) => {
                         userStates.setUserProducts({
                             ...resp,
@@ -84,6 +81,19 @@ const ProductSection = observer(() => {
     }
 
     if (isFocused) {
+        if (userStates.userProducts?.data?.length === 0) {
+            return (
+                <View style={internalStyles.notFound}>
+                    <View style={internalStyles.notFoundCircle}>
+                        <NotFoundIcon style={{ color: primaryColor }} />
+                    </View>
+                    <CustomText style={internalStyles.notFoundText}>
+                        Bu bölmədə elan yoxdur
+                    </CustomText>
+                </View>
+            );
+        }
+
         return (
             <View style={{ padding: 16, paddingTop: 0, backgroundColor: f8Color, flex: 1 }}>
                 <ProductList loadMore={loadMore} isMoreLoading={isMoreLoading} type='user_ads' />
@@ -152,8 +162,8 @@ const ProfilePage = () => {
     const userContainerPadding = useSharedValue(16);
 
     const changeUserContainerHeight = (height: number, padding: number) => {
-        userContainerHeight.value = withTiming(height, { duration: 500 });
-        userContainerPadding.value = withTiming(padding, { duration: 500 });
+        userContainerHeight.value = withTiming(height, { duration: 300 });
+        userContainerPadding.value = withTiming(padding, { duration: 300 });
     };
     const useContainerStyle = useAnimatedStyle(() => {
         return {
@@ -180,11 +190,27 @@ const ProfilePage = () => {
                     <View style={internalStyles.balanceLeftContainer}>
                         <PurseIcon />
                         <CustomText style={internalStyles.balanceText}>
-                            Balans:{' ' + user?.user_balance}₼
+                            Balans:
+                            <CustomText
+                                style={{
+                                    ...internalStyles.balanceText,
+                                    fontFamily: NunitoBold,
+                                    paddingVertical: 0,
+                                }}
+                            >
+                                {' ' + user?.user_balance}₼
+                            </CustomText>
                         </CustomText>
                     </View>
-                    <View style={{ width: '30%' }}>
+                    <View
+                        style={{
+                            width: '30%',
+                            justifyContent: 'center',
+                            display: 'flex',
+                        }}
+                    >
                         <CustomMainButton
+                            containerStyle={internalStyles.addBtn}
                             titleStyle={{ fontSize: 14, fontFamily: NunitoBold }}
                             style={internalStyles.addBtn}
                             func={addUserBalance}
@@ -329,6 +355,26 @@ const internalStyles = StyleSheet.create({
         fontFamily: NunitoMedium,
     },
     addBtn: {
-        height: 40,
+        height: 36,
+        padding: 0,
+        margin: 0,
+    },
+    notFound: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: f8Color,
+        height: '100%',
+    },
+    notFoundCircle: {
+        padding: 16,
+        borderRadius: 100,
+        backgroundColor: f5Color,
+    },
+    notFoundText: {
+        marginTop: 16,
+        fontSize: 16,
+        fontFamily: NunitoBold,
+        color: inactiveColor,
     },
 });
