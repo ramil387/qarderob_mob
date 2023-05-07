@@ -11,6 +11,27 @@ import CustomText from '../ui/CustomText';
 import { NunitoBold, NunitoMedium } from '@/styles/variables';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
 
+const HomeTopContainer = memo(() => {
+    return (
+        <View>
+            <View style={{ marginBottom: 24 }}>
+                <SearchInput />
+                <Intro />
+                <CateogrySection />
+            </View>
+            <View style={internalStyles.headContainer}>
+                <View>
+                    <CustomText style={internalStyles.headText}>SON ELANLAR</CustomText>
+                </View>
+                <View style={internalStyles.rightContainer}>
+                    <CustomText style={internalStyles.showMore}>Hamısına bax</CustomText>
+                    <ChevronRightIcon />
+                </View>
+            </View>
+        </View>
+    );
+});
+
 const LastAds = () => {
     const products: AdListType[] = generalStates.homeDatas?.last_ads;
     const scrollRef = React.useRef<FlatList>(null);
@@ -25,26 +46,7 @@ const LastAds = () => {
         <View>
             <FlatList
                 ref={scrollRef}
-                ListHeaderComponent={() => (
-                    <View>
-                        <View style={{ marginBottom: 24 }}>
-                            <SearchInput />
-                            <Intro />
-                            <CateogrySection />
-                        </View>
-                        <View style={internalStyles.headContainer}>
-                            <View>
-                                <CustomText style={internalStyles.headText}>SON ELANLAR</CustomText>
-                            </View>
-                            <View style={internalStyles.rightContainer}>
-                                <CustomText style={internalStyles.showMore}>
-                                    Hamısına bax
-                                </CustomText>
-                                <ChevronRightIcon />
-                            </View>
-                        </View>
-                    </View>
-                )}
+                ListHeaderComponent={<HomeTopContainer />}
                 data={products}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => <Product item={item} />}

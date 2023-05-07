@@ -13,6 +13,7 @@ export const APIS = {
     login: 'auth/login',
     me: 'auth/me',
     ads: 'ads',
+    stats: "stats",
 }
 
 export const providers = ['050', '051', '055', '077', '010', '099', '070', '077', '060']

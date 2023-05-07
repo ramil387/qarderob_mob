@@ -3,7 +3,7 @@ import { Path, Svg } from 'react-native-svg';
 
 const OutlineHeartIcon = ({ style }: { style?: any }) => {
     return (
-        <Svg width='20' height='18' viewBox='0 0 20 18' fill='none'>
+        <Svg width='24' height='21' viewBox='0 0 20 18' fill='none'>
             <Path
                 fillRule='evenodd'
                 clipRule='evenodd'

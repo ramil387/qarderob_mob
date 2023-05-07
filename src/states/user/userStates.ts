@@ -10,7 +10,7 @@ type ProdListType = {
 class UserStates {
     influencers: InfluencerType[] = [];
     userProducts: ProdListType | null = null;
-
+    likedProducts: any = null;
     constructor() {
         makeAutoObservable(this);
     }
@@ -24,6 +24,12 @@ class UserStates {
     setUserProducts(userProducts: ProdListType | null) {
         runInAction(() => {
             this.userProducts = userProducts;
+        })
+    }
+
+    setLikedProducts(likedProducts: ProdListType | null) {
+        runInAction(() => {
+            this.likedProducts = likedProducts;
         })
     }
 

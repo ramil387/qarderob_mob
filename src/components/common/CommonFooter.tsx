@@ -54,21 +54,25 @@ const CommonFooter = () => {
 
     return (
         <View style={internalStyles.container}>
-            <TouchableOpacity onPress={goHomePage}>
+            <TouchableOpacity style={{ paddingHorizontal: 10 }} onPress={goHomePage}>
                 <HomeIcon />
             </TouchableOpacity>
-            <TouchableOpacity onPress={goFavouritePage}>
+            <TouchableOpacity style={{ paddingHorizontal: 10 }} onPress={goFavouritePage}>
                 <HeartFooterIcon />
             </TouchableOpacity>
             <View style={internalStyles.plusBtn}>
-                <TouchableOpacity onPress={goAddProductPage} activeOpacity={0.8}>
+                <TouchableOpacity
+                    style={{ paddingHorizontal: 10 }}
+                    onPress={goAddProductPage}
+                    activeOpacity={0.8}
+                >
                     <PlusCircleIcon />
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={goMessagesPage}>
+            <TouchableOpacity style={{ paddingHorizontal: 10 }} onPress={goMessagesPage}>
                 <MailFooterIcon />
             </TouchableOpacity>
-            <TouchableOpacity onPress={goProfilePage}>
+            <TouchableOpacity style={{ paddingHorizontal: 10 }} onPress={goProfilePage}>
                 <UserIcon />
             </TouchableOpacity>
         </View>
@@ -85,7 +89,7 @@ const internalStyles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 36,
+        paddingHorizontal: 26,
     },
     plusBtn: {
         position: 'absolute',

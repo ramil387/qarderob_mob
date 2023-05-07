@@ -3,7 +3,7 @@ import { Circle, Path, Rect, Svg } from 'react-native-svg';
 
 const FillHeartIcon = () => {
     return (
-        <Svg width='20' height='17' viewBox='0 0 20 17' fill='none'>
+        <Svg width='24' height='21' viewBox='0 0 20 17' fill='none'>
             <Path
                 fill-rule='evenodd'
                 clip-rule='evenodd'

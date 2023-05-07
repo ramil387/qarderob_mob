@@ -25,6 +25,8 @@ import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
 import ProfilePage from '@/pages/user/ProfilePage';
 import ProfilePageHeader from '@/components/headers/ProfilePageHeader';
+import FavouritePage from '@/pages/FavouritePage';
+import FavouritePageHeader from '@/components/headers/FavouritePageHeader';
 
 type StackListType = {
     name: string;
@@ -214,6 +216,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <ProfilePageHeader />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'FavouritePage',
+        component: FavouritePage,
+        options: {
+            headerShown: true,
+            header: () => <FavouritePageHeader />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',
