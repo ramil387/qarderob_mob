@@ -1,4 +1,3 @@
-import { CityType } from "@/types/cityType";
 import { makeAutoObservable, runInAction } from "mobx"
 
 class GeneralStates {

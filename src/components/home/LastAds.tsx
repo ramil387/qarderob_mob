@@ -48,6 +48,7 @@ const LastAds = () => {
                 snapToAlignment='center'
                 contentContainerStyle={{
                     rowGap: 16,
+                    paddingBottom: 48,
                     marginTop: 16,
                 }}
                 onEndReached={() => {

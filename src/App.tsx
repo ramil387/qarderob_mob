@@ -10,6 +10,9 @@ import moment from 'moment';
 import 'moment/locale/az';
 import { useFilterDatas } from './hooks/useFilterDatas';
 import { useFetchMe } from './hooks/useFetchMe';
+import CommonFooter from './components/common/CommonFooter';
+import { useFooterVisible } from './hooks/useFooterVisible';
+import ErrorModal from './components/common/ErrorModal';
 
 generateStyles(phoneWidth);
 generalStates.setScreenSize(phoneWidth >= 428 ? 'lg' : phoneWidth >= 390 ? 'md' : 'sm');
@@ -22,9 +25,13 @@ const App = () => {
         fetchHome();
     }, []);
 
+    useFooterVisible();
+
     return (
         <Layout>
             <CombineStacks />
+            {!generalStates.footerVisible && <CommonFooter />}
+            <ErrorModal />
         </Layout>
     );
 };

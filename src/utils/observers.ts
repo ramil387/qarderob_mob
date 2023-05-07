@@ -22,6 +22,7 @@ export const removeKeyboardObserver = () => {
 export const routerObserver = (e: any) => {
     const curPage = e?.routes[e.routes.length - 1]?.name
     const prevPage = e?.routes[e.routes.length - 2]?.name
+    console.log({ curPage, prevPage })
     generalStates.setCurPage(curPage);
     generalStates.setPrevPage(prevPage);
 
@@ -29,20 +30,8 @@ export const routerObserver = (e: any) => {
 
 export const footerVisibleObserver = () => {
     const isVisiable = generalStates.curPage === 'LoginPage' ||
-        generalStates.curPage === 'Register' ||
-        generalStates.curPage === 'CompleteRegister' ||
-        generalStates.curPage === 'ConfirmNumberPage' ||
-        generalStates.curPage === 'ConfirmResetPassPage' ||
-        generalStates.curPage === 'ForgotPage' ||
-        generalStates.curPage === 'ChangePasswordPage' ||
-        generalStates.curPage === 'ForgotResultPage' ||
-        generalStates.curPage === 'ProfilePage' ||
-        generalStates.curPage === 'ProfileChangePass' ||
-        generalStates.curPage === 'EditProfilePage' ||
-        generalStates.curPage === 'BookingPage' ||
-        generalStates.curPage === 'CheckoutPage' ||
-        generalStates.curPage === 'ConfirmCheckoutPage' ||
-        generalStates.curPage === 'AddCardPage'
+        generalStates.curPage === 'RegisterPage'
+
     generalStates.setFooterVisible(
         isVisiable
     );
