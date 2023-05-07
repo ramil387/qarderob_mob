@@ -12,6 +12,7 @@ import CustomTextInput from '@/components/ui/CustomTextInput';
 import SearchIcon from '@/icons/home/SearchIcon';
 import { makeSlugify } from '@/components/helper/makeSlugify';
 import CustomMainButton from '@/components/ui/CustomMainButton';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
 const PrefixIcon = () => {
     return (
@@ -42,16 +43,20 @@ const BrandItem = React.memo(({ item, onSelect, selected }: any) => {
 });
 
 const BrandFilterPage = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
     const brands = useMemo(() => toJS(filterStates.brands), []);
     const [searchKey, setSearchKey] = useState('');
-    const [selectedBrands, setSelectedBrands] = useState<Record<string, boolean>>({});
+    const selectedBrands = toJS(filterStates.query.brand || {});
 
-    const selectBrand = useCallback((brand: BrandType) => {
-        setSelectedBrands((prev) => {
-            const selected = prev[brand?.slug];
-            return { ...prev, [brand.slug]: !selected };
-        });
-    }, []);
+    const selectBrand = useCallback(
+        (brand: BrandType) => {
+            const selected = selectedBrands[brand?.slug];
+            const newBrands = { ...selectedBrands, [brand.slug]: !selected };
+            filterStates.setQuery('brand', newBrands);
+        },
+        [filterStates.query.brand],
+    );
+
     const renderedBrand = useCallback(
         ({ item }: { item: BrandType }) => {
             const selected = Boolean(selectedBrands[item.slug]);
@@ -64,12 +69,6 @@ const BrandFilterPage = () => {
         () => brands.filter((brand) => makeSlugify(brand.name).includes(makeSlugify(searchKey))),
         [brands, searchKey],
     );
-
-    useEffect(() => {
-        filterStates.setQuery('brand', selectedBrands);
-    }, [selectedBrands]);
-
-    console.log(filterStates.query);
 
     return (
         <View style={internalStyles.container}>
@@ -93,7 +92,12 @@ const BrandFilterPage = () => {
                 />
             </View>
             <View style={internalStyles.btn}>
-                <CustomMainButton func={() => {}} title='Təsdiqlə' />
+                <CustomMainButton
+                    func={() => {
+                        navigate.goBack();
+                    }}
+                    title='Təsdiqlə'
+                />
             </View>
         </View>
     );

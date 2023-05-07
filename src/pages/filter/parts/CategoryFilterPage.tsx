@@ -14,6 +14,7 @@ import { NunitoBold, NunitoRegular, e5Color, f5Color, phoneHeight } from '@/styl
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
 import { makeSlugify } from '@/components/helper/makeSlugify';
 import CustomMainButton from '@/components/ui/CustomMainButton';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
 const PrefixIcon = () => {
     return (
@@ -24,6 +25,7 @@ const PrefixIcon = () => {
 };
 
 const CategoryFilterPage = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
     const [mainCategoryId, setMainCategoryId] = React.useState<number | null>(null);
     const categories = toJS(filterStates.sortedCategories);
     const [searchKey, setSearchKey] = React.useState<string>('');
@@ -80,7 +82,14 @@ const CategoryFilterPage = () => {
                 )}
             </View>
             <View style={internalStyles.btn}>
-                <CustomMainButton func={() => {}} title='Təsdiqlə' />
+                <CustomMainButton
+                    func={() => {
+                        setMainCategoryId(null);
+                        filterStates.setCategoryLevel(0);
+                        navigate.goBack();
+                    }}
+                    title='Təsdiqlə'
+                />
             </View>
         </View>
     );
@@ -95,7 +104,9 @@ const MacroCategories = memo(
             (cat) => cat.parent_id === mainCategoryId,
         );
 
-        const [selectedCategories, setSelectedCategories] = React.useState<CategoryType[]>([]);
+        const [selectedCategories, setSelectedCategories] = React.useState<CategoryType[]>(
+            filterStates.query?.categories || [],
+        );
         const [perPage, setPerPage] = React.useState<number>(50);
 
         const selectCategories = (category: CategoryType) => {

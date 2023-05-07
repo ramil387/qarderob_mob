@@ -84,6 +84,45 @@ class FilterStates {
         })
     }
 
+    resetAllFilters = (page?: string) => {
+        if (page === 'FilterPage') {
+            runInAction(() => {
+                this.query = {}
+            })
+        } else if (page === 'CategoryFilterPage') {
+            runInAction(() => {
+                this.query.categories = []
+            })
+        } else if (page === 'BrandFilterPage') {
+            runInAction(() => {
+                this.query.brand = {}
+            })
+        } else if (page === 'PriceFilterPage') {
+            runInAction(() => {
+                this.query.price = []
+            })
+        } else if (page === 'ColorFilterPage') {
+            runInAction(() => {
+                this.query.colors = []
+            })
+        } else if (page === 'SizeFilterPage') {
+            runInAction(() => {
+                this.query.sizes = []
+            })
+        } else if (page === 'CityFilterPage') {
+            runInAction(() => {
+                this.query.cities = {}
+            })
+        } else if (page === 'ProductStatusFilterPage') {
+            runInAction(() => {
+                this.query.productStatus = []
+            })
+        }
+
+
+
+    }
+
 }
 
 export default new FilterStates()

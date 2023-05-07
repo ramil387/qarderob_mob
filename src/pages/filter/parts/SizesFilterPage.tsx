@@ -1,14 +1,27 @@
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
 import filterStates from '@/states/filter/filterStates';
 import CustomText from '@/components/ui/CustomText';
-import { NunitoMedium, e5Color } from '@/styles/variables';
+import { NunitoMedium, e5Color, mainTextColor, primaryColor } from '@/styles/variables';
 import CustomMainButton from '@/components/ui/CustomMainButton';
+import { makeSlugify } from '@/components/helper/makeSlugify';
 
 const SizesFilterPage = () => {
     const sizes = toJS(filterStates.sizes);
+    const handleSelectSize = (selected: string) => {
+        if (filterStates.query.size?.includes(selected)) {
+            filterStates.setQuery(
+                'size',
+                filterStates.query.size?.filter((item: string) => item !== selected),
+            );
+            return;
+        }
+        filterStates.setQuery('size', [...(filterStates.query?.size || []), selected]);
+    };
+
+    console.log(filterStates.query.size);
 
     return (
         <View style={internalStyles.container}>
@@ -21,12 +34,31 @@ const SizesFilterPage = () => {
                 keyExtractor={(item, index) => index.toString()}
                 data={sizes}
                 renderItem={({ item }) => {
+                    const isSelected = filterStates.query?.size?.find(
+                        (selected: string) => selected === makeSlugify(item.size),
+                    );
                     return (
-                        <View style={internalStyles.itemContainer}>
-                            <View style={internalStyles.badge}>
-                                <CustomText style={internalStyles.name}>{item.size}</CustomText>
+                        <TouchableOpacity
+                            onPress={() => handleSelectSize(makeSlugify(item.size))}
+                            style={internalStyles.itemContainer}
+                        >
+                            <View
+                                style={{
+                                    ...internalStyles.badge,
+                                    borderColor: isSelected ? primaryColor : e5Color,
+                                }}
+                            >
+                                <CustomText
+                                    style={{
+                                        ...internalStyles.name,
+
+                                        color: isSelected ? primaryColor : mainTextColor,
+                                    }}
+                                >
+                                    {item.size}
+                                </CustomText>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     );
                 }}
             />

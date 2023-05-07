@@ -1,5 +1,5 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import CustomTextInput from '@/components/ui/CustomTextInput';
 import { NunitoMedium, e5Color, f5Color, mainTextColor } from '@/styles/variables';
@@ -7,8 +7,14 @@ import CustomText from '@/components/ui/CustomText';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import filterStates from '@/states/filter/filterStates';
+import validator from 'validator';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
 const PriceFilterPage = () => {
+    const [min, setMin] = useState<string>(filterStates.query?.price?.[0]?.split('₼')[0] || '');
+    const [max, setMax] = useState<string>(filterStates.query?.price?.[1]?.split('₼')[0] || '');
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
+
     const prices = [
         {
             min: '0₼',
@@ -36,21 +42,52 @@ const PriceFilterPage = () => {
         filterStates.setQuery('price', [min, max]);
     };
 
+    const handleMinChange = (text: string) => {
+        if (text.length === 0) return setMin('');
+        if (!validator.isNumeric(text)) return;
+        setMin(text);
+    };
+
+    const handleMaxChange = (text: string) => {
+        if (text.length === 0) return setMax('');
+        if (!validator.isNumeric(text)) return;
+        setMax(text);
+    };
+
+    useEffect(() => {
+        if (min.length > 0 && max.length > 0) {
+            handleSelect(min + '₼', max + '₼');
+        }
+    }, [min, max]);
+
     return (
         <View style={internalStyles.container}>
             <View style={internalStyles.inputContainer}>
                 <View style={internalStyles.input}>
-                    <CustomTextInput style={{ paddingLeft: 16 }} placeholder='min:' />
+                    <CustomTextInput
+                        onChangeText={handleMinChange}
+                        style={{ paddingLeft: 16 }}
+                        placeholder='min:'
+                        value={min.toString()}
+                    />
                 </View>
                 <View style={internalStyles.input}>
-                    <CustomTextInput style={{ paddingLeft: 16 }} placeholder='max:' />
+                    <CustomTextInput
+                        onChangeText={handleMaxChange}
+                        style={{ paddingLeft: 16 }}
+                        placeholder='max:'
+                        value={max.toString()}
+                    />
                 </View>
             </View>
             <View style={internalStyles.pricesContainer}>
                 {prices.map((price, index) => {
                     return (
                         <TouchableOpacity
-                            onPress={() => handleSelect(price.min, price.max)}
+                            onPress={() => {
+                                handleSelect(price.min, price.max);
+                                navigate.goBack();
+                            }}
                             style={internalStyles.itemContainer}
                             key={index}
                         >
@@ -67,7 +104,12 @@ const PriceFilterPage = () => {
                 </View>
             </View>
             <View style={internalStyles.btn}>
-                <CustomMainButton func={() => {}} title='Təsdiqlə' />
+                <CustomMainButton
+                    func={() => {
+                        navigate.goBack();
+                    }}
+                    title='Təsdiqlə'
+                />
             </View>
         </View>
     );

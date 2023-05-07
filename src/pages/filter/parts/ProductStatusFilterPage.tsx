@@ -9,7 +9,9 @@ import OutlineSquareIcon from '@/icons/filter/OutlineSquareIcon';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 
 const ProductStatusFilterPage = () => {
-    const [selectedProductStatus, setSelectedProductStatus] = useState<any[]>([]);
+    const [selectedProductStatus, setSelectedProductStatus] = useState<any[]>(
+        filterStates.query?.productStatus || [],
+    );
     const selectProductStatus = (selected: any) => {
         const selectedIndex = selectedProductStatus.findIndex(
             (status) => status?.id === selected.id,

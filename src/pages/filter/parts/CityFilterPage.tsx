@@ -12,6 +12,7 @@ import SearchIcon from '@/icons/home/SearchIcon';
 import { CityType } from '@/types/cityType';
 import { makeSlugify } from '@/components/helper/makeSlugify';
 import CustomMainButton from '@/components/ui/CustomMainButton';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
 const PrefixIcon = () => {
     return (
@@ -42,9 +43,13 @@ const CityItem = React.memo(({ item, onSelect, selected }: any) => {
 });
 
 const CityFilterPage = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
+
     const cities = useMemo(() => toJS(filterStates.cities), []);
     const [searchKey, setSearchKey] = useState('');
-    const [selectedCities, setSelectedCities] = useState<Record<number, boolean>>({});
+    const [selectedCities, setSelectedCities] = useState<Record<number, boolean>>(
+        filterStates.query?.city || {},
+    );
 
     const selectCity = useCallback((city: CityType) => {
         setSelectedCities((prev) => {
@@ -52,6 +57,7 @@ const CityFilterPage = () => {
             return { ...prev, [city.id]: !selected };
         });
     }, []);
+
     const renderedBrand = useCallback(
         ({ item }: { item: CityType }) => {
             const selected = Boolean(selectedCities[item.id]);
@@ -91,7 +97,12 @@ const CityFilterPage = () => {
                 />
             </View>
             <View style={internalStyles.btn}>
-                <CustomMainButton func={() => {}} title='Təsdiqlə' />
+                <CustomMainButton
+                    func={() => {
+                        navigate.goBack();
+                    }}
+                    title='Təsdiqlə'
+                />
             </View>
         </View>
     );
