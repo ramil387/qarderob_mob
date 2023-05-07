@@ -1,5 +1,5 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toJS } from 'mobx';
 import profileStates from '@/states/profile/profileStates';
 import { Avatar, Switch } from '@rneui/themed';
@@ -23,27 +23,75 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import {
     NavigationProp,
     ParamListBase,
+    RouteProp,
     useIsFocused,
     useNavigation,
     useRoute,
 } from '@react-navigation/native';
+import { fetchUserProducts } from '@/states/user/fetchUserProducts';
+import ProductList from '@/components/products/ProductList';
+import productStates from '@/states/product/productStates';
+import LoadingComponent from '@/components/common/LoadingComponent';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import userStates from '@/states/user/userStates';
 const Tab = createMaterialTopTabNavigator();
 
-const ProductSection = () => {
+const ProductSection = observer(() => {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isMoreLoading, setIsMoreLoading] = useState<boolean>(false);
     const isFocused = useIsFocused();
-    // navigationKey
-    const route = useRoute();
-    const navigation = useNavigation();
-    console.log(route.params);
+    const user = toJS(profileStates.user);
+    const [page, setPage] = useState<number>(1);
+    const navigation: NavigationProp<ParamListBase> = useNavigation();
+    const route: any = useRoute();
+    const key = route.params?.key;
+
+    useEffect(() => {
+        setIsLoading(true);
+        const unsubscribe = navigation.addListener('focus', (state) => {
+            // define which page
+            fetchUserProducts(user!.id, key, page)
+                .then((resp) => {
+                    userStates.setUserProducts(resp);
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
+        });
+        return unsubscribe;
+    }, []);
+
+    const loadMore = () => {
+        if (isFocused) {
+            if (userStates.userProducts?.has_next_page) {
+                setIsMoreLoading(true);
+                fetchUserProducts(user!.id, key, userStates.userProducts?.next_page)
+                    .then((resp) => {
+                        userStates.setUserProducts({
+                            ...resp,
+                            data: [...userStates.userProducts?.data!, ...resp.data],
+                        });
+                    })
+                    .finally(() => {
+                        setIsMoreLoading(false);
+                    });
+            }
+        }
+    };
+
+    if (isLoading) {
+        return <LoadingComponent />;
+    }
+
     if (isFocused) {
         return (
-            <View style={{ flex: 1, backgroundColor: f8Color }}>
-                <CustomText>ProductSection</CustomText>
+            <View style={{ padding: 16, paddingTop: 0, backgroundColor: f8Color, flex: 1 }}>
+                <ProductList loadMore={loadMore} isMoreLoading={isMoreLoading} type='user_ads' />
             </View>
         );
     }
     return null;
-};
+});
 
 const TabView = () => {
     return (
@@ -51,14 +99,15 @@ const TabView = () => {
             // content background color red
 
             screenOptions={{
-                // content backgorund color
+                // remove ripple effect
+                tabBarPressColor: 'transparent',
                 tabBarActiveTintColor: primaryColor,
                 tabBarIndicatorStyle: {
                     backgroundColor: primaryColor,
                 },
                 tabBarInactiveTintColor: inactiveColor,
                 tabBarLabelStyle: {
-                    fontFamily: NunitoMedium,
+                    fontFamily: NunitoBold,
                 },
                 tabBarStyle: {
                     backgroundColor: 'transparent',
@@ -69,6 +118,7 @@ const TabView = () => {
             }}
         >
             <Tab.Screen
+                navigationKey='true'
                 name='Dərc edildi'
                 key='true'
                 component={ProductSection}
@@ -76,15 +126,18 @@ const TabView = () => {
             />
             <Tab.Screen
                 name='Gözləmədə'
+                key='false'
                 initialParams={{ key: 'false' }}
                 component={ProductSection}
             />
             <Tab.Screen
+                key='exp'
                 name='Müddəti bitmiş'
                 initialParams={{ key: 'exp' }}
                 component={ProductSection}
             />
             <Tab.Screen
+                key='rej'
                 name='İmtina olunmuş'
                 initialParams={{ key: 'rej' }}
                 component={ProductSection}
@@ -95,6 +148,28 @@ const TabView = () => {
 
 const ProfilePage = () => {
     const user = toJS(profileStates.user);
+    const userContainerHeight = useSharedValue(294.2);
+    const userContainerPadding = useSharedValue(16);
+
+    const changeUserContainerHeight = (height: number, padding: number) => {
+        userContainerHeight.value = withTiming(height, { duration: 500 });
+        userContainerPadding.value = withTiming(padding, { duration: 500 });
+    };
+    const useContainerStyle = useAnimatedStyle(() => {
+        return {
+            height: userContainerHeight.value,
+            overflow: 'hidden',
+            padding: userContainerPadding.value,
+        };
+    });
+
+    useEffect(() => {
+        if (productStates.productListScrollDirection === 'down') {
+            changeUserContainerHeight(0, 0);
+        } else {
+            changeUserContainerHeight(294.2, 16);
+        }
+    }, [productStates.productListScrollDirection]);
 
     const addUserBalance = () => {};
 
@@ -130,10 +205,13 @@ const ProfilePage = () => {
 
     return (
         <View style={internalStyles.container}>
-            <View
-                style={{
-                    padding: 16,
-                }}
+            <Animated.View
+                style={[
+                    {
+                        padding: 16,
+                    },
+                    useContainerStyle,
+                ]}
             >
                 <View style={internalStyles.avatarContainer}>
                     <Avatar size={60} rounded source={{ uri: user?.photo }} />
@@ -179,7 +257,7 @@ const ProfilePage = () => {
                     </CustomText>
                 </View>
                 <UserActions />
-            </View>
+            </Animated.View>
             <TabView />
         </View>
     );

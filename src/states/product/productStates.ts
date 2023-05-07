@@ -3,7 +3,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 
 class ProductStates {
     selectedProduct: AdListType | null = null;
-
+    productListScrollDirection: "up" | "down" | null = null;
     constructor() {
         makeAutoObservable(this);
     }
@@ -11,6 +11,12 @@ class ProductStates {
     setSelectedProduct(product: AdListType | null) {
         runInAction(() => {
             this.selectedProduct = product;
+        })
+    }
+
+    setProductListScrollDirection(direction: "up" | "down" | null) {
+        runInAction(() => {
+            this.productListScrollDirection = direction;
         })
     }
 

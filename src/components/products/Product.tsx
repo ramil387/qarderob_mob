@@ -64,7 +64,7 @@ const Product = ({ item }: ProductType) => {
                     </CustomText>
                     <View style={internalStyles.priceContainer}>
                         <CustomText style={internalStyles.brandName}>
-                            {item?.brand.name}
+                            {item?.brand?.name}
                             <CustomText style={internalStyles.price}> / {item.price}₼</CustomText>
                         </CustomText>
                         <View style={{ display: item.isVip ? 'flex' : 'none' }}>
