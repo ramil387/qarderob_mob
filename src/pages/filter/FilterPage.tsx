@@ -25,10 +25,10 @@ const FilterPage = () => {
     }, [filterStates.query?.brand]);
 
     const pricesValue = useMemo(() => {
-        return (
-            Array.isArray(filterStates.query?.price) &&
-            filterStates.query?.price[0] + ' - ' + filterStates.query?.price[1]
-        );
+        return Array.isArray(filterStates.query?.price) &&
+            filterStates.query?.price.reduce((a, b) => parseInt(a) + parseInt(b), 0) > 0
+            ? filterStates.query?.price?.map((price: number) => price + ' ₼').join(' - ')
+            : '';
     }, [filterStates.query?.price]);
 
     const productStatusValue = useMemo(() => {

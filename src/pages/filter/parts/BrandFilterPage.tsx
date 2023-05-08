@@ -1,5 +1,5 @@
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { NunitoMedium, e5Color, f5Color } from '@/styles/variables';
 import { toJS } from 'mobx';
 import filterStates from '@/states/filter/filterStates';

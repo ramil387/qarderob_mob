@@ -5,6 +5,16 @@ import { ColorType } from "@/types/colorType";
 import { SizeType } from "@/types/sizeType";
 import { makeAutoObservable, runInAction } from "mobx";
 
+
+type QueryType = {
+    brand: any,
+    city: any,
+    color: any,
+    size: any,
+    price: any,
+    productStatus: any,
+    categories: any,
+}
 class FilterStates {
 
     cities: CityType[] = [];
@@ -15,7 +25,16 @@ class FilterStates {
     productStatus: Array<{ label: string, id: number }> = [{ label: "Yeni", id: 1 }, { label: "Yeni və etiketli", id: 2 }, { label: "Az istifadə olunmuş", id: 3 }];
     prices: number[] = [];
 
-    query: any = {};
+    query: QueryType = {
+        brand: {},
+        city: {},
+        color: [],
+        size: [],
+        price: ['', ''],
+        productStatus: [],
+        categories: [],
+
+    };
 
     isLoadingFilter: boolean = false;
     // for back page
@@ -66,7 +85,7 @@ class FilterStates {
         })
     }
 
-    setQuery = (key: string, val: any,) => {
+    setQuery = (key: keyof QueryType, val: any) => {
         runInAction(() => {
             this.query[key] = val
         })
@@ -87,7 +106,7 @@ class FilterStates {
     resetAllFilters = (page?: string) => {
         if (page === 'FilterPage') {
             runInAction(() => {
-                this.query = {}
+                this.query = {} as QueryType
             })
         } else if (page === 'CategoryFilterPage') {
             runInAction(() => {
@@ -103,15 +122,15 @@ class FilterStates {
             })
         } else if (page === 'ColorFilterPage') {
             runInAction(() => {
-                this.query.colors = []
+                this.query.color = [] as QueryType['color']
             })
         } else if (page === 'SizeFilterPage') {
             runInAction(() => {
-                this.query.sizes = []
+                this.query.size = [] as QueryType['size']
             })
         } else if (page === 'CityFilterPage') {
             runInAction(() => {
-                this.query.cities = {}
+                this.query.city = {} as QueryType['city']
             })
         } else if (page === 'ProductStatusFilterPage') {
             runInAction(() => {

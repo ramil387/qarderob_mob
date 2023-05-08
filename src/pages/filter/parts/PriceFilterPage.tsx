@@ -39,7 +39,9 @@ const PriceFilterPage = () => {
     ];
 
     const handleSelect = (min: string, max: string) => {
-        filterStates.setQuery('price', [min, max]);
+        const minPrice = min.split('₼')[0];
+        const maxPrice = max.split('₼')[0];
+        filterStates.setQuery('price', [minPrice, maxPrice]);
     };
 
     const handleMinChange = (text: string) => {
@@ -56,7 +58,7 @@ const PriceFilterPage = () => {
 
     useEffect(() => {
         if (min.length > 0 && max.length > 0) {
-            handleSelect(min + '₼', max + '₼');
+            handleSelect(min, max);
         }
     }, [min, max]);
 

@@ -7,8 +7,11 @@ import { NunitoMedium, e5Color } from '@/styles/variables';
 import FillSquareIcon from '@/icons/filter/FillSquareIcon';
 import OutlineSquareIcon from '@/icons/filter/OutlineSquareIcon';
 import CustomMainButton from '@/components/ui/CustomMainButton';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
 const ProductStatusFilterPage = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
+
     const [selectedProductStatus, setSelectedProductStatus] = useState<any[]>(
         filterStates.query?.productStatus || [],
     );
@@ -51,7 +54,12 @@ const ProductStatusFilterPage = () => {
                 );
             })}
             <View style={internalStyles.btn}>
-                <CustomMainButton func={() => {}} title='Təsdiqlə' />
+                <CustomMainButton
+                    func={() => {
+                        navigate.goBack();
+                    }}
+                    title='Təsdiqlə'
+                />
             </View>
         </View>
     );

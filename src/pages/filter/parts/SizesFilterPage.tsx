@@ -7,8 +7,10 @@ import CustomText from '@/components/ui/CustomText';
 import { NunitoMedium, e5Color, mainTextColor, primaryColor } from '@/styles/variables';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import { makeSlugify } from '@/components/helper/makeSlugify';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
 const SizesFilterPage = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
     const sizes = toJS(filterStates.sizes);
     const handleSelectSize = (selected: string) => {
         if (filterStates.query.size?.includes(selected)) {
@@ -63,7 +65,12 @@ const SizesFilterPage = () => {
                 }}
             />
             <View style={internalStyles.btn}>
-                <CustomMainButton func={() => {}} title='Təsdiqlə' />
+                <CustomMainButton
+                    func={() => {
+                        navigate.goBack();
+                    }}
+                    title='Təsdiqlə'
+                />
             </View>
         </View>
     );
