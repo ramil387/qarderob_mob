@@ -1,19 +1,28 @@
-import { View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import React, { memo, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
 import productStates from '@/states/product/productStates';
 import { Avatar } from '@rneui/themed';
 import CustomText from '@/components/ui/CustomText';
-import { NunitoBold, NunitoMedium, e5Color, inactiveColor, primaryColor } from '@/styles/variables';
-import CommonBottomSheet from '@/components/common/CommonBottomSheet';
+import {
+    NunitoBold,
+    NunitoMedium,
+    e5Color,
+    f5Color,
+    inactiveColor,
+    primaryColor,
+} from '@/styles/variables';
 import generalStates from '@/states/general/generalStates';
 import { fetchProducts } from '@/states/product/fetchProducts';
 import filterStates from '@/states/filter/filterStates';
-import Product from '@/components/products/Product';
-import FillRadioButtonIcon from '@/icons/product/FillRadioButtonIcon';
-import OutlineRadioButton from '@/icons/product/OutlineRadioButton';
 import { FilterContainer } from '../products/ProductsPage';
+import { fetchUserInfo } from '@/states/user/fetchUserInfo';
+import userStates from '@/states/user/userStates';
+import moment from 'moment';
+import LoadingComponent from '@/components/common/LoadingComponent';
+import NotFoundIcon from '@/icons/user/NotFoundIcon';
+import ProductList from '@/components/products/ProductList';
 
 const TopContainer = memo(
     observer(() => {
@@ -31,7 +40,8 @@ const TopContainer = memo(
                 <View>
                     <CustomText style={internalStyles.fullName}>{user?.full_name}</CustomText>
                     <CustomText style={internalStyles.dateText}>
-                        30.11.2022 18:42 tarixindən Qarderob.az - da
+                        {moment(userStates.selectedAdOwner?.createdAt).format('lll')} tarixindən
+                        Qarderob.az - da
                     </CustomText>
                     <CustomText style={{ ...internalStyles.dateText, marginTop: 4 }}>
                         {toJS(productStates.products?.count)} elan
@@ -46,6 +56,7 @@ const UserProductsPage = () => {
     const user = toJS(productStates.selectedProduct?._user);
     const userProducts = toJS(productStates.products?.data);
     const [isLoadingMore, setIsLoadingMore] = React.useState<boolean>(false);
+    const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
     const loadMore = () => {
         // working only one time
@@ -66,12 +77,6 @@ const UserProductsPage = () => {
         }
     };
 
-    const sorting = [
-        { label: 'Yeniliyinə görə', value: '' },
-        { label: 'Əvvəlcə ucuz', value: 'cheap' },
-        { label: 'Əvvəlcə baha', value: 'expensive' },
-    ];
-
     const selectSorting = async (value: string) => {
         filterStates.setQuery('sortby', value);
         fetchProducts(1).then((resp) => {
@@ -79,12 +84,20 @@ const UserProductsPage = () => {
             generalStates.setBottomSheetVisible(false);
         });
     };
-    useEffect(() => {
+    const getPageInfo = async () => {
         filterStates.setQuery('user_id', user?.id);
         filterStates.setQuery('verified', true);
-        fetchProducts(1).then((resp) => {
-            productStates.setProducts(resp);
-        });
+        await fetchUserInfo(user!.id);
+        fetchProducts(1)
+            .then((resp) => {
+                productStates.setProducts(resp);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    };
+    useEffect(() => {
+        getPageInfo();
         return () => {
             generalStates.setBottomSheetVisible(false);
         };
@@ -94,78 +107,26 @@ const UserProductsPage = () => {
         <View style={internalStyles.container}>
             <TopContainer />
             <FilterContainer search={false} />
-            <FlatList
-                data={userProducts}
-                keyExtractor={(item) => item?.id?.toString()}
-                renderItem={({ item }) => {
-                    return <Product item={item} />;
-                }}
-                stickyHeaderHiddenOnScroll={true}
-                showsVerticalScrollIndicator={false}
-                onEndReachedThreshold={0.5}
-                numColumns={2}
-                decelerationRate='fast'
-                snapToAlignment='center'
-                contentContainerStyle={{
-                    rowGap: 8,
-                    marginTop: 16,
-                    marginBottom: 16,
-                    paddingBottom: 16,
-                }}
-                onEndReached={loadMore}
-                columnWrapperStyle={{ justifyContent: 'space-between' }}
-                windowSize={50}
-                initialNumToRender={50}
-                extraData={productStates.products?.data}
-                ListFooterComponent={() => {
-                    if (isLoadingMore) {
-                        return (
-                            <View>
-                                <ActivityIndicator size='large' color={primaryColor} />
-                            </View>
-                        );
-                    }
-                    return null;
-                }}
-            />
-            <CommonBottomSheet
-                height={300}
-                visible={generalStates.bottomSheetVisible}
-                onClose={() => {
-                    generalStates.setBottomSheetVisible(false);
-                }}
-            >
-                <View style={internalStyles.bottomSheetContainer}>
-                    <CustomText style={internalStyles.bottomHeadText}>Elanları sırala</CustomText>
-                    <View
-                        style={{
-                            marginTop: 16,
-                        }}
-                    >
-                        {sorting.map((item, index) => {
-                            return (
-                                <TouchableOpacity
-                                    onPress={() => selectSorting(item.value)}
-                                    style={{
-                                        ...internalStyles.bottomSheetItemContainer,
-                                        borderBottomWidth: index === sorting.length - 1 ? 0 : 1,
-                                    }}
-                                    key={index}
-                                >
-                                    {filterStates.query.sortby === item.value ? (
-                                        <FillRadioButtonIcon />
-                                    ) : (
-                                        <OutlineRadioButton />
-                                    )}
-                                    <CustomText style={internalStyles.bottomSheetItemText}>
-                                        {item.label}
-                                    </CustomText>
-                                </TouchableOpacity>
-                            );
-                        })}
+            {isLoading ? (
+                <LoadingComponent />
+            ) : !userProducts?.length ? (
+                <View style={internalStyles.notFoundContainer}>
+                    <View style={internalStyles.notFoundCircle}>
+                        <NotFoundIcon style={{ color: primaryColor }} />
                     </View>
+                    <CustomText style={internalStyles.notFoundText}>
+                        İstadəçinin aktiv elanı yoxdur
+                    </CustomText>
                 </View>
-            </CommonBottomSheet>
+            ) : (
+                <ProductList
+                    data={userProducts || []}
+                    type='user_ads'
+                    loadMore={loadMore}
+                    isMoreLoading={isLoadingMore}
+                    selectSorting={selectSorting}
+                />
+            )}
         </View>
     );
 };
@@ -218,5 +179,28 @@ const internalStyles = StyleSheet.create({
         fontFamily: NunitoMedium,
         fontSize: 16,
         lineHeight: 21,
+    },
+    notFoundContainer: {
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    notFoundCircle: {
+        padding: 16,
+        borderRadius: 100,
+        backgroundColor: f5Color,
+        width: 92,
+        height: 92,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+    },
+    notFoundText: {
+        marginTop: 16,
+        fontSize: 16,
+        fontFamily: NunitoBold,
+        color: inactiveColor,
     },
 });

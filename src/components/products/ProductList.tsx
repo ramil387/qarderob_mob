@@ -1,34 +1,39 @@
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import React, { memo } from 'react';
 import { observer } from 'mobx-react-lite';
-import CustomText from '../ui/CustomText';
-import { NunitoBold, NunitoMedium, phoneWidth, primaryColor } from '@/styles/variables';
-import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
+import { NunitoBold, NunitoMedium, e5Color, primaryColor } from '@/styles/variables';
 import generalStates from '@/states/general/generalStates';
 import { AdListType } from '@/types/adListType';
 import Product from './Product';
-import userStates from '@/states/user/userStates';
 import productStates from '@/states/product/productStates';
+import CustomText from '../ui/CustomText';
+import CommonBottomSheet from '../common/CommonBottomSheet';
+import FillRadioButtonIcon from '@/icons/product/FillRadioButtonIcon';
+import filterStates from '@/states/filter/filterStates';
+import OutlineRadioButton from '@/icons/product/OutlineRadioButton';
 
 const ProductList = ({
     type,
     loadMore,
     isMoreLoading,
+    data,
+    selectSorting,
 }: {
     type: string;
     loadMore: () => void;
     isMoreLoading?: boolean;
+    data: AdListType[];
+    selectSorting?: (value: string) => void;
 }) => {
-    const products: AdListType[] =
-        type === 'vip'
-            ? generalStates.homeDatas?.vip_ads
-            : type === 'last'
-            ? generalStates.homeDatas?.last_ads
-            : userStates.userProducts?.data;
+    const sorting = [
+        { label: 'Yeniliyinə görə', value: '' },
+        { label: 'Əvvəlcə ucuz', value: 'cheap' },
+        { label: 'Əvvəlcə baha', value: 'expensive' },
+    ];
 
     return (
         <View style={internalStyles.container}>
-            <View
+            {/* <View
                 style={{
                     ...internalStyles.headContainer,
                     display: type === 'user_ads' ? 'none' : 'flex',
@@ -43,7 +48,7 @@ const ProductList = ({
                     <CustomText style={internalStyles.showMore}>Hamısına bax</CustomText>
                     <ChevronRightIcon />
                 </View>
-            </View>
+            </View> */}
             <FlatList
                 onScroll={(e) => {
                     if (generalStates.curPage !== 'ProfilePage') return;
@@ -54,7 +59,7 @@ const ProductList = ({
                         productStates.setProductListScrollDirection('up');
                     }
                 }}
-                data={products}
+                data={data}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => <Product item={item} />}
                 stickyHeaderHiddenOnScroll={true}
@@ -65,13 +70,16 @@ const ProductList = ({
                 snapToAlignment='center'
                 contentContainerStyle={{
                     rowGap: 8,
-                    marginTop: type === 'user_ads' ? 0 : 16,
+                    marginTop:
+                        type === 'user_ads' || type === 'profile_ads' || type === 'products'
+                            ? 0
+                            : 16,
                 }}
                 onEndReached={loadMore}
                 columnWrapperStyle={{ justifyContent: 'space-between' }}
                 windowSize={50}
                 initialNumToRender={50}
-                extraData={products}
+                extraData={data}
                 ListFooterComponent={() => {
                     if (isMoreLoading) {
                         return (
@@ -83,6 +91,48 @@ const ProductList = ({
                     return null;
                 }}
             />
+            <CommonBottomSheet
+                height={300}
+                visible={generalStates.bottomSheetVisible}
+                onClose={() => {
+                    generalStates.setBottomSheetVisible(false);
+                }}
+            >
+                <View style={internalStyles.bottomSheetContainer}>
+                    <CustomText style={internalStyles.bottomHeadText}>Elanları sırala</CustomText>
+                    <View
+                        style={{
+                            marginTop: 16,
+                        }}
+                    >
+                        {sorting.map((item, index) => {
+                            return (
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        if (selectSorting) {
+                                            selectSorting(item.value);
+                                        }
+                                    }}
+                                    style={{
+                                        ...internalStyles.bottomSheetItemContainer,
+                                        borderBottomWidth: index === sorting.length - 1 ? 0 : 1,
+                                    }}
+                                    key={index}
+                                >
+                                    {filterStates.query.sortby === item.value ? (
+                                        <FillRadioButtonIcon />
+                                    ) : (
+                                        <OutlineRadioButton />
+                                    )}
+                                    <CustomText style={internalStyles.bottomSheetItemText}>
+                                        {item.label}
+                                    </CustomText>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                </View>
+            </CommonBottomSheet>
         </View>
     );
 };
@@ -116,5 +166,29 @@ const internalStyles = StyleSheet.create({
         lineHeight: 20,
         letterSpacing: -0.24,
         marginRight: 8,
+    },
+    bottomSheetContainer: {
+        padding: 16,
+        marginTop: 18,
+    },
+    bottomHeadText: {
+        fontSize: 20,
+        fontFamily: NunitoBold,
+        lineHeight: 28,
+        textAlign: 'center',
+    },
+    bottomSheetItemContainer: {
+        paddingVertical: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: e5Color,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+    bottomSheetItemText: {
+        fontFamily: NunitoMedium,
+        fontSize: 16,
+        lineHeight: 21,
     },
 });

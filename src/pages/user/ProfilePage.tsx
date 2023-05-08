@@ -96,7 +96,12 @@ const ProductSection = observer(() => {
 
         return (
             <View style={{ padding: 16, paddingTop: 0, backgroundColor: f8Color, flex: 1 }}>
-                <ProductList loadMore={loadMore} isMoreLoading={isMoreLoading} type='user_ads' />
+                <ProductList
+                    data={userStates.userProducts?.data || []}
+                    loadMore={loadMore}
+                    isMoreLoading={isMoreLoading}
+                    type='profile_ads'
+                />
             </View>
         );
     }

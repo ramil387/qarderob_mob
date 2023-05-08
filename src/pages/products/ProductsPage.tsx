@@ -1,21 +1,18 @@
-import { View, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { memo, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import CustomTextInput from '@/components/ui/CustomTextInput';
-import { NunitoBold, NunitoMedium, e5Color, f5Color, primaryColor } from '@/styles/variables';
+import { e5Color, f5Color } from '@/styles/variables';
 import SearchIcon from '@/icons/home/SearchIcon';
 import CustomText from '@/components/ui/CustomText';
 import FilterHorizantalIcon from '@/icons/product/FilterHorizantalIcon';
 import SortArrowsIcon from '@/icons/product/SortArrowsIcon';
 import { fetchProducts } from '@/states/product/fetchProducts';
 import productStates from '@/states/product/productStates';
-import Product from '@/components/products/Product';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
-import CommonBottomSheet from '@/components/common/CommonBottomSheet';
 import generalStates from '@/states/general/generalStates';
-import FillRadioButtonIcon from '@/icons/product/FillRadioButtonIcon';
 import filterStates from '@/states/filter/filterStates';
-import OutlineRadioButton from '@/icons/product/OutlineRadioButton';
+import ProductList from '@/components/products/ProductList';
 
 const PrefixIcon = () => {
     return (
@@ -41,7 +38,7 @@ export const FilterContainer = memo(({ search }: { search?: boolean }) => {
                     />
                 </View>
             )}
-            <View style={internalStyles.filterContainer}>
+            <View style={{ ...internalStyles.filterContainer, marginTop: 16 }}>
                 <TouchableOpacity onPress={goFilterPage} style={internalStyles.filterItemContainer}>
                     <FilterHorizantalIcon />
                     <CustomText style={internalStyles.filterText}>Filtr</CustomText>
@@ -88,12 +85,6 @@ const ProductsPage = () => {
         }
     };
 
-    const sorting = [
-        { label: 'Yeniliyinə görə', value: '' },
-        { label: 'Əvvəlcə ucuz', value: 'cheap' },
-        { label: 'Əvvəlcə baha', value: 'expensive' },
-    ];
-
     const selectSorting = async (value: string) => {
         filterStates.setQuery('sortby', value);
         fetchProducts(1).then((resp) => {
@@ -105,76 +96,13 @@ const ProductsPage = () => {
     return (
         <View style={internalStyles.container}>
             <FilterContainer />
-            <FlatList
-                data={productStates.products?.data}
-                keyExtractor={(item) => item?.id?.toString()}
-                renderItem={({ item }) => {
-                    return <Product item={item} />;
-                }}
-                stickyHeaderHiddenOnScroll={true}
-                showsVerticalScrollIndicator={false}
-                onEndReachedThreshold={0.5}
-                numColumns={2}
-                decelerationRate='fast'
-                snapToAlignment='center'
-                contentContainerStyle={{
-                    rowGap: 8,
-                    marginTop: 16,
-                }}
-                onEndReached={loadMore}
-                columnWrapperStyle={{ justifyContent: 'space-between' }}
-                windowSize={50}
-                initialNumToRender={50}
-                extraData={productStates.products?.data}
-                ListFooterComponent={() => {
-                    if (isLoadingMore) {
-                        return (
-                            <View>
-                                <ActivityIndicator size='large' color={primaryColor} />
-                            </View>
-                        );
-                    }
-                    return null;
-                }}
+            <ProductList
+                data={productStates.products?.data || []}
+                loadMore={loadMore}
+                isMoreLoading={isLoadingMore}
+                type='products'
+                selectSorting={selectSorting}
             />
-            <CommonBottomSheet
-                height={300}
-                visible={generalStates.bottomSheetVisible}
-                onClose={() => {
-                    generalStates.setBottomSheetVisible(false);
-                }}
-            >
-                <View style={internalStyles.bottomSheetContainer}>
-                    <CustomText style={internalStyles.bottomHeadText}>Elanları sırala</CustomText>
-                    <View
-                        style={{
-                            marginTop: 16,
-                        }}
-                    >
-                        {sorting.map((item, index) => {
-                            return (
-                                <TouchableOpacity
-                                    onPress={() => selectSorting(item.value)}
-                                    style={{
-                                        ...internalStyles.bottomSheetItemContainer,
-                                        borderBottomWidth: index === sorting.length - 1 ? 0 : 1,
-                                    }}
-                                    key={index}
-                                >
-                                    {filterStates.query.sortby === item.value ? (
-                                        <FillRadioButtonIcon />
-                                    ) : (
-                                        <OutlineRadioButton />
-                                    )}
-                                    <CustomText style={internalStyles.bottomSheetItemText}>
-                                        {item.label}
-                                    </CustomText>
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </View>
-                </View>
-            </CommonBottomSheet>
         </View>
     );
 };
@@ -219,29 +147,5 @@ const internalStyles = StyleSheet.create({
     },
     filterText: {
         fontSize: 15,
-    },
-    bottomSheetContainer: {
-        padding: 16,
-        marginTop: 18,
-    },
-    bottomHeadText: {
-        fontSize: 20,
-        fontFamily: NunitoBold,
-        lineHeight: 28,
-        textAlign: 'center',
-    },
-    bottomSheetItemContainer: {
-        paddingVertical: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: e5Color,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 8,
-    },
-    bottomSheetItemText: {
-        fontFamily: NunitoMedium,
-        fontSize: 16,
-        lineHeight: 21,
     },
 });
