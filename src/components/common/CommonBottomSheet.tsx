@@ -1,4 +1,4 @@
-import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import React, { memo, useEffect } from 'react';
 import Animated, {
     Easing,
@@ -7,7 +7,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 import { observer } from 'mobx-react-lite';
-import { backdropBackground, phoneWidth } from '@/styles/variables';
+import { phoneWidth } from '@/styles/variables';
 import BackDrop from './BackDrop';
 import CloseIcon from '@/icons/error/CloseIcon';
 
@@ -53,7 +53,13 @@ const CommonBottomSheet = ({
             <BackDrop />
 
             <Animated.View style={[internalStyles.container, useChangeBottomHeightStyle]}>
-                <TouchableOpacity onPress={onClose} style={internalStyles.closeIconContainer}>
+                <TouchableOpacity
+                    onPress={() => {
+                        console.log('bura basiram');
+                        onClose();
+                    }}
+                    style={internalStyles.closeIconContainer}
+                >
                     <CloseIcon style={{ width: 30, height: 30 }} />
                 </TouchableOpacity>
                 {children}
@@ -79,5 +85,6 @@ const internalStyles = StyleSheet.create({
         position: 'absolute',
         top: 16,
         right: 16,
+        zIndex: 9999,
     },
 });

@@ -29,6 +29,8 @@ import FavouritePage from '@/pages/FavouritePage';
 import FavouritePageHeader from '@/components/headers/FavouritePageHeader';
 import ProductsPage from '@/pages/products/ProductsPage';
 import ProductsPageHeader from '@/components/headers/ProductsPageHeader';
+import UserProductsPage from '@/pages/user/UserProductsPage';
+import UserProductsPageHeader from '@/components/headers/UserProductsPageHeader';
 
 type StackListType = {
     name: string;
@@ -240,6 +242,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <ProductsPageHeader />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'UserProductsPage',
+        component: UserProductsPage,
+        options: {
+            headerShown: true,
+            header: () => <UserProductsPageHeader />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',

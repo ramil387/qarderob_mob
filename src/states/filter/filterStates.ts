@@ -14,6 +14,9 @@ type QueryType = {
     price: any,
     productStatus: any,
     categories: any,
+    sortby?: string,
+    user_id?: number,
+    verified?: boolean,
 }
 class FilterStates {
 
@@ -33,6 +36,10 @@ class FilterStates {
         price: ['', ''],
         productStatus: [],
         categories: [],
+        sortby: undefined,
+        user_id: undefined,
+        verified: undefined,
+
 
     };
 
@@ -106,7 +113,16 @@ class FilterStates {
     resetAllFilters = (page?: string) => {
         if (page === 'FilterPage') {
             runInAction(() => {
-                this.query = {} as QueryType
+                this.query = {
+                    brand: {},
+                    city: {},
+                    color: [],
+                    size: [],
+                    price: ['', ''],
+                    productStatus: [],
+                    categories: [],
+
+                } as QueryType
             })
         } else if (page === 'CategoryFilterPage') {
             runInAction(() => {

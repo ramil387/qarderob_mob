@@ -1,6 +1,6 @@
-import { AdListType } from "@/types/adListType";
 import { InfluencerType } from "@/types/influencerType";
 import { ProdListType } from "@/types/productListType";
+import { UserType } from "@/types/userType";
 import { makeAutoObservable, runInAction } from "mobx";
 
 
@@ -10,6 +10,8 @@ class UserStates {
     influencers: InfluencerType[] = [];
     userProducts: ProdListType | null = null;
     likedProducts: any = null;
+    selectedAdOwner: UserType | null = null;
+
     constructor() {
         makeAutoObservable(this);
     }
@@ -29,6 +31,12 @@ class UserStates {
     setLikedProducts(likedProducts: ProdListType | null) {
         runInAction(() => {
             this.likedProducts = likedProducts;
+        })
+    }
+
+    setSelectedAdOwner(selectedAdOwner: UserType | null) {
+        runInAction(() => {
+            this.selectedAdOwner = selectedAdOwner;
         })
     }
 

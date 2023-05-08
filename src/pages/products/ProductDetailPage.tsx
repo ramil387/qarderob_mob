@@ -29,6 +29,7 @@ import moment from 'moment';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import RocketIcon from '@/icons/product/RocketIcon';
 import filterStates from '@/states/filter/filterStates';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
 const ProductImages = memo(
     observer(() => {
@@ -185,16 +186,21 @@ const ServiceContainer = () => {
 };
 
 const ContactContainer = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
+
     const product = toJS(productStates.selectedProduct);
+    const goUserProductsPage = () => {
+        navigate.navigate('UserProductsPage');
+    };
     return (
         <View style={internalStyles.contactContainer}>
             <View style={internalStyles.avatarContainer}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={goUserProductsPage}>
                     <Avatar size={52} source={{ uri: product?._user.photo }} rounded />
                 </TouchableOpacity>
                 <View>
                     <CustomText style={internalStyles.ownerHeadText}>Elanın sahibi</CustomText>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={goUserProductsPage}>
                         <CustomText style={internalStyles.username}>
                             {product?._user.username}
                         </CustomText>

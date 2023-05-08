@@ -1,73 +1,51 @@
-import { View, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import React, { memo, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
-import CustomTextInput from '@/components/ui/CustomTextInput';
-import { NunitoBold, NunitoMedium, e5Color, f5Color, primaryColor } from '@/styles/variables';
-import SearchIcon from '@/icons/home/SearchIcon';
-import CustomText from '@/components/ui/CustomText';
-import FilterHorizantalIcon from '@/icons/product/FilterHorizantalIcon';
-import SortArrowsIcon from '@/icons/product/SortArrowsIcon';
-import { fetchProducts } from '@/states/product/fetchProducts';
+import { toJS } from 'mobx';
 import productStates from '@/states/product/productStates';
-import Product from '@/components/products/Product';
-import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import { Avatar } from '@rneui/themed';
+import CustomText from '@/components/ui/CustomText';
+import { NunitoBold, NunitoMedium, e5Color, inactiveColor, primaryColor } from '@/styles/variables';
 import CommonBottomSheet from '@/components/common/CommonBottomSheet';
 import generalStates from '@/states/general/generalStates';
-import FillRadioButtonIcon from '@/icons/product/FillRadioButtonIcon';
+import { fetchProducts } from '@/states/product/fetchProducts';
 import filterStates from '@/states/filter/filterStates';
+import Product from '@/components/products/Product';
+import FillRadioButtonIcon from '@/icons/product/FillRadioButtonIcon';
 import OutlineRadioButton from '@/icons/product/OutlineRadioButton';
+import { FilterContainer } from '../products/ProductsPage';
 
-const PrefixIcon = () => {
-    return (
-        <View style={internalStyles.prefixIconContainer}>
-            <SearchIcon />
-        </View>
-    );
-};
+const TopContainer = memo(
+    observer(() => {
+        const user = toJS(productStates.selectedProduct?._user);
 
-export const FilterContainer = memo(({ search }: { search?: boolean }) => {
-    const navigate: NavigationProp<ParamListBase> = useNavigation();
-    const goFilterPage = () => {
-        navigate.navigate('FilterPage');
-    };
-    return (
-        <View>
-            {search && (
-                <View style={internalStyles.searchContainer}>
-                    <CustomTextInput
-                        icon={<PrefixIcon />}
-                        placeholder='Məhsul və ya @istifadəçi axtar'
-                        style={{ paddingLeft: 48 }}
-                    />
+        return (
+            <View style={internalStyles.avatarContainer}>
+                <Avatar
+                    size={73}
+                    rounded
+                    source={{
+                        uri: user?.photo,
+                    }}
+                />
+                <View>
+                    <CustomText style={internalStyles.fullName}>{user?.full_name}</CustomText>
+                    <CustomText style={internalStyles.dateText}>
+                        30.11.2022 18:42 tarixindən Qarderob.az - da
+                    </CustomText>
+                    <CustomText style={{ ...internalStyles.dateText, marginTop: 4 }}>
+                        {toJS(productStates.products?.count)} elan
+                    </CustomText>
                 </View>
-            )}
-            <View style={internalStyles.filterContainer}>
-                <TouchableOpacity onPress={goFilterPage} style={internalStyles.filterItemContainer}>
-                    <FilterHorizantalIcon />
-                    <CustomText style={internalStyles.filterText}>Filtr</CustomText>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={internalStyles.filterItemContainer}
-                    onPress={() => generalStates.setBottomSheetVisible(true)}
-                >
-                    <SortArrowsIcon />
-                    <CustomText style={internalStyles.filterText}>Sıralama</CustomText>
-                </TouchableOpacity>
             </View>
-        </View>
-    );
-});
+        );
+    }),
+);
 
-const ProductsPage = () => {
+const UserProductsPage = () => {
+    const user = toJS(productStates.selectedProduct?._user);
+    const userProducts = toJS(productStates.products?.data);
     const [isLoadingMore, setIsLoadingMore] = React.useState<boolean>(false);
-    useEffect(() => {
-        fetchProducts(1).then((resp) => {
-            productStates.setProducts(resp);
-        });
-        return () => {
-            generalStates.setBottomSheetVisible(false);
-        };
-    }, []);
 
     const loadMore = () => {
         // working only one time
@@ -101,12 +79,23 @@ const ProductsPage = () => {
             generalStates.setBottomSheetVisible(false);
         });
     };
+    useEffect(() => {
+        filterStates.setQuery('user_id', user?.id);
+        filterStates.setQuery('verified', true);
+        fetchProducts(1).then((resp) => {
+            productStates.setProducts(resp);
+        });
+        return () => {
+            generalStates.setBottomSheetVisible(false);
+        };
+    }, []);
 
     return (
         <View style={internalStyles.container}>
-            <FilterContainer />
+            <TopContainer />
+            <FilterContainer search={false} />
             <FlatList
-                data={productStates.products?.data}
+                data={userProducts}
                 keyExtractor={(item) => item?.id?.toString()}
                 renderItem={({ item }) => {
                     return <Product item={item} />;
@@ -120,6 +109,8 @@ const ProductsPage = () => {
                 contentContainerStyle={{
                     rowGap: 8,
                     marginTop: 16,
+                    marginBottom: 16,
+                    paddingBottom: 16,
                 }}
                 onEndReached={loadMore}
                 columnWrapperStyle={{ justifyContent: 'space-between' }}
@@ -179,46 +170,30 @@ const ProductsPage = () => {
     );
 };
 
-export default observer(ProductsPage);
+export default observer(UserProductsPage);
 
 const internalStyles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
     },
-    searchContainer: {
-        backgroundColor: f5Color,
-        borderRadius: 8,
-        width: '100%',
-    },
-    prefixIconContainer: {
-        position: 'absolute',
-        left: 16,
+    avatarContainer: {
         display: 'flex',
-        justifyContent: 'center',
         alignItems: 'center',
-        height: '100%',
-    },
-    filterContainer: {
-        display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        marginTop: 16,
-        borderWidth: 1,
-        paddingHorizontal: 8,
-        paddingVertical: 16,
-        borderRadius: 8,
-        borderColor: e5Color,
-    },
-    filterItemContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
         gap: 8,
     },
-    filterText: {
-        fontSize: 15,
+    fullName: {
+        fontFamily: NunitoBold,
+        fontSize: 16,
+        lineHeight: 20,
+        textTransform: 'capitalize',
+    },
+    dateText: {
+        fontSize: 12,
+        lineHeight: 20,
+        color: inactiveColor,
+        marginTop: 8,
     },
     bottomSheetContainer: {
         padding: 16,
