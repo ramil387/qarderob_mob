@@ -2,9 +2,14 @@ import { inactiveColor } from '@/styles/variables';
 import React from 'react';
 import { Path, Rect, Svg } from 'react-native-svg';
 
-const CloseIcon = () => {
+const CloseIcon = ({ style }: { style: any }) => {
     return (
-        <Svg width='24' height='24' viewBox='0 0 16 16' fill='none'>
+        <Svg
+            width={style?.width || '24'}
+            height={style?.height || '24'}
+            viewBox='0 0 16 16'
+            fill='none'
+        >
             <Rect opacity='0.01' width='16' height='16' fill='black' />
             <Path
                 fillRule='evenodd'

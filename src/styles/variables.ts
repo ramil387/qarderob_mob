@@ -40,8 +40,7 @@ export const padding = 16
 export const phoneWidth = Dimensions.get('screen').width;
 export const phoneHeight = Dimensions.get('screen').height
 
-export const loginBackgroundColor = "rgba(0,0,0,0.5)"
-
+export const backdropBackground = "rgba(0,0,0,0.5)";
 export const lgWidth = 428;
 export const mdWidth = 390;
 export const smWidth = 375;

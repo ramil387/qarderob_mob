@@ -24,7 +24,7 @@ export const fetchProducts = async (page: number) => {
             category: selectedCategory,
             color: selectedColor,
             size: selectedSize,
-            price: selectedPrice,
+            price: selectedPrice.filter((price: any) => price.length > 0),
             productStatus: selectedProductStatus,
             city: selectedCity
         }

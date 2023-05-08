@@ -2,7 +2,7 @@ import { View, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from 
 import React, { memo, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import CustomTextInput from '@/components/ui/CustomTextInput';
-import { e5Color, f5Color, primaryColor } from '@/styles/variables';
+import { NunitoBold, NunitoMedium, e5Color, f5Color, primaryColor } from '@/styles/variables';
 import SearchIcon from '@/icons/home/SearchIcon';
 import CustomText from '@/components/ui/CustomText';
 import FilterHorizantalIcon from '@/icons/product/FilterHorizantalIcon';
@@ -11,6 +11,9 @@ import { fetchProducts } from '@/states/product/fetchProducts';
 import productStates from '@/states/product/productStates';
 import Product from '@/components/products/Product';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import CommonBottomSheet from '@/components/common/CommonBottomSheet';
+import generalStates from '@/states/general/generalStates';
+import FillRadioButtonIcon from '@/icons/product/FillRadioButtonIcon';
 
 const PrefixIcon = () => {
     return (
@@ -39,7 +42,10 @@ const TopContainer = memo(() => {
                     <FilterHorizantalIcon />
                     <CustomText style={internalStyles.filterText}>Filtr</CustomText>
                 </TouchableOpacity>
-                <TouchableOpacity style={internalStyles.filterItemContainer}>
+                <TouchableOpacity
+                    style={internalStyles.filterItemContainer}
+                    onPress={() => generalStates.setBottomSheetVisible(true)}
+                >
                     <SortArrowsIcon />
                     <CustomText style={internalStyles.filterText}>Sıralama</CustomText>
                 </TouchableOpacity>
@@ -54,6 +60,9 @@ const ProductsPage = () => {
         fetchProducts(1).then((resp) => {
             productStates.setProducts(resp);
         });
+        return () => {
+            generalStates.setBottomSheetVisible(false);
+        };
     }, []);
 
     const loadMore = () => {
@@ -73,6 +82,16 @@ const ProductsPage = () => {
                 setIsLoadingMore(false);
             });
         }
+    };
+
+    const sorting = [
+        { label: 'Yeniliyinə görə', value: '' },
+        { label: 'Əvvəlcə ucuz', value: 'cheap' },
+        { label: 'Əvvəlcə baha', value: 'expensive' },
+    ];
+
+    const selectSorting = (value: string) => {
+        console.log(value);
     };
 
     return (
@@ -110,6 +129,40 @@ const ProductsPage = () => {
                     return null;
                 }}
             />
+            <CommonBottomSheet
+                height={300}
+                visible={true}
+                onClose={() => {
+                    generalStates.setBottomSheetVisible(false);
+                }}
+            >
+                <View style={internalStyles.bottomSheetContainer}>
+                    <CustomText style={internalStyles.bottomHeadText}>Elanları sırala</CustomText>
+                    <View
+                        style={{
+                            marginTop: 16,
+                        }}
+                    >
+                        {sorting.map((item, index) => {
+                            return (
+                                <TouchableOpacity
+                                    onPress={() => selectSorting(item.value)}
+                                    style={{
+                                        ...internalStyles.bottomSheetItemContainer,
+                                        borderBottomWidth: index === sorting.length - 1 ? 0 : 1,
+                                    }}
+                                    key={index}
+                                >
+                                    <FillRadioButtonIcon />
+                                    <CustomText style={internalStyles.bottomSheetItemText}>
+                                        {item.label}
+                                    </CustomText>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                </View>
+            </CommonBottomSheet>
         </View>
     );
 };
@@ -154,5 +207,29 @@ const internalStyles = StyleSheet.create({
     },
     filterText: {
         fontSize: 15,
+    },
+    bottomSheetContainer: {
+        padding: 16,
+        marginTop: 18,
+    },
+    bottomHeadText: {
+        fontSize: 20,
+        fontFamily: NunitoBold,
+        lineHeight: 28,
+        textAlign: 'center',
+    },
+    bottomSheetItemContainer: {
+        paddingVertical: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: e5Color,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+    bottomSheetItemText: {
+        fontFamily: NunitoMedium,
+        fontSize: 16,
+        lineHeight: 21,
     },
 });

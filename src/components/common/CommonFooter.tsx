@@ -131,12 +131,14 @@ export default memo(observer(CommonFooter));
 const internalStyles = StyleSheet.create({
     container: {
         padding: 18,
-        backgroundColor: '#eee',
+        backgroundColor: '#FFFFFF',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 26,
+        borderTopWidth: 1,
+        borderTopColor: e5Color,
     },
     plusBtn: {
         position: 'absolute',

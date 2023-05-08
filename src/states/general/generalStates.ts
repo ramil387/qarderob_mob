@@ -9,7 +9,9 @@ class GeneralStates {
     screenSize: string = 'sm'
     homeDatas: any | null = null;
 
-    homeScrollRef: any = null
+    homeScrollRef: any = null;
+    bottomSheetVisible: boolean = false;
+    backDropVisible: boolean = false;
 
     constructor() {
         makeAutoObservable(this)
@@ -59,6 +61,19 @@ class GeneralStates {
     setAuthFooterVisible(visible: boolean) {
         runInAction(() => {
             this.authFooterVisible = visible
+        })
+    }
+
+    setBottomSheetVisible(visible: boolean) {
+        runInAction(() => {
+            this.bottomSheetVisible = visible
+            this.backDropVisible = visible
+        })
+    }
+
+    setBackDropVisible(visible: boolean) {
+        runInAction(() => {
+            this.backDropVisible = visible
         })
     }
 
