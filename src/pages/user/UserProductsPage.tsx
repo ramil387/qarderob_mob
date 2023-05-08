@@ -5,14 +5,7 @@ import { toJS } from 'mobx';
 import productStates from '@/states/product/productStates';
 import { Avatar } from '@rneui/themed';
 import CustomText from '@/components/ui/CustomText';
-import {
-    NunitoBold,
-    NunitoMedium,
-    e5Color,
-    f5Color,
-    inactiveColor,
-    primaryColor,
-} from '@/styles/variables';
+import { NunitoBold, NunitoMedium, e5Color, inactiveColor, primaryColor } from '@/styles/variables';
 import generalStates from '@/states/general/generalStates';
 import { fetchProducts } from '@/states/product/fetchProducts';
 import filterStates from '@/states/filter/filterStates';
@@ -23,6 +16,7 @@ import moment from 'moment';
 import LoadingComponent from '@/components/common/LoadingComponent';
 import NotFoundIcon from '@/icons/user/NotFoundIcon';
 import ProductList from '@/components/products/ProductList';
+import { notFoundStyle } from '@/styles/common/notFoundStyle';
 
 const TopContainer = memo(
     observer(() => {
@@ -110,11 +104,11 @@ const UserProductsPage = () => {
             {isLoading ? (
                 <LoadingComponent />
             ) : !userProducts?.length ? (
-                <View style={internalStyles.notFoundContainer}>
-                    <View style={internalStyles.notFoundCircle}>
+                <View style={notFoundStyle.notFoundContainer}>
+                    <View style={notFoundStyle.notFoundCircle}>
                         <NotFoundIcon style={{ color: primaryColor }} />
                     </View>
-                    <CustomText style={internalStyles.notFoundText}>
+                    <CustomText style={notFoundStyle.notFoundText}>
                         İstadəçinin aktiv elanı yoxdur
                     </CustomText>
                 </View>
@@ -179,28 +173,5 @@ const internalStyles = StyleSheet.create({
         fontFamily: NunitoMedium,
         fontSize: 16,
         lineHeight: 21,
-    },
-    notFoundContainer: {
-        flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    notFoundCircle: {
-        padding: 16,
-        borderRadius: 100,
-        backgroundColor: f5Color,
-        width: 92,
-        height: 92,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        alignSelf: 'center',
-    },
-    notFoundText: {
-        marginTop: 16,
-        fontSize: 16,
-        fontFamily: NunitoBold,
-        color: inactiveColor,
     },
 });

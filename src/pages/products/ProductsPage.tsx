@@ -2,7 +2,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { memo, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import CustomTextInput from '@/components/ui/CustomTextInput';
-import { e5Color, f5Color } from '@/styles/variables';
+import { e5Color, f5Color, primaryColor } from '@/styles/variables';
 import SearchIcon from '@/icons/home/SearchIcon';
 import CustomText from '@/components/ui/CustomText';
 import FilterHorizantalIcon from '@/icons/product/FilterHorizantalIcon';
@@ -13,6 +13,9 @@ import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/
 import generalStates from '@/states/general/generalStates';
 import filterStates from '@/states/filter/filterStates';
 import ProductList from '@/components/products/ProductList';
+import LoadingComponent from '@/components/common/LoadingComponent';
+import { notFoundStyle } from '@/styles/common/notFoundStyle';
+import NotFoundIcon from '@/icons/user/NotFoundIcon';
 
 const PrefixIcon = () => {
     return (
@@ -57,10 +60,16 @@ export const FilterContainer = memo(({ search }: { search?: boolean }) => {
 
 const ProductsPage = () => {
     const [isLoadingMore, setIsLoadingMore] = React.useState<boolean>(false);
+    const [isLoading, setIsLoading] = React.useState<boolean>(true);
+
     useEffect(() => {
-        fetchProducts(1).then((resp) => {
-            productStates.setProducts(resp);
-        });
+        fetchProducts(1)
+            .then((resp) => {
+                productStates.setProducts(resp);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
         return () => {
             generalStates.setBottomSheetVisible(false);
         };
@@ -96,13 +105,26 @@ const ProductsPage = () => {
     return (
         <View style={internalStyles.container}>
             <FilterContainer />
-            <ProductList
-                data={productStates.products?.data || []}
-                loadMore={loadMore}
-                isMoreLoading={isLoadingMore}
-                type='products'
-                selectSorting={selectSorting}
-            />
+            {isLoading ? (
+                <LoadingComponent />
+            ) : !productStates.products?.data?.length ? (
+                <View style={notFoundStyle.notFoundContainer}>
+                    <View style={notFoundStyle.notFoundCircle}>
+                        <NotFoundIcon style={{ color: primaryColor }} />
+                    </View>
+                    <CustomText style={notFoundStyle.notFoundText}>
+                        İstadəçinin aktiv elanı yoxdur
+                    </CustomText>
+                </View>
+            ) : (
+                <ProductList
+                    data={productStates.products?.data || []}
+                    loadMore={loadMore}
+                    isMoreLoading={isLoadingMore}
+                    type='products'
+                    selectSorting={selectSorting}
+                />
+            )}
         </View>
     );
 };
