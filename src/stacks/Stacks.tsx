@@ -33,6 +33,7 @@ import UserProductsPage from '@/pages/user/UserProductsPage';
 import UserProductsPageHeader from '@/components/headers/UserProductsPageHeader';
 import VipServicePage from '@/pages/paid/VipServicePage';
 import PaidServicePageHeader from '@/components/headers/PaidServicePageHeader';
+import MoveForwardPage from '@/pages/paid/MoveForwardPage';
 
 type StackListType = {
     name: string;
@@ -266,6 +267,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <PaidServicePageHeader title='Elanı VIP et' />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'MoveForwardPage',
+        component: MoveForwardPage,
+        options: {
+            headerShown: true,
+            header: () => <PaidServicePageHeader title='Elanı irəli çək' />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',

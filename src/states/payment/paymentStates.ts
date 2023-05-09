@@ -4,6 +4,7 @@ class PaymentStates {
     paymentUrl: string = ''
     paymentPageVisible: boolean = false
     paymentType: string = ''
+    paymentModalVisible: boolean = false
 
     constructor() {
         makeAutoObservable(this);
@@ -24,6 +25,12 @@ class PaymentStates {
     setPaymentType(type: string) {
         runInAction(() => {
             this.paymentType = type;
+        })
+    }
+
+    setPaymentModalVisible(visible: boolean) {
+        runInAction(() => {
+            this.paymentModalVisible = visible;
         })
     }
 

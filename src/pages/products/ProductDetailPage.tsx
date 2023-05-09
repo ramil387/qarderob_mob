@@ -125,7 +125,9 @@ const ServiceContainer = () => {
         <View style={internalStyles.servicesContainer}>
             <View style={{ width: '48%' }}>
                 <CustomMainButton
-                    func={() => {}}
+                    func={() => {
+                        navigate.navigate('MoveForwardPage');
+                    }}
                     title={
                         <View
                             style={{

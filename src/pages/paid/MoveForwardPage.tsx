@@ -13,25 +13,25 @@ import FillRadioButtonIcon from '@/icons/product/FillRadioButtonIcon';
 import OutlineRadioButton from '@/icons/product/OutlineRadioButton';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 
-const VipServicePage = () => {
+const MoveForwardPage = () => {
     const [paymentType, setPaymentType] = React.useState<'u_balance' | 'card'>('u_balance');
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const [selected, setSelected] = React.useState<number>(0);
     const product = toJS(productStates.selectedProduct);
     const packages = [
         {
-            label: '5 ₼ / 7 gün',
-            value: 5,
+            label: '3 dəfə (8 saatdan bir) / 1₼',
+            value: 1,
             count: 7,
         },
         {
-            label: '9 ₼ / 14 gün',
-            value: 9,
+            label: '9 dəfə (8 saatdan bir) / 2₼',
+            value: 2,
             count: 14,
         },
         {
-            label: '15 ₼ / 28 gün',
-            value: 15,
+            label: '15 dəfə (8 saatdan bir) / 3₼',
+            value: 3,
             count: 28,
         },
     ];
@@ -70,11 +70,11 @@ const VipServicePage = () => {
                     <InfoCircleIcon />
                 </View>
                 <CustomText style={internalStyles.infoText}>
-                    Elanınız VIP bölümündə təsadüfi şəkildə göstəriləcək.
+                    Elanınızı hərkəsin görməsi üçün irəli çəkin!
                 </CustomText>
             </View>
             <View style={internalStyles.midContainer}>
-                <CustomText style={internalStyles.vipHeadText}>Elanınızı VIP edin:</CustomText>
+                <CustomText style={internalStyles.vipHeadText}>Elanınızı irəli çəkin:</CustomText>
                 {packages.map((item, index) => {
                     return (
                         <TouchableOpacity
@@ -123,7 +123,7 @@ const VipServicePage = () => {
     );
 };
 
-export default VipServicePage;
+export default MoveForwardPage;
 
 const internalStyles = StyleSheet.create({
     container: {
