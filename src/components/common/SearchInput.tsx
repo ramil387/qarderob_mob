@@ -14,13 +14,15 @@ const SearchInput = () => {
     };
 
     return (
-        <View style={internalStyles.container}>
-            <CustomTextInput
-                style={internalStyles.inputStyle}
-                icon={<Prefix />}
-                placeholder='Məhsul və ya @istifadəçi axtar...'
-            />
-        </View>
+        <>
+            <View style={internalStyles.container}>
+                <CustomTextInput
+                    style={internalStyles.inputStyle}
+                    icon={<Prefix />}
+                    placeholder='Məhsul və ya @istifadəçi axtar...'
+                />
+            </View>
+        </>
     );
 };
 
