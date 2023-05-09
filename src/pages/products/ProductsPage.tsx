@@ -31,7 +31,7 @@ export const FilterContainer = memo(({ search }: { search?: boolean }) => {
         navigate.navigate('FilterPage');
     };
     return (
-        <View>
+        <View style={{ zIndex: 10 }}>
             {search && (
                 <View style={internalStyles.searchContainer}>
                     <CustomTextInput
@@ -41,7 +41,7 @@ export const FilterContainer = memo(({ search }: { search?: boolean }) => {
                     />
                 </View>
             )}
-            <View style={{ ...internalStyles.filterContainer, marginTop: 16 }}>
+            <View style={{ ...internalStyles.filterContainer, marginTop: 8 }}>
                 <TouchableOpacity onPress={goFilterPage} style={internalStyles.filterItemContainer}>
                     <FilterHorizantalIcon />
                     <CustomText style={internalStyles.filterText}>Filtr</CustomText>
@@ -61,8 +61,10 @@ export const FilterContainer = memo(({ search }: { search?: boolean }) => {
 const ProductsPage = () => {
     const [isLoadingMore, setIsLoadingMore] = React.useState<boolean>(false);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
-
+    const isFocused = useNavigation().isFocused();
     useEffect(() => {
+        if (!isFocused) return;
+        filterStates.setQuery('verified', true);
         fetchProducts(1)
             .then((resp) => {
                 productStates.setProducts(resp);
@@ -104,7 +106,7 @@ const ProductsPage = () => {
 
     return (
         <View style={internalStyles.container}>
-            <FilterContainer />
+            <FilterContainer search={true} />
             {isLoading ? (
                 <LoadingComponent />
             ) : !productStates.products?.data?.length ? (
@@ -112,18 +114,18 @@ const ProductsPage = () => {
                     <View style={notFoundStyle.notFoundCircle}>
                         <NotFoundIcon style={{ color: primaryColor }} />
                     </View>
-                    <CustomText style={notFoundStyle.notFoundText}>
-                        İstadəçinin aktiv elanı yoxdur
-                    </CustomText>
+                    <CustomText style={notFoundStyle.notFoundText}>Aktiv elan yoxdur</CustomText>
                 </View>
             ) : (
-                <ProductList
-                    data={productStates.products?.data || []}
-                    loadMore={loadMore}
-                    isMoreLoading={isLoadingMore}
-                    type='products'
-                    selectSorting={selectSorting}
-                />
+                <View style={{ flex: 1 }}>
+                    <ProductList
+                        data={productStates.products?.data || []}
+                        loadMore={loadMore}
+                        isMoreLoading={isLoadingMore}
+                        type='products'
+                        selectSorting={selectSorting}
+                    />
+                </View>
             )}
         </View>
     );
@@ -154,10 +156,10 @@ const internalStyles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        marginTop: 16,
+        marginTop: 8,
         borderWidth: 1,
         paddingHorizontal: 8,
-        paddingVertical: 16,
+        paddingVertical: 12,
         borderRadius: 8,
         borderColor: e5Color,
     },

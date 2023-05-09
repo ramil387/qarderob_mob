@@ -17,6 +17,7 @@ import LoadingComponent from '@/components/common/LoadingComponent';
 import NotFoundIcon from '@/icons/user/NotFoundIcon';
 import ProductList from '@/components/products/ProductList';
 import { notFoundStyle } from '@/styles/common/notFoundStyle';
+import { useIsFocused } from '@react-navigation/native';
 
 const TopContainer = memo(
     observer(() => {
@@ -48,19 +49,19 @@ const TopContainer = memo(
 
 const UserProductsPage = () => {
     const user = toJS(productStates.selectedProduct?._user);
-    const userProducts = toJS(productStates.products?.data);
+    const userProducts = toJS(userStates.userProducts?.data);
     const [isLoadingMore, setIsLoadingMore] = React.useState<boolean>(false);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
-
+    const isFocused = useIsFocused();
     const loadMore = () => {
         // working only one time
 
-        if (productStates.products?.has_next_page && !isLoadingMore) {
+        if (userStates.userProducts?.has_next_page && !isLoadingMore) {
             setIsLoadingMore(true);
-            fetchProducts(productStates.products?.next_page).then((resp) => {
+            fetchProducts(userStates.userProducts?.next_page).then((resp) => {
                 // spread operator is not working here
-                productStates.setProducts({
-                    data: [...(productStates?.products?.data || []), ...resp.data],
+                userStates.setUserProducts({
+                    data: [...(userStates.userProducts?.data || []), ...resp.data],
                     has_next_page: resp.has_next_page,
                     next_page: resp.next_page,
                     count: resp.count,
@@ -74,7 +75,7 @@ const UserProductsPage = () => {
     const selectSorting = async (value: string) => {
         filterStates.setQuery('sortby', value);
         fetchProducts(1).then((resp) => {
-            productStates.setProducts(resp);
+            userStates.setUserProducts(resp);
             generalStates.setBottomSheetVisible(false);
         });
     };
@@ -84,7 +85,7 @@ const UserProductsPage = () => {
         await fetchUserInfo(user!.id);
         fetchProducts(1)
             .then((resp) => {
-                productStates.setProducts(resp);
+                userStates.setUserProducts(resp);
             })
             .finally(() => {
                 setIsLoading(false);
@@ -93,7 +94,9 @@ const UserProductsPage = () => {
     useEffect(() => {
         getPageInfo();
         return () => {
+            filterStates.setQuery('user_id', undefined);
             generalStates.setBottomSheetVisible(false);
+            userStates.setUserProducts(null);
         };
     }, []);
 
@@ -113,13 +116,15 @@ const UserProductsPage = () => {
                     </CustomText>
                 </View>
             ) : (
-                <ProductList
-                    data={userProducts || []}
-                    type='user_ads'
-                    loadMore={loadMore}
-                    isMoreLoading={isLoadingMore}
-                    selectSorting={selectSorting}
-                />
+                <View style={{ flex: 1 }}>
+                    <ProductList
+                        data={userProducts || []}
+                        type='user_ads'
+                        loadMore={loadMore}
+                        isMoreLoading={isLoadingMore}
+                        selectSorting={selectSorting}
+                    />
+                </View>
             )}
         </View>
     );

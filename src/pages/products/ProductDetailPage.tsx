@@ -120,6 +120,7 @@ const SpecContainer = () => {
 };
 
 const ServiceContainer = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
     return (
         <View style={internalStyles.servicesContainer}>
             <View style={{ width: '48%' }}>
@@ -152,11 +153,13 @@ const ServiceContainer = () => {
             <View style={{ width: '48%' }}>
                 <CustomMainButton
                     style={{
-                        backgroundColor: 'transparent',
+                        backgroundColor: 'white',
                         borderWidth: 1,
                         borderColor: primaryColor,
                     }}
-                    func={() => {}}
+                    func={() => {
+                        navigate.navigate('VipServicePage');
+                    }}
                     title={
                         <View
                             style={{

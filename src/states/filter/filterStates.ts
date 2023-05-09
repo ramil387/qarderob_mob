@@ -98,6 +98,12 @@ class FilterStates {
         })
     }
 
+    removeQuery = (key: keyof QueryType) => {
+        runInAction(() => {
+            delete this.query[key]
+        })
+    }
+
     setIsLoadingFilter = (isLoadingFilter: boolean) => {
         runInAction(() => {
             this.isLoadingFilter = isLoadingFilter

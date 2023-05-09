@@ -13,6 +13,18 @@ class GeneralStates {
     bottomSheetVisible: boolean = false;
     backDropVisible: boolean = false;
 
+    // ------------DIALOG-----------------
+
+    commonDialogVisible: boolean = false;
+    dialogHeader: string = "";
+    dialogBody: string = "";
+    dialogAction: boolean = false;
+    dialogOkText: string = "";
+    dialogCancelText: string = "";
+    dialogOkFunc: any = () => { };
+    dialogCancelFunc: any = () => { };
+    // -----------------------------
+
     constructor() {
         makeAutoObservable(this)
     }
@@ -77,6 +89,55 @@ class GeneralStates {
         })
     }
 
+    // ------------DIALOG-----------------
+
+    setCommonDialogVisible(visible: boolean) {
+        runInAction(() => {
+            this.commonDialogVisible = visible
+        })
+    }
+
+    setDialogHeader(header: string) {
+        runInAction(() => {
+            this.dialogHeader = header
+        })
+    }
+
+    setDialogBody(body: string) {
+        runInAction(() => {
+            this.dialogBody = body
+        })
+    }
+
+    setDialogAction(action: boolean) {
+        runInAction(() => {
+            this.dialogAction = action
+        })
+    }
+
+    setDialogOkText(text: string) {
+        runInAction(() => {
+            this.dialogOkText = text
+        })
+    }
+
+    setDialogCancelText(text: string) {
+        runInAction(() => {
+            this.dialogCancelText = text
+        })
+    }
+
+    resetDialogStates() {
+        runInAction(() => {
+            this.dialogHeader = ''
+            this.dialogBody = ''
+            this.dialogAction = false
+            this.dialogOkText = ''
+            this.dialogCancelText = ''
+            this.dialogOkFunc = () => { }
+            this.dialogCancelFunc = () => { }
+        })
+    }
 
 }
 

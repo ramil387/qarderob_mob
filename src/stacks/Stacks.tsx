@@ -31,6 +31,8 @@ import ProductsPage from '@/pages/products/ProductsPage';
 import ProductsPageHeader from '@/components/headers/ProductsPageHeader';
 import UserProductsPage from '@/pages/user/UserProductsPage';
 import UserProductsPageHeader from '@/components/headers/UserProductsPageHeader';
+import VipServicePage from '@/pages/paid/VipServicePage';
+import PaidServicePageHeader from '@/components/headers/PaidServicePageHeader';
 
 type StackListType = {
     name: string;
@@ -253,6 +255,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <UserProductsPageHeader />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'VipServicePage',
+        component: VipServicePage,
+        options: {
+            headerShown: true,
+            header: () => <PaidServicePageHeader title='Elanı VIP et' />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',

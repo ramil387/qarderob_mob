@@ -78,7 +78,7 @@ const LoginPage = () => {
             emailRef.current?.blur();
             passwordRef.current?.blur();
             const data = {
-                email,
+                email: email.trim().toLowerCase(),
                 password,
             };
             if (validator.isEmail(email) === false) {

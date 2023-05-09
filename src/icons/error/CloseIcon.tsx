@@ -2,7 +2,7 @@ import { inactiveColor } from '@/styles/variables';
 import React from 'react';
 import { Path, Rect, Svg } from 'react-native-svg';
 
-const CloseIcon = ({ style }: { style: any }) => {
+const CloseIcon = ({ style }: { style?: any }) => {
     return (
         <Svg
             width={style?.width || '24'}

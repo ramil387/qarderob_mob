@@ -32,5 +32,6 @@ const internalStyles = StyleSheet.create({
         justifyContent: 'space-between',
         flexDirection: 'row',
         padding: 16,
+        paddingBottom: 0,
     },
 });

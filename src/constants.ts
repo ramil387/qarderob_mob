@@ -15,7 +15,8 @@ export const APIS = {
     me: 'auth/me',
     ads: 'ads',
     stats: "stats",
-    userInfo: 'users'
+    userInfo: 'users',
+    payment: 'payment'
 
 }
 

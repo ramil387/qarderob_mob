@@ -14,6 +14,7 @@ import CommonFooter from './components/common/CommonFooter';
 import { useFooterVisible } from './hooks/useFooterVisible';
 import ErrorModal from './components/common/ErrorModal';
 import { useKeyboardObserver } from './hooks/useKeyboardObserver';
+import DialogModal from './components/common/DialogModal';
 
 generateStyles(phoneWidth);
 generalStates.setScreenSize(phoneWidth >= 428 ? 'lg' : phoneWidth >= 390 ? 'md' : 'sm');
@@ -33,6 +34,7 @@ const App = () => {
             <CombineStacks />
             {!generalStates.footerVisible && <CommonFooter />}
             <ErrorModal />
+            <DialogModal />
         </Layout>
     );
 };
