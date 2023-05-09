@@ -6,6 +6,8 @@ class ProductStates {
     products: ProdListType | null = null;
     selectedProduct: AdListType | null = null;
     productListScrollDirection: "up" | "down" | null = null;
+    relatedProducts: ProdListType | null = null;
+
     constructor() {
         makeAutoObservable(this);
     }
@@ -25,6 +27,12 @@ class ProductStates {
     setProducts(products: ProdListType | null) {
         runInAction(() => {
             this.products = products;
+        })
+    }
+
+    setRelatedProducts(products: ProdListType | null) {
+        runInAction(() => {
+            this.relatedProducts = products;
         })
     }
 

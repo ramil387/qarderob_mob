@@ -1,5 +1,5 @@
-import { View, Image, TouchableOpacity, ScrollView } from 'react-native';
-import React, { memo, useEffect } from 'react';
+import { View, Image, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import React, { memo, useCallback } from 'react';
 import { observer } from 'mobx-react-lite';
 import productStates from '@/states/product/productStates';
 import { toJS } from 'mobx';
@@ -7,6 +7,7 @@ import Carousel from 'react-native-reanimated-carousel';
 import {
     NunitoBold,
     e0Color,
+    e5Color,
     inactiveColor,
     mainTextColor,
     phoneWidth,
@@ -33,9 +34,12 @@ import {
     NavigationProp,
     ParamListBase,
     StackActions,
+    useFocusEffect,
     useNavigation,
 } from '@react-navigation/native';
 import profileStates from '@/states/profile/profileStates';
+import { fetchRelatedProducts } from '@/states/product/fetchRelatedProducts';
+import Product from '@/components/products/Product';
 
 const ProductImages = memo(
     observer(() => {
@@ -51,10 +55,10 @@ const ProductImages = memo(
                     return (
                         <View>
                             <Image
-                                style={{ width: phoneWidth, height: 400 }}
+                                style={{ width: phoneWidth, height: 400, resizeMode: 'cover' }}
                                 source={{
                                     uri: getAdImageBySize(
-                                        'md',
+                                        'lg',
                                         product!.id,
                                         product!.images[index],
                                     ),
@@ -266,9 +270,18 @@ const StatsContainer = () => {
 const ProductDetailPage = () => {
     const product = toJS(productStates.selectedProduct);
 
-    useEffect(() => {
-        increaseViewCount(product?.id || null, product?.slug || null);
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            increaseViewCount(product?.id || null, product?.slug || null);
+            fetchRelatedProducts(product!.category!.slug_az).then(() => {
+                console.log(productStates.relatedProducts?.count);
+            });
+
+            return () => {
+                productStates.setRelatedProducts(null);
+            };
+        }, [product?.id]),
+    );
 
     return (
         <View style={{ flex: 1 }}>
@@ -291,6 +304,7 @@ const ProductDetailPage = () => {
                     {product?.user_id === profileStates.user?.id && <ServiceContainer />}
                     <ContactContainer />
                     <StatsContainer />
+                    <RelatedProducts />
                 </View>
             </ScrollView>
             <View style={internalStyles.footerContainer}>
@@ -314,6 +328,36 @@ const ProductDetailPage = () => {
     );
 };
 
+const RelatedProducts = memo(
+    observer(() => {
+        const relatedProducts = toJS(productStates.relatedProducts?.data);
+
+        return (
+            <View style={{ marginTop: 16 }}>
+                <CustomText
+                    style={{
+                        paddingVertical: 16,
+                        fontFamily: NunitoBold,
+                        fontSize: 18,
+                    }}
+                >
+                    OXŞAR ELANLAR
+                </CustomText>
+                <FlatList
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{
+                        gap: 16,
+                    }}
+                    horizontal={true}
+                    data={relatedProducts}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => <Product item={item} />}
+                />
+            </View>
+        );
+    }),
+);
+
 export default observer(ProductDetailPage);
 
 const internalStyles = StyleSheet.create({
@@ -329,7 +373,10 @@ const internalStyles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 4,
+        borderBottomWidth: 1,
+        borderBottomColor: e5Color,
+        paddingTop: 4,
+        paddingBottom: 16,
     },
     brandNameContainer: {
         display: 'flex',
@@ -341,7 +388,6 @@ const internalStyles = StyleSheet.create({
         fontSize: 24,
         fontFamily: NunitoBold,
         letterSpacing: 0.36,
-        lineHeight: 34,
     },
     price: {
         fontFamily: NunitoBold,
@@ -354,7 +400,9 @@ const internalStyles = StyleSheet.create({
         alignItems: 'center',
         gap: 24,
         flexWrap: 'wrap',
-        marginTop: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: e5Color,
+        paddingVertical: 16,
     },
     specItemContainer: {
         display: 'flex',
@@ -401,7 +449,9 @@ const internalStyles = StyleSheet.create({
         gap: 16,
     },
     statsContainer: {
-        marginTop: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: e5Color,
+        paddingVertical: 16,
     },
     servicesContainer: {
         marginTop: 16,
