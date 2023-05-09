@@ -1,5 +1,5 @@
 import { View, StyleSheet } from 'react-native';
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
 import productStates from '@/states/product/productStates';
@@ -21,7 +21,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 const TopContainer = memo(
     observer(() => {
-        const user = toJS(productStates.selectedProduct?._user);
+        const user = toJS(productStates.selectedProduct?._user || userStates.selectedAdOwner);
 
         return (
             <View style={internalStyles.avatarContainer}>
@@ -39,7 +39,7 @@ const TopContainer = memo(
                         Qarderob.az - da
                     </CustomText>
                     <CustomText style={{ ...internalStyles.dateText, marginTop: 4 }}>
-                        {toJS(productStates.products?.count)} elan
+                        {toJS(userStates.userProducts?.count)} elan
                     </CustomText>
                 </View>
             </View>
@@ -48,7 +48,7 @@ const TopContainer = memo(
 );
 
 const UserProductsPage = () => {
-    const user = toJS(productStates.selectedProduct?._user);
+    const user = toJS(productStates.selectedProduct?._user || userStates.selectedAdOwner);
     const userProducts = toJS(userStates.userProducts?.data);
     const [isLoadingMore, setIsLoadingMore] = React.useState<boolean>(false);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
@@ -91,13 +91,18 @@ const UserProductsPage = () => {
         useCallback(() => {
             getPageInfo();
             return () => {
-                filterStates.setQuery('user_id', undefined);
                 generalStates.setBottomSheetVisible(false);
                 userStates.setUserProducts(null);
                 setIsLoading(true);
             };
         }, [filterStates.query]),
     );
+
+    useEffect(() => {
+        return () => {
+            filterStates.resetQuery();
+        };
+    }, []);
 
     return (
         <View style={internalStyles.container}>

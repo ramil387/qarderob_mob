@@ -118,6 +118,10 @@ const FilterPage = () => {
             <View style={internalStyles.btn}>
                 <CustomMainButton
                     func={() => {
+                        if (filterStates.query?.user_id) {
+                            navigate.navigate('UserProductsPage');
+                            return;
+                        }
                         navigate.navigate('ProductsPage');
                     }}
                     title='Filtrlə'

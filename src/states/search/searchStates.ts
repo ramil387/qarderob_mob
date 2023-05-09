@@ -1,8 +1,15 @@
 import { SearchKeywordType } from "@/types/searchKeywordType";
+import { SearchedUserType } from "@/types/searchedUserType";
 import { makeAutoObservable, runInAction } from "mobx";
 
 type productResultsType = {
     data: SearchKeywordType[],
+    count: number,
+    currentPage: number,
+    perPage: number,
+}
+type userResultsType = {
+    data: SearchedUserType[],
     count: number,
     currentPage: number,
     perPage: number,
@@ -12,7 +19,7 @@ class SearchStates {
     searchContainerVisible: boolean = false;
     searchValue: string = "";
     searchType: 'user' | 'product' = "product";
-    userResults: any[] = [];
+    userResults: userResultsType | null = null;
     productResults: productResultsType | null = null;
     searchKey: string = "";
 
@@ -32,7 +39,7 @@ class SearchStates {
         })
     }
 
-    setUserResults(results: any[]) {
+    setUserResults(results: userResultsType | null) {
         runInAction(() => {
             this.userResults = results;
         })

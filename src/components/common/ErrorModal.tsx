@@ -11,7 +11,12 @@ import CloseIcon from '@/icons/error/CloseIcon';
 const ErrorModal = () => {
     const ActionBody = () => {
         return (
-            <View style={internalStyles.actionContainer}>
+            <View
+                style={{
+                    ...internalStyles.actionContainer,
+                    display: errorStates.errorAction ? 'flex' : 'none',
+                }}
+            >
                 <View style={internalStyles.btnItemContainer}>
                     <CustomMainButton
                         style={{

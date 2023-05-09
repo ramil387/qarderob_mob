@@ -18,6 +18,12 @@ import _ from 'lodash';
 import { fetchSearchResult } from '@/states/search/fetchSearchResult';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import filterStates from '@/states/filter/filterStates';
+import { fetchUserInfo } from '@/states/user/fetchUserInfo';
+import errorStates from '@/states/error/errorStates';
+import { Avatar } from '@rneui/themed';
+import { SearchKeywordType } from '@/types/searchKeywordType';
+import { SearchedUserType } from '@/types/searchedUserType';
+import userStates from '@/states/user/userStates';
 
 const SearchComponent = () => {
     const debuenedSearch = _.debounce((text) => {
@@ -37,6 +43,11 @@ const SearchComponent = () => {
         } else {
             searchStates.setSearchType('product');
         }
+        return () => {
+            searchStates.setSearchType('product');
+            searchStates.setUserResults(null);
+            searchStates.setProductResults(null);
+        };
     }, [searchStates.searchKey]);
 
     return (
@@ -87,34 +98,75 @@ export default memo(observer(SearchComponent));
 const ResultComponent = memo(
     observer(() => {
         const navigate: NavigationProp<ParamListBase> = useNavigation();
-        const userResult = toJS(searchStates.userResults);
+
+        const userResult = toJS(searchStates.userResults?.data);
         const productResult = toJS(searchStates.productResults?.data);
-        const goProducts = () => {
-            filterStates.setQuery('q', searchStates.searchKey);
-            navigate.navigate('ProductsPage');
+        const data: any = searchStates.searchType === 'user' ? userResult : productResult;
+
+        const goResultPage = (item: Partial<SearchedUserType & SearchKeywordType>) => {
+            if (searchStates.searchType === 'product') {
+                filterStates.setQuery('q', searchStates.searchKey);
+                navigate.navigate('ProductsPage');
+            } else {
+                fetchUserInfo(item!.id).then((resp) => {
+                    if (resp?.data?.id) {
+                        navigate.navigate('UserProductsPage');
+                    } else {
+                        errorStates.setErrorAction(false);
+                        errorStates.setErrorHeader('İstifadəçi tapılmadı');
+                        errorStates.setErrorBody(
+                            'İstifadəçi silinmiş və ya istifadəçi adı dəyişdirilmiş ola bilər.',
+                        );
+                        errorStates.setCommonErrorVisible(true);
+                    }
+                });
+            }
         };
         return (
             <View style={internalStyles.resultContainer}>
                 <FlatList
-                    data={productResult}
+                    data={data}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => {
-                        return (
-                            <TouchableOpacity
-                                onPress={goProducts}
-                                style={internalStyles.resultItemContainer}
-                            >
-                                <CustomText style={internalStyles.resultText}>
-                                    {item.name}
-                                </CustomText>
-                            </TouchableOpacity>
-                        );
+                        return <ListItem item={item} goResultPage={goResultPage} />;
                     }}
                 />
             </View>
         );
     }),
 );
+const ListItem = ({
+    item,
+    goResultPage,
+}: {
+    item: Partial<SearchedUserType & SearchKeywordType>;
+    goResultPage: (item: Partial<SearchedUserType & SearchKeywordType>) => void;
+}) => {
+    const Users = () => {
+        return (
+            <View style={internalStyles.userItemContainer}>
+                <Avatar rounded source={{ uri: item?.photo }} />
+                <CustomText style={internalStyles.userText}>{item?.username}</CustomText>
+            </View>
+        );
+    };
+    const Products = () => {
+        return <CustomText style={internalStyles.resultText}>{item.name}</CustomText>;
+    };
+    return (
+        <TouchableOpacity
+            onPress={() => {
+                if (item) {
+                    goResultPage(item);
+                }
+            }}
+            style={internalStyles.resultItemContainer}
+        >
+            {searchStates.searchType === 'user' ? <Users /> : <Products />}
+        </TouchableOpacity>
+    );
+};
+
 const internalStyles = StyleSheet.create({
     container: {
         position: 'absolute',
@@ -154,5 +206,15 @@ const internalStyles = StyleSheet.create({
     resultText: {
         fontSize: 16,
         fontFamily: NunitoMedium,
+    },
+    userItemContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+    userText: {
+        fontFamily: NunitoMedium,
+        fontSize: 16,
     },
 });

@@ -159,9 +159,20 @@ class FilterStates {
                 this.query.productStatus = []
             })
         }
+    }
 
-
-
+    resetQuery = () => {
+        runInAction(() => {
+            this.query = {
+                brand: {},
+                city: {},
+                color: [],
+                size: [],
+                price: ['', ''],
+                productStatus: [],
+                categories: [],
+            } as QueryType
+        })
     }
 
 }
