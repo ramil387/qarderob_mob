@@ -17,10 +17,16 @@ import LoadingComponent from '@/components/common/LoadingComponent';
 import NotFoundIcon from '@/icons/user/NotFoundIcon';
 import ProductList from '@/components/products/ProductList';
 import { notFoundStyle } from '@/styles/common/notFoundStyle';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import InstagramIcon from '@/icons/social/InstagramIcon';
 import FacebookCircleIcon from '@/icons/social/FacebookCircleIcon';
 import TiktokIcon from '@/icons/social/TiktokIcon';
+import Animated, {
+    Easing,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
+} from 'react-native-reanimated';
 
 const TopContainer = memo(
     observer(() => {
@@ -108,6 +114,24 @@ const UserProductsPage = () => {
     const userProducts = toJS(userStates.userProducts?.data);
     const [isLoadingMore, setIsLoadingMore] = React.useState<boolean>(false);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
+    const isFocused = useIsFocused();
+    const [initialTopHeight, setInitialTopHeight] = React.useState<any>(null);
+
+    const topContainerHeight = useSharedValue(initialTopHeight ? initialTopHeight : 0);
+    const useTopContainerHeightStyle = useAnimatedStyle(() => {
+        return {
+            height: topContainerHeight.value,
+            overflow: 'hidden',
+        };
+    });
+
+    const changeTopContainerHeight = (height: number) => {
+        topContainerHeight.value = withTiming(height, {
+            duration: 200,
+            easing: Easing.inOut(Easing.ease),
+        });
+    };
+
     const loadMore = () => {
         if (userStates.userProducts?.has_next_page && !isLoadingMore) {
             setIsLoadingMore(true);
@@ -155,6 +179,16 @@ const UserProductsPage = () => {
     );
 
     useEffect(() => {
+        if (isFocused) {
+            if (productStates.productListScrollDirection === 'up') {
+                if (initialTopHeight) changeTopContainerHeight(initialTopHeight);
+            } else if (productStates.productListScrollDirection === 'down') {
+                changeTopContainerHeight(0);
+            }
+        }
+    }, [productStates.productListScrollDirection, initialTopHeight]);
+
+    useEffect(() => {
         return () => {
             filterStates.resetQuery();
         };
@@ -162,9 +196,19 @@ const UserProductsPage = () => {
 
     return (
         <View style={internalStyles.container}>
-            <View>
-                <TopContainer />
-            </View>
+            <Animated.View style={[{}, initialTopHeight ? useTopContainerHeightStyle : {}]}>
+                <View
+                    onLayout={(e) => {
+                        console.log(e.nativeEvent.layout.height);
+                        if (!initialTopHeight) {
+                            setInitialTopHeight(e.nativeEvent.layout.height);
+                            topContainerHeight.value = e.nativeEvent.layout.height;
+                        }
+                    }}
+                >
+                    <TopContainer />
+                </View>
+            </Animated.View>
             <FilterContainer search={false} />
             {isLoading ? (
                 <LoadingComponent />
@@ -192,7 +236,7 @@ const UserProductsPage = () => {
     );
 };
 
-export default observer(UserProductsPage);
+export default memo(observer(UserProductsPage));
 
 const internalStyles = StyleSheet.create({
     container: {

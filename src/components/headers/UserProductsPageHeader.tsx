@@ -31,7 +31,7 @@ const UserProductsPageHeader = () => {
                 <BackIcon />
             </TouchableOpacity>
             <CustomText style={internalStyles.midText}>
-                {productStates.selectedProduct?._user?.username}
+                {userStates.selectedAdOwner?.username}
             </CustomText>
             <TouchableOpacity onPress={shareUser}>
                 <ShareIcon />

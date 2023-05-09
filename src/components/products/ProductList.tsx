@@ -44,7 +44,11 @@ const ProductList = ({
             <View style={{ paddingHorizontal: 16 }}>
                 <FlatList
                     onScroll={(e) => {
-                        if (generalStates.curPage !== 'ProfilePage') return;
+                        if (
+                            generalStates.curPage !== 'ProfilePage' &&
+                            generalStates.curPage !== 'UserProductsPage'
+                        )
+                            return;
                         const yOffset = e.nativeEvent.contentOffset.y;
                         if (yOffset > 0) {
                             productStates.setProductListScrollDirection('down');
