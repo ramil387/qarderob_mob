@@ -23,7 +23,7 @@ import generalStates from '@/states/general/generalStates';
 import { fetchSingleProduct } from '@/states/product/fetchSingleProduct';
 import profileStates from '@/states/profile/profileStates';
 import errorStates from '@/states/error/errorStates';
-import { getImageRotations } from '../helper/getImageRotations';
+import { getImageRotations } from '../../helper/getImageRotations';
 
 type ProductType = {
     item: AdListType;

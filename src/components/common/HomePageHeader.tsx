@@ -7,6 +7,10 @@ import { observer } from 'mobx-react-lite';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import profileStates from '@/states/profile/profileStates';
 import errorStates from '@/states/error/errorStates';
+import { defineFilterCount } from '../../helper/defineFilterCount';
+import filterStates from '@/states/filter/filterStates';
+import { Badge } from '@rneui/themed';
+import { primaryColor } from '@/styles/variables';
 
 const HomePageHeader = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
@@ -32,6 +36,9 @@ const HomePageHeader = () => {
             return;
         }
     };
+
+    const filterCount = defineFilterCount(filterStates.query);
+
     return (
         <View style={internalStyles.container}>
             <TouchableOpacity onPress={goBurgerMenu}>
@@ -40,6 +47,13 @@ const HomePageHeader = () => {
             <View style={internalStyles.rightContainer}>
                 <TouchableOpacity onPress={goFilter}>
                     <FilterIcon />
+                    <Badge
+                        value={filterCount}
+                        badgeStyle={{
+                            display: filterCount > 0 ? 'flex' : 'none',
+                            ...internalStyles.filterBadge,
+                        }}
+                    />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={goNotification} style={{ marginLeft: 26 }}>
                     <NotificationIcon />
@@ -64,5 +78,11 @@ const internalStyles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    filterBadge: {
+        position: 'absolute',
+        right: -18,
+        bottom: 10,
+        backgroundColor: primaryColor,
     },
 });

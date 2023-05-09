@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import React, { memo, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { backdropBackground, phoneWidth } from '@/styles/variables';
@@ -41,7 +41,14 @@ const BackDrop = () => {
                 },
                 useChangeOpacityBackDropStyle,
             ]}
-        />
+        >
+            <Pressable
+                onPress={() => {
+                    generalStates.setBottomSheetVisible(false);
+                }}
+                style={{ height: '100%', width: '100%' }}
+            />
+        </Animated.View>
     );
 };
 

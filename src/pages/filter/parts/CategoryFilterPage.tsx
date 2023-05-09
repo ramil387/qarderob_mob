@@ -12,7 +12,7 @@ import CustomTextInput from '@/components/ui/CustomTextInput';
 import SearchIcon from '@/icons/home/SearchIcon';
 import { NunitoBold, NunitoRegular, e5Color, f5Color, phoneHeight } from '@/styles/variables';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
-import { makeSlugify } from '@/components/helper/makeSlugify';
+import { makeSlugify } from '@/helper/makeSlugify';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 

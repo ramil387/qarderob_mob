@@ -21,7 +21,7 @@ import OutlineHeartIcon from '@/icons/home/OutlineHeartIcon';
 import TagIcon from '@/icons/product/TagIcon';
 import SizeIcon from '@/icons/product/SizeIcon';
 import ColorIcon from '@/icons/product/ColorIcon';
-import { defineProductStatus } from '@/components/helper/defineProductStatus';
+import { defineProductStatus } from '@/helper/defineProductStatus';
 import { Avatar } from '@rneui/themed';
 import PhoneIcon from '@/icons/product/PhoneIcon';
 import MailIcon from '@/icons/product/MailIcon';
@@ -207,6 +207,7 @@ const ContactContainer = () => {
 
     const product = toJS(productStates.selectedProduct);
     const goUserProductsPage = () => {
+        filterStates.resetQuery();
         navigate.dispatch(StackActions.push('UserProductsPage'));
     };
     return (

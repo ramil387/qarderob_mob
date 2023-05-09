@@ -12,7 +12,7 @@ import SearchIcon from '@/icons/home/SearchIcon';
 import { Avatar } from '@rneui/themed';
 import shopStates from '@/states/shop/shopStates';
 import { fetchShops } from '@/states/shop/fetchShops';
-import { defineWorkingDays } from '@/components/helper/defineWorkingDays';
+import { defineWorkingDays } from '@/helper/defineWorkingDays';
 import LocationIcon from '@/icons/shop/LocationIcon';
 const PrefixIcon = () => {
     return (

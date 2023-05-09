@@ -6,7 +6,7 @@ import filterStates from '@/states/filter/filterStates';
 import CustomText from '@/components/ui/CustomText';
 import { NunitoMedium, e5Color, mainTextColor, primaryColor } from '@/styles/variables';
 import CustomMainButton from '@/components/ui/CustomMainButton';
-import { makeSlugify } from '@/components/helper/makeSlugify';
+import { makeSlugify } from '@/helper/makeSlugify';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
 const SizesFilterPage = () => {

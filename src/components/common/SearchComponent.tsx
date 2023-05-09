@@ -110,6 +110,7 @@ const ResultComponent = memo(
             } else {
                 fetchUserInfo(item!.id).then((resp) => {
                     if (resp?.data?.id) {
+                        filterStates.resetQuery();
                         navigate.navigate('UserProductsPage');
                     } else {
                         errorStates.setErrorAction(false);
