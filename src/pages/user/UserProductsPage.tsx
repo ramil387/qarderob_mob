@@ -1,5 +1,5 @@
 import { View, StyleSheet } from 'react-native';
-import React, { memo, useEffect } from 'react';
+import React, { memo, useCallback } from 'react';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
 import productStates from '@/states/product/productStates';
@@ -17,7 +17,7 @@ import LoadingComponent from '@/components/common/LoadingComponent';
 import NotFoundIcon from '@/icons/user/NotFoundIcon';
 import ProductList from '@/components/products/ProductList';
 import { notFoundStyle } from '@/styles/common/notFoundStyle';
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 const TopContainer = memo(
     observer(() => {
@@ -52,10 +52,7 @@ const UserProductsPage = () => {
     const userProducts = toJS(userStates.userProducts?.data);
     const [isLoadingMore, setIsLoadingMore] = React.useState<boolean>(false);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
-    const isFocused = useIsFocused();
     const loadMore = () => {
-        // working only one time
-
         if (userStates.userProducts?.has_next_page && !isLoadingMore) {
             setIsLoadingMore(true);
             fetchProducts(userStates.userProducts?.next_page).then((resp) => {
@@ -66,7 +63,6 @@ const UserProductsPage = () => {
                     next_page: resp.next_page,
                     count: resp.count,
                 });
-
                 setIsLoadingMore(false);
             });
         }
@@ -91,14 +87,17 @@ const UserProductsPage = () => {
                 setIsLoading(false);
             });
     };
-    useEffect(() => {
-        getPageInfo();
-        return () => {
-            filterStates.setQuery('user_id', undefined);
-            generalStates.setBottomSheetVisible(false);
-            userStates.setUserProducts(null);
-        };
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            getPageInfo();
+            return () => {
+                filterStates.setQuery('user_id', undefined);
+                generalStates.setBottomSheetVisible(false);
+                userStates.setUserProducts(null);
+                setIsLoading(true);
+            };
+        }, [filterStates.query]),
+    );
 
     return (
         <View style={internalStyles.container}>

@@ -52,6 +52,7 @@ const VipServicePage = () => {
                     setIsLoading(false);
                     paymentStates.setPaymentPageVisible(true);
                     paymentStates.setPaymentType('vip');
+                    paymentStates.setPaymentModalVisible(true);
                 }
             } else if (paymentType === 'card') {
                 generalStates.setCommonDialogVisible(true);

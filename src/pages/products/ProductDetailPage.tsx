@@ -29,7 +29,13 @@ import moment from 'moment';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import RocketIcon from '@/icons/product/RocketIcon';
 import filterStates from '@/states/filter/filterStates';
-import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import {
+    NavigationProp,
+    ParamListBase,
+    StackActions,
+    useNavigation,
+} from '@react-navigation/native';
+import profileStates from '@/states/profile/profileStates';
 
 const ProductImages = memo(
     observer(() => {
@@ -79,6 +85,8 @@ const ProductImages = memo(
 
 const TopInfoContainer = () => {
     const product = toJS(productStates.selectedProduct);
+    const showLikeIcon = product?.user_id !== profileStates.user?.id;
+    // todo add like count
     return (
         <View style={internalStyles.topInfoContainer}>
             <View>
@@ -92,7 +100,7 @@ const TopInfoContainer = () => {
                     <CustomText style={internalStyles.price}>{product?.price}₼</CustomText>
                 </View>
             </View>
-            <View>
+            <View style={{ display: !showLikeIcon ? 'flex' : 'none', bottom: 20 }}>
                 <OutlineHeartIcon style={{ color: mainTextColor }} />
             </View>
         </View>
@@ -195,7 +203,7 @@ const ContactContainer = () => {
 
     const product = toJS(productStates.selectedProduct);
     const goUserProductsPage = () => {
-        navigate.navigate('UserProductsPage');
+        navigate.dispatch(StackActions.push('UserProductsPage'));
     };
     return (
         <View style={internalStyles.contactContainer}>
@@ -228,23 +236,23 @@ const StatsContainer = () => {
     const product = toJS(productStates.selectedProduct);
     return (
         <View style={internalStyles.statsContainer}>
-            <CustomText>
+            <CustomText style={{ paddingVertical: 2 }}>
                 Elanın nömrəsi:{' '}
                 <CustomText style={{ fontFamily: NunitoBold }}>{product?.id}</CustomText>
             </CustomText>
-            <CustomText>
+            <CustomText style={{ paddingVertical: 2 }}>
                 Baxış sayı:{' '}
                 <CustomText style={{ fontFamily: NunitoBold }}>
                     {product?.viewCount?.count ?? 0}
                 </CustomText>
             </CustomText>
-            <CustomText>
+            <CustomText style={{ paddingVertical: 2 }}>
                 Yeniləndi:{' '}
                 <CustomText style={{ fontFamily: NunitoBold }}>
                     {moment(product?.publishedAt).format('lll')}
                 </CustomText>
             </CustomText>
-            <CustomText>
+            <CustomText style={{ paddingVertical: 2 }}>
                 Şəhər:{' '}
                 <CustomText style={{ fontFamily: NunitoBold }}>
                     {filterStates.cities.length > 0 &&
@@ -280,11 +288,28 @@ const ProductDetailPage = () => {
                     >
                         <CustomText style={internalStyles.desc}>{product?.description}</CustomText>
                     </View>
-                    <ServiceContainer />
+                    {product?.user_id === profileStates.user?.id && <ServiceContainer />}
                     <ContactContainer />
                     <StatsContainer />
                 </View>
             </ScrollView>
+            <View style={internalStyles.footerContainer}>
+                <View style={internalStyles.footerItemContainer}>
+                    <CustomMainButton
+                        func={() => {}}
+                        title='Elanı sil'
+                        style={{
+                            backgroundColor: 'transparent',
+                            borderWidth: 1,
+                            borderColor: primaryColor,
+                        }}
+                        titleStyle={{ color: primaryColor }}
+                    />
+                </View>
+                <View style={internalStyles.footerItemContainer}>
+                    <CustomMainButton func={() => {}} title='Düzəliş et' />
+                </View>
+            </View>
         </View>
     );
 };
@@ -384,5 +409,16 @@ const internalStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+    },
+    footerContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 16,
+        backgroundColor: 'transparent',
+    },
+    footerItemContainer: {
+        width: '48%',
     },
 });

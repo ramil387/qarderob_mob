@@ -9,7 +9,12 @@ import CustomText from '../ui/CustomText';
 import VipIcon from '@/icons/home/VipIcon';
 import FillHeartIcon from '@/icons/home/FillHeartIcon';
 import OutlineHeartIcon from '@/icons/home/OutlineHeartIcon';
-import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import {
+    NavigationProp,
+    ParamListBase,
+    StackActions,
+    useNavigation,
+} from '@react-navigation/native';
 import productStates from '@/states/product/productStates';
 import { http } from '@/services/httpMethods';
 import { APIS } from '@/constants';
@@ -48,12 +53,12 @@ const Product = ({ item, setToggleCheckLike, toggleCheckLike, type }: ProductTyp
                 if (resp?.data) {
                     console.log(resp.data);
                     productStates.setSelectedProduct({ ...data, ...resp?.data });
-                    navigate.navigate('ProductDetailPage');
+                    navigate.dispatch(StackActions.push('ProductDetailPage'));
                 }
             });
             return;
         }
-        navigate.navigate('ProductDetailPage');
+        navigate.dispatch(StackActions.push('ProductDetailPage'));
         productStates.setSelectedProduct(data);
     };
 
@@ -126,6 +131,8 @@ const Product = ({ item, setToggleCheckLike, toggleCheckLike, type }: ProductTyp
         }
     };
 
+    const showLikeIcon = item?.user_id !== profileStates.user?.id;
+
     return (
         <ProductCard phoneWidth={phoneWidth}>
             <View>
@@ -137,31 +144,34 @@ const Product = ({ item, setToggleCheckLike, toggleCheckLike, type }: ProductTyp
                         source={{ uri: getAdImageBySize('md', item?.id, item?.images[0]) }}
                     />
                 </TouchableOpacity>
-
-                <TouchableOpacity
-                    disabled={disableHeart}
-                    onPress={() => {
-                        toggleLike(item.id);
-                    }}
-                    style={{
-                        ...internalStyles.heartIcon,
-                        display: item.isFavourite === '0' ? 'none' : 'flex',
-                    }}
-                >
-                    <FillHeartIcon />
-                </TouchableOpacity>
-                <TouchableOpacity
-                    disabled={disableHeart}
-                    onPress={() => {
-                        toggleLike(item.id);
-                    }}
-                    style={{
-                        ...internalStyles.heartIcon,
-                        display: item.isFavourite === '0' ? 'flex' : 'none',
-                    }}
-                >
-                    <OutlineHeartIcon />
-                </TouchableOpacity>
+                {showLikeIcon && (
+                    <TouchableOpacity
+                        disabled={disableHeart}
+                        onPress={() => {
+                            toggleLike(item.id);
+                        }}
+                        style={{
+                            ...internalStyles.heartIcon,
+                            display: item.isFavourite === '0' ? 'none' : 'flex',
+                        }}
+                    >
+                        <FillHeartIcon />
+                    </TouchableOpacity>
+                )}
+                {showLikeIcon && (
+                    <TouchableOpacity
+                        disabled={disableHeart}
+                        onPress={() => {
+                            toggleLike(item.id);
+                        }}
+                        style={{
+                            ...internalStyles.heartIcon,
+                            display: item.isFavourite === '0' ? 'flex' : 'none',
+                        }}
+                    >
+                        <OutlineHeartIcon />
+                    </TouchableOpacity>
+                )}
             </View>
             <View>
                 <CustomText style={internalStyles.categoryName}>

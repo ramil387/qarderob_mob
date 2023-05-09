@@ -55,7 +55,7 @@ const ProductSection = observer(() => {
 
     const loadMore = () => {
         if (isFocused) {
-            if (userStates.userProducts?.has_next_page) {
+            if (userStates.userProducts?.has_next_page && !isMoreLoading) {
                 setIsMoreLoading(true);
                 fetchUserProducts(
                     user!.id,

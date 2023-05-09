@@ -42,7 +42,7 @@ const MoveForwardPage = () => {
                 setIsLoading(true);
                 const body = {
                     count: val,
-                    service: { type: `vip-${val}` },
+                    service: { type: `up_service-${val}` },
                     amount: val,
                     ad_id: product?.id,
                 };
@@ -52,6 +52,7 @@ const MoveForwardPage = () => {
                     setIsLoading(false);
                     paymentStates.setPaymentPageVisible(true);
                     paymentStates.setPaymentType('vip');
+                    paymentStates.setPaymentModalVisible(true);
                 }
             } else if (paymentType === 'card') {
                 generalStates.setCommonDialogVisible(true);
