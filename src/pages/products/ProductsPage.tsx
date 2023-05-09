@@ -16,6 +16,7 @@ import ProductList from '@/components/products/ProductList';
 import LoadingComponent from '@/components/common/LoadingComponent';
 import { notFoundStyle } from '@/styles/common/notFoundStyle';
 import NotFoundIcon from '@/icons/user/NotFoundIcon';
+import { Badge } from '@rneui/themed';
 
 const PrefixIcon = () => {
     return (
@@ -30,6 +31,29 @@ export const FilterContainer = memo(({ search }: { search?: boolean }) => {
     const goFilterPage = () => {
         navigate.navigate('FilterPage');
     };
+    const filterCount = Object.keys(filterStates.query)
+        .map((filter: any) => {
+            const filterValue = filterStates.query[filter as keyof typeof filterStates.query];
+            if (Array.isArray(filterValue)) {
+                return (
+                    filterValue.length -
+                    (filter === 'price'
+                        ? filterValue[0] === '' && filterValue[0] === ''
+                            ? 2
+                            : 0
+                        : 0)
+                );
+            } else if (typeof filterValue === 'object' && Object.keys(filterValue).length > 0) {
+                console.log({ haha: Object.keys(filterValue).length });
+                return Object.keys(filterValue).length;
+            } else {
+                return 0;
+            }
+        })
+        .reduce((a, b) => a + b, 0);
+
+    console.log(filterCount);
+
     return (
         <View style={{ paddingHorizontal: 16, marginTop: 16 }}>
             {search && (
@@ -43,6 +67,16 @@ export const FilterContainer = memo(({ search }: { search?: boolean }) => {
             )}
             <View style={{ ...internalStyles.filterContainer, marginTop: 8 }}>
                 <TouchableOpacity onPress={goFilterPage} style={internalStyles.filterItemContainer}>
+                    <Badge
+                        containerStyle={{
+                            position: 'absolute',
+                            right: -22,
+                            bottom: 10,
+                            display: filterCount > 0 ? 'flex' : 'none',
+                        }}
+                        badgeStyle={{ backgroundColor: primaryColor }}
+                        value={filterCount}
+                    />
                     <FilterHorizantalIcon />
                     <CustomText style={internalStyles.filterText}>Filtr</CustomText>
                 </TouchableOpacity>
