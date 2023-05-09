@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native';
 import React, { memo, useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
@@ -18,29 +18,85 @@ import NotFoundIcon from '@/icons/user/NotFoundIcon';
 import ProductList from '@/components/products/ProductList';
 import { notFoundStyle } from '@/styles/common/notFoundStyle';
 import { useFocusEffect } from '@react-navigation/native';
+import InstagramIcon from '@/icons/social/InstagramIcon';
+import FacebookCircleIcon from '@/icons/social/FacebookCircleIcon';
+import TiktokIcon from '@/icons/social/TiktokIcon';
 
 const TopContainer = memo(
     observer(() => {
         const user = toJS(productStates.selectedProduct?._user || userStates.selectedAdOwner);
-
+        const countOfSocialLinks = Object.keys(user?.social_links || {}).length;
         return (
-            <View style={internalStyles.avatarContainer}>
-                <Avatar
-                    size={73}
-                    rounded
-                    source={{
-                        uri: user?.photo,
-                    }}
-                />
+            <View>
                 <View>
+                    <Image
+                        style={{
+                            ...internalStyles.coverImage,
+                            display: user?.is_inf === 'true' ? 'flex' : 'none',
+                        }}
+                        source={{ uri: user?.cover }}
+                    />
+                    <View style={internalStyles.avatarContainer}>
+                        <Avatar
+                            size={user?.is_inf === 'true' ? 100 : 80}
+                            rounded
+                            source={{
+                                uri: user?.photo,
+                            }}
+                            containerStyle={{
+                                ...internalStyles.avatar,
+                                top: user?.is_inf === 'true' ? '80%' : 0,
+                            }}
+                        />
+                    </View>
+                </View>
+                <View
+                    style={{
+                        ...internalStyles.userInfoContainer,
+                        marginLeft: user?.is_inf === 'true' ? 126 : 110,
+                    }}
+                >
                     <CustomText style={internalStyles.fullName}>{user?.full_name}</CustomText>
                     <CustomText style={internalStyles.dateText}>
-                        {moment(userStates.selectedAdOwner?.createdAt).format('lll')} tarixindən
+                        {moment(userStates.selectedAdOwner?.createdAt).format('ll')} tarixindən
                         Qarderob.az - da
                     </CustomText>
                     <CustomText style={{ ...internalStyles.dateText, marginTop: 4 }}>
                         {toJS(userStates.userProducts?.count)} elan
                     </CustomText>
+                </View>
+                <View
+                    style={{
+                        ...internalStyles.socialContainer,
+                        justifyContent: countOfSocialLinks === 3 ? 'space-between' : 'flex-start',
+                        gap: countOfSocialLinks === 3 ? 0 : 10,
+                    }}
+                >
+                    {user?.social_links &&
+                        Object.keys(user?.social_links).map((key) => {
+                            return (
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        Linking.openURL(user?.social_links[key]);
+                                    }}
+                                    style={internalStyles.socialLinkContainer}
+                                    key={key}
+                                >
+                                    {key === 'instagram' ? (
+                                        <InstagramIcon />
+                                    ) : key === 'facebook' ? (
+                                        <FacebookCircleIcon />
+                                    ) : (
+                                        key === 'tiktok' && <TiktokIcon />
+                                    )}
+                                    {user?.social_links[key] && (
+                                        <CustomText style={internalStyles.socialText}>
+                                            {key}
+                                        </CustomText>
+                                    )}
+                                </TouchableOpacity>
+                            );
+                        })}
                 </View>
             </View>
         );
@@ -78,7 +134,7 @@ const UserProductsPage = () => {
     const getPageInfo = async () => {
         filterStates.setQuery('user_id', user?.id);
         filterStates.setQuery('verified', true);
-        await fetchUserInfo(user!.id);
+        await fetchUserInfo(Number(user?.id));
         fetchProducts(1)
             .then((resp) => {
                 userStates.setUserProducts(resp);
@@ -106,7 +162,9 @@ const UserProductsPage = () => {
 
     return (
         <View style={internalStyles.container}>
-            <TopContainer />
+            <View>
+                <TopContainer />
+            </View>
             <FilterContainer search={false} />
             {isLoading ? (
                 <LoadingComponent />
@@ -146,7 +204,15 @@ const internalStyles = StyleSheet.create({
         flexDirection: 'row',
         gap: 8,
         paddingHorizontal: 16,
-        marginTop: 16,
+        // marginTop: 16,
+        position: 'absolute',
+    },
+    avatar: {
+        top: '80%',
+    },
+    userInfoContainer: {
+        marginLeft: 126,
+        marginTop: 8,
     },
     fullName: {
         fontFamily: NunitoBold,
@@ -158,7 +224,7 @@ const internalStyles = StyleSheet.create({
         fontSize: 12,
         lineHeight: 20,
         color: inactiveColor,
-        marginTop: 8,
+        marginTop: 4,
     },
     bottomSheetContainer: {
         padding: 16,
@@ -183,5 +249,33 @@ const internalStyles = StyleSheet.create({
         fontFamily: NunitoMedium,
         fontSize: 16,
         lineHeight: 21,
+    },
+    coverContainer: {},
+    coverImage: {
+        height: 130,
+    },
+    socialContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        justifyContent: 'space-between',
+    },
+    socialLinkContainer: {
+        padding: 8,
+        borderRadius: 8,
+        marginTop: 8,
+        width: '30%',
+        borderWidth: 1,
+        borderColor: e5Color,
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'row',
+        gap: 8,
+    },
+    socialText: {
+        textTransform: 'capitalize',
+        fontSize: 12,
+        fontFamily: NunitoBold,
     },
 });

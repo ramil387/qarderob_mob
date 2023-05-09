@@ -9,8 +9,11 @@ export const useFetchMe = () => {
     const getToken = async () => {
         const token = await AsyncStorage.getItem('token').then(d => d)
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        console.log({ token })
         profileStates.setToken(token)
-        fetchMe()
+        if (token) {
+            fetchMe()
+        }
     }
 
     useEffect(() => {

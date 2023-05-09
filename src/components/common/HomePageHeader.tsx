@@ -6,7 +6,6 @@ import NotificationIcon from '@/icons/home/NotificationIcon';
 import { observer } from 'mobx-react-lite';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import profileStates from '@/states/profile/profileStates';
-import errorStates from '@/states/error/errorStates';
 import { defineFilterCount } from '../../helper/defineFilterCount';
 import filterStates from '@/states/filter/filterStates';
 import { Badge } from '@rneui/themed';

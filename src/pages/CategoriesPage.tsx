@@ -68,8 +68,15 @@ const CategoriesPage = () => {
     return (
         <>
             <View style={internalStyles.breadcrumbContainer}>
-                <CustomText style={internalStyles.breadcrumb}>{mainCat}</CustomText>
-                <CustomText> / </CustomText>
+                <TouchableOpacity
+                    onPress={() => {
+                        setMainCategory(mainCategory);
+                        setSubCategory(null);
+                    }}
+                >
+                    <CustomText style={internalStyles.breadcrumb}>{mainCat}</CustomText>
+                </TouchableOpacity>
+                <CustomText style={{ display: subCategory ? 'flex' : 'none' }}> / </CustomText>
                 <CustomText style={{ ...internalStyles.breadcrumb, color: primaryColor }}>
                     {subCategory && subCat}
                 </CustomText>

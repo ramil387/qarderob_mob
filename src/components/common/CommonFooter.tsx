@@ -1,6 +1,6 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { memo } from 'react';
-import { e5Color, f5Color, phoneWidth } from '@/styles/variables';
+import { e5Color, phoneWidth } from '@/styles/variables';
 import HomeIcon from '@/icons/footer/HomeIcon';
 import HeartFooterIcon from '@/icons/footer/HeartFooterIcon';
 import MailFooterIcon from '@/icons/footer/MailFooterIcon';
@@ -9,7 +9,6 @@ import PlusCircleIcon from '@/icons/footer/PlusCircleIcon';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import generalStates from '@/states/general/generalStates';
 import profileStates from '@/states/profile/profileStates';
-import errorStates from '@/states/error/errorStates';
 import { observer } from 'mobx-react-lite';
 import { showShouldAuth } from '@/helper/showShouldAuth';
 

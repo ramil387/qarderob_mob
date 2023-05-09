@@ -6,7 +6,7 @@ import { NunitoBold, primaryColor } from '@/styles/variables';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import filterStates from '@/states/filter/filterStates';
 
-const CategoriesPageHeader = ({ title }: { title?: string }) => {
+const CategoriesPageHeader = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
 
     return (

@@ -1,4 +1,5 @@
 import { CategoryType } from "./categoryType";
+import { UserType } from "./userType";
 
 export type AdListType = {
     id: number;
@@ -50,17 +51,7 @@ export type AdListType = {
         name: string;
         color: string;
     };
-    _user: {
-        photo: string;
-        id: number;
-        phone: string;
-        email: string;
-        username: string;
-        full_name: string;
-        isFamous: boolean;
-        fcm_token: string;
-        is_store: boolean;
-    };
+    _user: Partial<UserType>;
     _store: null;
     viewCount: {
         count: number;

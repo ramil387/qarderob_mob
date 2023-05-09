@@ -23,14 +23,18 @@ import errorStates from '@/states/error/errorStates';
 import { Avatar } from '@rneui/themed';
 import { SearchKeywordType } from '@/types/searchKeywordType';
 import { SearchedUserType } from '@/types/searchedUserType';
-import userStates from '@/states/user/userStates';
+import LoadingComponent from './LoadingComponent';
 
 const SearchComponent = () => {
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const debuenedSearch = _.debounce((text) => {
-        fetchSearchResult(text, searchStates.searchType);
+        fetchSearchResult(text, searchStates.searchType).finally(() => {
+            setIsLoading(false);
+        });
     }, 500);
 
     useEffect(() => {
+        setIsLoading(true);
         debuenedSearch(searchStates.searchKey);
     }, [searchStates.searchKey]);
 
@@ -52,43 +56,49 @@ const SearchComponent = () => {
 
     return (
         <View style={internalStyles.container}>
-            <View style={internalStyles.searchTypeContainer}>
-                <TouchableOpacity
-                    style={{ width: '40%' }}
-                    onPress={() => searchStates.setSearchType('product')}
-                >
-                    <CustomText
-                        style={{
-                            ...internalStyles.typeText,
-                            borderBottomColor: selectedStyle('product'),
-                            color:
-                                selectedStyle('product') === 'transparent'
-                                    ? inactiveColor
-                                    : primaryColor,
-                        }}
-                    >
-                        Məhsullar
-                    </CustomText>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => searchStates.setSearchType('user')}
-                    style={{ width: '40%' }}
-                >
-                    <CustomText
-                        style={{
-                            ...internalStyles.typeText,
-                            borderBottomColor: selectedStyle('user'),
-                            color:
-                                selectedStyle('user') === 'transparent'
-                                    ? inactiveColor
-                                    : primaryColor,
-                        }}
-                    >
-                        İstifadəçilər
-                    </CustomText>
-                </TouchableOpacity>
-            </View>
-            <ResultComponent />
+            {isLoading ? (
+                <LoadingComponent />
+            ) : (
+                <>
+                    <View style={internalStyles.searchTypeContainer}>
+                        <TouchableOpacity
+                            style={{ width: '40%' }}
+                            onPress={() => searchStates.setSearchType('product')}
+                        >
+                            <CustomText
+                                style={{
+                                    ...internalStyles.typeText,
+                                    borderBottomColor: selectedStyle('product'),
+                                    color:
+                                        selectedStyle('product') === 'transparent'
+                                            ? inactiveColor
+                                            : primaryColor,
+                                }}
+                            >
+                                Məhsullar
+                            </CustomText>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => searchStates.setSearchType('user')}
+                            style={{ width: '40%' }}
+                        >
+                            <CustomText
+                                style={{
+                                    ...internalStyles.typeText,
+                                    borderBottomColor: selectedStyle('user'),
+                                    color:
+                                        selectedStyle('user') === 'transparent'
+                                            ? inactiveColor
+                                            : primaryColor,
+                                }}
+                            >
+                                İstifadəçilər
+                            </CustomText>
+                        </TouchableOpacity>
+                    </View>
+                    <ResultComponent />
+                </>
+            )}
         </View>
     );
 };
@@ -123,6 +133,23 @@ const ResultComponent = memo(
                 });
             }
         };
+
+        if (data?.length === 0)
+            return (
+                <View style={internalStyles.resultContainer}>
+                    <CustomText
+                        style={{
+                            ...internalStyles.resultText,
+                            textAlign: 'center',
+                            marginTop: 24,
+                            color: inactiveColor,
+                        }}
+                    >
+                        Nəticə tapılmadı
+                    </CustomText>
+                </View>
+            );
+
         return (
             <View style={internalStyles.resultContainer}>
                 <FlatList
@@ -154,6 +181,7 @@ const ListItem = ({
     const Products = () => {
         return <CustomText style={internalStyles.resultText}>{item.name}</CustomText>;
     };
+
     return (
         <TouchableOpacity
             onPress={() => {
