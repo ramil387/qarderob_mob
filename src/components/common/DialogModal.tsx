@@ -35,7 +35,7 @@ const DialogModal = () => {
     };
 
     return (
-        <Modal animationType='fade' visible={true} transparent={true}>
+        <Modal animationType='fade' visible={generalStates.commonDialogVisible} transparent={true}>
             <View style={internalStyles.container}>
                 <View style={internalStyles.contentContainer}>
                     <TouchableOpacity
