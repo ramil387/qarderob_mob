@@ -12,6 +12,7 @@ export const fetchProducts = async (page: number) => {
 
         const selectedBrand = Object.keys(brand)?.filter((key) => brand[key]);
         const selectedCity = Object.keys(city)?.filter((key) => city[key]);
+        console.log('salam')
         const selectedCategory = category?.map((cat: CategoryType) => cat?.slug_az);
         const selectedColor = filterStates?.query.color
         const selectedSize = filterStates?.query.size

@@ -12,6 +12,7 @@ class GeneralStates {
     homeScrollRef: any = null;
     bottomSheetVisible: boolean = false;
     backDropVisible: boolean = false;
+    categoryPageLevel: number = 0;
 
     // ------------DIALOG-----------------
 
@@ -88,6 +89,13 @@ class GeneralStates {
             this.backDropVisible = visible
         })
     }
+
+    setCategoryPageLevel(level: number) {
+        runInAction(() => {
+            this.categoryPageLevel = level
+        })
+    }
+
 
     // ------------DIALOG-----------------
 

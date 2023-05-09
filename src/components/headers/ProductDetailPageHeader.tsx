@@ -5,10 +5,20 @@ import OutlineLogo from '@/icons/logo/OutlineLogo';
 import ShareIcon from '@/icons/product/ShareIcon';
 import BackIcon from '@/icons/product/BackIcon';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import Share from 'react-native-share';
+import { website } from '@/constants';
+import { toJS } from 'mobx';
+import productStates from '@/states/product/productStates';
+import { observer } from 'mobx-react-lite';
 
 const ProductDetailPageHeader = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
-    const shareAd = () => {};
+    const product = toJS(productStates.selectedProduct);
+    const shareProduct = () => {
+        Share.open({
+            url: `${website}/elan/${product?.slug}-${product?.id}`,
+        });
+    };
     return (
         <View style={internalStyles.container}>
             <TouchableOpacity onPress={() => navigate.goBack()}>
@@ -17,14 +27,14 @@ const ProductDetailPageHeader = () => {
             <View>
                 <OutlineLogo />
             </View>
-            <View>
+            <TouchableOpacity onPress={shareProduct}>
                 <ShareIcon />
-            </View>
+            </TouchableOpacity>
         </View>
     );
 };
 
-export default ProductDetailPageHeader;
+export default observer(ProductDetailPageHeader);
 
 const internalStyles = StyleSheet.create({
     container: {

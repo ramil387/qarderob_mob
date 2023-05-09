@@ -4,8 +4,10 @@ import BackIcon from '@/icons/product/BackIcon';
 import CustomText from '../ui/CustomText';
 import { NunitoBold, primaryColor } from '@/styles/variables';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import NotificationIcon from '@/icons/home/NotificationIcon';
+import { observer } from 'mobx-react-lite';
 
-const InfluencerPageHeader = ({ title }: { title?: string }) => {
+const InfluencerPageHeader = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
 
     return (
@@ -18,12 +20,14 @@ const InfluencerPageHeader = ({ title }: { title?: string }) => {
                 <BackIcon />
             </TouchableOpacity>
             <CustomText style={internalStyles.midText}>İnfluenserlər</CustomText>
-            <CustomText style={internalStyles.rightText}>Təmizlə</CustomText>
+            <View>
+                <NotificationIcon />
+            </View>
         </View>
     );
 };
 
-export default InfluencerPageHeader;
+export default observer(InfluencerPageHeader);
 
 const internalStyles = StyleSheet.create({
     container: {

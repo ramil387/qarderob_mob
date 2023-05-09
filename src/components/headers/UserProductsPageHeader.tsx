@@ -5,13 +5,20 @@ import CustomText from '../ui/CustomText';
 import { NunitoBold, primaryColor } from '@/styles/variables';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import CogIcon from '@/icons/user/CogIcon';
 import productStates from '@/states/product/productStates';
+import ShareIcon from '@/icons/product/ShareIcon';
+import Share from 'react-native-share';
+import { website } from '@/constants';
+import { toJS } from 'mobx';
+import userStates from '@/states/user/userStates';
 
 const UserProductsPageHeader = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
-    const goBurgerMenuPage = () => {
-        navigate.navigate('BurgerMenuPage');
+    const user = toJS(userStates.selectedAdOwner);
+    const shareUser = () => {
+        Share.open({
+            url: `${website}/istifadeci/${user?.username}-${user?.id}`,
+        });
     };
 
     return (
@@ -26,8 +33,8 @@ const UserProductsPageHeader = () => {
             <CustomText style={internalStyles.midText}>
                 {productStates.selectedProduct?._user?.username}
             </CustomText>
-            <TouchableOpacity onPress={goBurgerMenuPage}>
-                <CogIcon style={{ color: 'black' }} />
+            <TouchableOpacity onPress={shareUser}>
+                <ShareIcon />
             </TouchableOpacity>
         </View>
     );

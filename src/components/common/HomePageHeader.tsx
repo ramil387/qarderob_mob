@@ -11,6 +11,7 @@ import { defineFilterCount } from '../../helper/defineFilterCount';
 import filterStates from '@/states/filter/filterStates';
 import { Badge } from '@rneui/themed';
 import { primaryColor } from '@/styles/variables';
+import { showShouldAuth } from '@/helper/showShouldAuth';
 
 const HomePageHeader = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
@@ -22,17 +23,7 @@ const HomePageHeader = () => {
     };
     const goNotification = () => {
         if (!profileStates.token) {
-            errorStates.setCommonErrorVisible(true);
-            errorStates.setErrorHeader('Bildiriş');
-            errorStates.setErrorBody('Bildirişləri görmək üçün daxil olmalısınız.');
-            errorStates.setOkText('Daxil ol');
-            errorStates.setCancelText('Qeydiyyat');
-            errorStates.setOkFunc(() => {
-                navigate.navigate('LoginPage');
-            });
-            errorStates.setCancelFunc(() => {
-                navigate.navigate('RegisterPage');
-            });
+            showShouldAuth(navigate, 'Bildiriş', 'Bildirişləri görmək üçün daxil olmalısınız.');
             return;
         }
     };

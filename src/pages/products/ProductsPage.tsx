@@ -1,5 +1,5 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import React, { memo, useEffect } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import CustomTextInput from '@/components/ui/CustomTextInput';
 import { e5Color, f5Color, primaryColor } from '@/styles/variables';
@@ -9,7 +9,12 @@ import FilterHorizantalIcon from '@/icons/product/FilterHorizantalIcon';
 import SortArrowsIcon from '@/icons/product/SortArrowsIcon';
 import { fetchProducts } from '@/states/product/fetchProducts';
 import productStates from '@/states/product/productStates';
-import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import {
+    NavigationProp,
+    ParamListBase,
+    useFocusEffect,
+    useNavigation,
+} from '@react-navigation/native';
 import generalStates from '@/states/general/generalStates';
 import filterStates from '@/states/filter/filterStates';
 import ProductList from '@/components/products/ProductList';
@@ -80,21 +85,23 @@ export const FilterContainer = memo(
 const ProductsPage = () => {
     const [isLoadingMore, setIsLoadingMore] = React.useState<boolean>(false);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
-    const isFocused = useNavigation().isFocused();
-    useEffect(() => {
-        if (!isFocused) return;
-        filterStates.setQuery('verified', true);
-        fetchProducts(1)
-            .then((resp) => {
-                productStates.setProducts(resp);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-        return () => {
-            generalStates.setBottomSheetVisible(false);
-        };
-    }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            filterStates.setQuery('verified', true);
+            fetchProducts(1)
+                .then((resp) => {
+                    productStates.setProducts(resp);
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
+            return () => {
+                generalStates.setBottomSheetVisible(false);
+                setIsLoading(true);
+            };
+        }, [filterStates.query]),
+    );
     const loadMore = () => {
         // working only one time
 

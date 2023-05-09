@@ -34,6 +34,7 @@ import UserProductsPageHeader from '@/components/headers/UserProductsPageHeader'
 import VipServicePage from '@/pages/paid/VipServicePage';
 import PaidServicePageHeader from '@/components/headers/PaidServicePageHeader';
 import MoveForwardPage from '@/pages/paid/MoveForwardPage';
+import CommonAuthHeader from '@/components/headers/CommonAuthHeader';
 
 type StackListType = {
     name: string;
@@ -199,8 +200,8 @@ export const StackList: StackListType[] = [
         name: 'LoginPage',
         component: LoginPage,
         options: {
-            headerShown: false,
-            header: () => null,
+            headerShown: true,
+            header: () => <CommonAuthHeader />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',
@@ -210,8 +211,8 @@ export const StackList: StackListType[] = [
         name: 'RegisterPage',
         component: RegisterPage,
         options: {
-            headerShown: false,
-            header: () => null,
+            headerShown: true,
+            header: () => <CommonAuthHeader />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',
