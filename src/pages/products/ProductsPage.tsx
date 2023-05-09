@@ -31,7 +31,7 @@ export const FilterContainer = memo(({ search }: { search?: boolean }) => {
         navigate.navigate('FilterPage');
     };
     return (
-        <View style={{ zIndex: 10 }}>
+        <View style={{ paddingHorizontal: 16, marginTop: 16 }}>
             {search && (
                 <View style={internalStyles.searchContainer}>
                     <CustomTextInput
@@ -76,7 +76,6 @@ const ProductsPage = () => {
             generalStates.setBottomSheetVisible(false);
         };
     }, []);
-
     const loadMore = () => {
         // working only one time
 
@@ -107,6 +106,7 @@ const ProductsPage = () => {
     return (
         <View style={internalStyles.container}>
             <FilterContainer search={true} />
+
             {isLoading ? (
                 <LoadingComponent />
             ) : !productStates.products?.data?.length ? (
@@ -136,7 +136,7 @@ export default observer(ProductsPage);
 const internalStyles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
+        // padding: 16,
     },
     searchContainer: {
         backgroundColor: f5Color,

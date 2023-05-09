@@ -1,30 +1,65 @@
-import { View, StyleSheet } from 'react-native';
-import React from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { memo } from 'react';
 import CustomTextInput from '../ui/CustomTextInput';
 import SearchIcon from '@/icons/home/SearchIcon';
 import { f5Color } from '@/styles/variables';
+import { observer } from 'mobx-react-lite';
+import searchStates from '@/states/search/searchStates';
+import CloseIcon from '@/icons/error/CloseIcon';
 
-const SearchInput = () => {
-    const Prefix = () => {
+const SearchInput = memo(
+    observer(() => {
+        const Prefix = () => {
+            return (
+                <TouchableOpacity
+                    onPress={() => {
+                        console.log('sala,');
+                        searchStates.setSearchContainerVisible(true);
+                        searchStates.setSearchKey('');
+                    }}
+                    style={{
+                        ...internalStyles.prefixIcon,
+                    }}
+                >
+                    <SearchIcon />
+                </TouchableOpacity>
+            );
+        };
+        const Suffix = () => {
+            return (
+                <TouchableOpacity
+                    onPress={() => {
+                        searchStates.setSearchKey('');
+                        searchStates.setSearchContainerVisible(false);
+                    }}
+                    style={{ ...internalStyles.suffix }}
+                >
+                    <CloseIcon />
+                </TouchableOpacity>
+            );
+        };
+
         return (
-            <View style={{ ...internalStyles.prefixIcon }}>
-                <SearchIcon />
-            </View>
+            <>
+                <View style={internalStyles.container}>
+                    <CustomTextInput
+                        value={searchStates.searchKey}
+                        onPressIn={() => searchStates.setSearchContainerVisible(true)}
+                        onChangeText={(text) => searchStates.setSearchKey(text)}
+                        style={internalStyles.inputStyle}
+                        icon={
+                            <>
+                                <Prefix />
+                                {searchStates.searchKey.length > 0 && <Suffix />}
+                            </>
+                        }
+                        placeholder='Məhsul və ya @istifadəçi axtar...'
+                    />
+                </View>
+            </>
         );
-    };
-
-    return (
-        <>
-            <View style={internalStyles.container}>
-                <CustomTextInput
-                    style={internalStyles.inputStyle}
-                    icon={<Prefix />}
-                    placeholder='Məhsul və ya @istifadəçi axtar...'
-                />
-            </View>
-        </>
-    );
-};
+    }),
+);
 
 export default SearchInput;
 
@@ -39,6 +74,14 @@ const internalStyles = StyleSheet.create({
     },
     prefixIcon: {
         left: 16,
+        position: 'absolute',
+        height: '100%',
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    suffix: {
+        right: 16,
         position: 'absolute',
         height: '100%',
         alignItems: 'center',

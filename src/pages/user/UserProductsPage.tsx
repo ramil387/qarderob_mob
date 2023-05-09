@@ -134,13 +134,14 @@ export default observer(UserProductsPage);
 const internalStyles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
     },
     avatarContainer: {
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'row',
         gap: 8,
+        paddingHorizontal: 16,
+        marginTop: 16,
     },
     fullName: {
         fontFamily: NunitoBold,

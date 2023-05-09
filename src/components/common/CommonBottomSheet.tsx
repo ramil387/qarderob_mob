@@ -34,6 +34,7 @@ const CommonBottomSheet = ({
     const useChangeBottomHeightStyle = useAnimatedStyle(() => {
         return {
             height: bottomHeight.value,
+            overflow: 'hidden',
         };
     });
 
@@ -55,12 +56,11 @@ const CommonBottomSheet = ({
             <Animated.View style={[internalStyles.container, useChangeBottomHeightStyle]}>
                 <TouchableOpacity
                     onPress={() => {
-                        console.log('bura basiram');
                         onClose();
                     }}
                     style={internalStyles.closeIconContainer}
                 >
-                    <CloseIcon style={{ width: 30, height: 30 }} />
+                    <CloseIcon />
                 </TouchableOpacity>
                 {children}
             </Animated.View>
@@ -77,14 +77,15 @@ const internalStyles = StyleSheet.create({
         borderTopRightRadius: 24,
         position: 'absolute',
         bottom: 0,
-        width: phoneWidth,
+        width: '100%',
         elevation: 5,
-        zIndex: 9999,
+        zIndex: 1,
+        overflow: 'hidden',
     },
     closeIconContainer: {
         position: 'absolute',
         top: 16,
         right: 16,
-        zIndex: 9999,
+        zIndex: 1,
     },
 });

@@ -16,7 +16,8 @@ export const APIS = {
     ads: 'ads',
     stats: "stats",
     userInfo: 'users',
-    payment: 'payment'
+    payment: 'payment',
+    search: "search",
 
 }
 

@@ -76,13 +76,6 @@ const LastAds = () => {
                     paddingBottom: 48,
                     marginTop: 16,
                 }}
-                onEndReached={() => {
-                    // if (mapStates.spotsByPage.length >= 10) {
-                    //     mapStates.setSpotPage(
-                    //         mapStates.spotsByPage[mapStates.spotsByPage.length - 1].sort,
-                    //     );
-                    // }
-                }}
                 columnWrapperStyle={{ justifyContent: 'space-between' }}
                 windowSize={50}
                 initialNumToRender={50}

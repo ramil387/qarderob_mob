@@ -29,6 +29,7 @@ export const fetchProducts = async (page: number) => {
             sortby: filterStates.query?.sortby,
             user_id: filterStates.query?.user_id,
             verified: filterStates.query?.verified,
+            q: filterStates.query?.q,
         }
 
         // console.log({ data: Object.entries(queries) })

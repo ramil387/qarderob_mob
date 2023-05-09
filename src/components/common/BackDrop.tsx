@@ -12,11 +12,9 @@ import Animated, {
 
 const BackDrop = () => {
     const opacityBackDrop = useSharedValue(0);
-    const zIndexBackDrop = useSharedValue(-1);
     const useChangeOpacityBackDropStyle = useAnimatedStyle(() => {
         return {
             opacity: opacityBackDrop.value,
-            zIndex: zIndexBackDrop.value,
         };
     });
 
@@ -26,17 +24,9 @@ const BackDrop = () => {
                 duration: 500,
                 easing: Easing.inOut(Easing.ease),
             });
-            zIndexBackDrop.value = withTiming(1, {
-                duration: 100,
-                easing: Easing.inOut(Easing.ease),
-            });
         } else {
             opacityBackDrop.value = withTiming(0, {
                 duration: 500,
-                easing: Easing.inOut(Easing.ease),
-            });
-            zIndexBackDrop.value = withTiming(-1, {
-                duration: 100,
                 easing: Easing.inOut(Easing.ease),
             });
         }
@@ -47,6 +37,7 @@ const BackDrop = () => {
             style={[
                 {
                     ...internalStyles.backdrop,
+                    display: generalStates.backDropVisible ? 'flex' : 'none',
                 },
                 useChangeOpacityBackDropStyle,
             ]}
@@ -59,11 +50,12 @@ export default memo(observer(BackDrop));
 const internalStyles = StyleSheet.create({
     backdrop: {
         position: 'absolute',
-        top: -100,
+        top: '-50%',
         left: 0,
         width: phoneWidth,
         height: '100%',
         backgroundColor: backdropBackground,
         padding: 16,
+        display: 'none',
     },
 });

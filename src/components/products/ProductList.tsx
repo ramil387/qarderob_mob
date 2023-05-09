@@ -26,71 +26,65 @@ const ProductList = ({
     selectSorting?: (value: string) => void;
 }) => {
     const sorting = [
-        { label: 'Yeniliyinə görə', value: '' },
-        { label: 'Əvvəlcə ucuz', value: 'cheap' },
-        { label: 'Əvvəlcə baha', value: 'expensive' },
+        {
+            label: 'Yeniliyinə görə',
+            value: '',
+            selected: filterStates.query?.sortby === undefined || filterStates.query?.sortby === '',
+        },
+        { label: 'Əvvəlcə ucuz', value: 'cheap', selected: filterStates.query?.sortby === 'cheap' },
+        {
+            label: 'Əvvəlcə baha',
+            value: 'expensive',
+            selected: filterStates.query?.sortby === 'expensive',
+        },
     ];
 
     return (
         <View style={internalStyles.container}>
-            {/* <View
-                style={{
-                    ...internalStyles.headContainer,
-                    display: type === 'user_ads' ? 'none' : 'flex',
-                }}
-            >
-                <View>
-                    <CustomText style={internalStyles.headText}>
-                        {type === 'vip' ? 'VIP ELANLAR' : 'SON ELANLAR'}
-                    </CustomText>
-                </View>
-                <View style={internalStyles.rightContainer}>
-                    <CustomText style={internalStyles.showMore}>Hamısına bax</CustomText>
-                    <ChevronRightIcon />
-                </View>
-            </View> */}
-            <FlatList
-                onScroll={(e) => {
-                    if (generalStates.curPage !== 'ProfilePage') return;
-                    const yOffset = e.nativeEvent.contentOffset.y;
-                    if (yOffset > 0) {
-                        productStates.setProductListScrollDirection('down');
-                    } else {
-                        productStates.setProductListScrollDirection('up');
-                    }
-                }}
-                data={data}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <Product item={item} />}
-                stickyHeaderHiddenOnScroll={true}
-                showsVerticalScrollIndicator={false}
-                onEndReachedThreshold={0.5}
-                numColumns={2}
-                decelerationRate='fast'
-                snapToAlignment='center'
-                contentContainerStyle={{
-                    rowGap: 8,
-                    marginTop:
-                        type === 'user_ads' || type === 'profile_ads' || type === 'products'
-                            ? 0
-                            : 16,
-                }}
-                onEndReached={loadMore}
-                columnWrapperStyle={{ justifyContent: 'space-between' }}
-                windowSize={50}
-                initialNumToRender={50}
-                extraData={data}
-                ListFooterComponent={() => {
-                    if (isMoreLoading) {
-                        return (
-                            <View>
-                                <ActivityIndicator size='large' color={primaryColor} />
-                            </View>
-                        );
-                    }
-                    return null;
-                }}
-            />
+            <View style={{ paddingHorizontal: 16 }}>
+                <FlatList
+                    onScroll={(e) => {
+                        if (generalStates.curPage !== 'ProfilePage') return;
+                        const yOffset = e.nativeEvent.contentOffset.y;
+                        if (yOffset > 0) {
+                            productStates.setProductListScrollDirection('down');
+                        } else {
+                            productStates.setProductListScrollDirection('up');
+                        }
+                    }}
+                    data={data}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => <Product item={item} />}
+                    stickyHeaderHiddenOnScroll={true}
+                    showsVerticalScrollIndicator={false}
+                    onEndReachedThreshold={0.5}
+                    numColumns={2}
+                    decelerationRate='fast'
+                    snapToAlignment='center'
+                    contentContainerStyle={{
+                        rowGap: 8,
+                        marginTop:
+                            type === 'user_ads' || type === 'profile_ads' || type === 'products'
+                                ? 0
+                                : 16,
+                    }}
+                    onEndReached={loadMore}
+                    columnWrapperStyle={{ justifyContent: 'space-between' }}
+                    windowSize={50}
+                    initialNumToRender={50}
+                    extraData={data}
+                    ListFooterComponent={() => {
+                        if (isMoreLoading) {
+                            return (
+                                <View>
+                                    <ActivityIndicator size='large' color={primaryColor} />
+                                </View>
+                            );
+                        }
+                        return null;
+                    }}
+                />
+            </View>
             <CommonBottomSheet
                 height={300}
                 visible={generalStates.bottomSheetVisible}
@@ -119,7 +113,7 @@ const ProductList = ({
                                     }}
                                     key={index}
                                 >
-                                    {filterStates.query.sortby === item.value ? (
+                                    {item?.selected ? (
                                         <FillRadioButtonIcon />
                                     ) : (
                                         <OutlineRadioButton />
@@ -168,8 +162,10 @@ const internalStyles = StyleSheet.create({
         marginRight: 8,
     },
     bottomSheetContainer: {
-        padding: 16,
-        marginTop: 18,
+        overflow: 'hidden',
+        backgroundColor: '#fff',
+        paddingHorizontal: 16,
+        marginTop: 28,
     },
     bottomHeadText: {
         fontSize: 20,

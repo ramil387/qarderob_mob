@@ -95,7 +95,7 @@ const ProductSection = observer(() => {
         }
 
         return (
-            <View style={{ padding: 16, paddingTop: 0, backgroundColor: f8Color, flex: 1 }}>
+            <View style={{ paddingTop: 0, backgroundColor: f8Color, flex: 1 }}>
                 <ProductList
                     data={userStates.userProducts?.data || []}
                     loadMore={loadMore}

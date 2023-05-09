@@ -17,6 +17,7 @@ type QueryType = {
     sortby?: string,
     user_id?: number,
     verified?: boolean,
+    q?: string,
 }
 class FilterStates {
 
@@ -39,8 +40,7 @@ class FilterStates {
         sortby: undefined,
         user_id: undefined,
         verified: undefined,
-
-
+        q: undefined,
     };
 
     isLoadingFilter: boolean = false;
