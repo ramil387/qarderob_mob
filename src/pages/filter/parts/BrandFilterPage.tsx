@@ -13,6 +13,7 @@ import SearchIcon from '@/icons/home/SearchIcon';
 import { makeSlugify } from '@/helper/makeSlugify';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import generalStates from '@/states/general/generalStates';
 
 const PrefixIcon = () => {
     return (
@@ -70,6 +71,8 @@ const BrandFilterPage = () => {
         [brands, searchKey],
     );
 
+    console.log({ cur: generalStates.curPage });
+
     return (
         <View style={internalStyles.container}>
             <View style={internalStyles.searchContainer}>
@@ -94,6 +97,10 @@ const BrandFilterPage = () => {
             <View style={internalStyles.btn}>
                 <CustomMainButton
                     func={() => {
+                        if (generalStates.prevPage === 'HomePage') {
+                            navigate.navigate('ProductsPage');
+                            return;
+                        }
                         navigate.goBack();
                     }}
                     title='Təsdiqlə'

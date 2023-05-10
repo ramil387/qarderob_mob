@@ -21,3 +21,23 @@ export type InfluencerType = {
     orderNumber: number;
     instagram: string,
 }
+
+export type SearchedInfluencerType = {
+    cover: string,
+    facebook: string,
+    full_name: string,
+    id: string,
+    is_famous: boolean,
+    is_inf: string,
+    photo: string,
+    tiktok: string,
+    username: string,
+    social_links: {
+        facebook: string,
+        instagram: string,
+        tiktok: string
+    },
+    isVip: boolean,
+    orderNumber: number;
+    instagram: string,
+}

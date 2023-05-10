@@ -9,6 +9,7 @@ import CloseIcon from '@/icons/error/CloseIcon';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import filterStates from '@/states/filter/filterStates';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import BackIcon from '@/icons/product/BackIcon';
 
 const SearchInput = memo(
     observer(() => {
@@ -81,7 +82,7 @@ const SearchInput = memo(
                                 searchStates.setSearchContainerVisible(false);
                             }}
                         >
-                            <CloseIcon />
+                            <BackIcon />
                         </TouchableOpacity>
                     </Animated.View>
                     <Animated.View style={[internalStyles.inpContainer, useInputStyles]}>

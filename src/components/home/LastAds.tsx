@@ -1,4 +1,4 @@
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { memo, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import generalStates from '@/states/general/generalStates';
@@ -13,8 +13,13 @@ import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
 import { RefreshControl } from 'react-native';
 import { fetchHome } from '@/states/general/fetchHome';
 import LoadingComponent from '../common/LoadingComponent';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
 const HomeTopContainer = memo(() => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
+    const goProducts = () => {
+        navigate.navigate('ProductsPage');
+    };
     return (
         <View>
             <View style={{ marginBottom: 24 }}>
@@ -26,10 +31,10 @@ const HomeTopContainer = memo(() => {
                 <View>
                     <CustomText style={internalStyles.headText}>SON ELANLAR</CustomText>
                 </View>
-                <View style={internalStyles.rightContainer}>
+                <TouchableOpacity onPress={goProducts} style={internalStyles.rightContainer}>
                     <CustomText style={internalStyles.showMore}>Hamısına bax</CustomText>
                     <ChevronRightIcon />
-                </View>
+                </TouchableOpacity>
             </View>
         </View>
     );

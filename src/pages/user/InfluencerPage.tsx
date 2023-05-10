@@ -8,12 +8,20 @@ import { fetchInfluencers } from '@/states/user/fetchInfluencers';
 import LoadingComponent from '@/components/common/LoadingComponent';
 import LinearGradient from 'react-native-linear-gradient';
 import CustomText from '@/components/ui/CustomText';
-import { NunitoBold, f5Color } from '@/styles/variables';
+import { NunitoBold, f5Color, mainTextColor } from '@/styles/variables';
 import CustomTextInput from '@/components/ui/CustomTextInput';
 import SearchIcon from '@/icons/home/SearchIcon';
 import { Avatar } from '@rneui/themed';
 import VerifiedIcon from '@/icons/user/VerifiedIcon';
 import InstagramSquareIcon from '@/icons/user/InstagramSquareIcon';
+import _ from 'lodash';
+import { searchInfluencer } from '@/states/user/searchInfluencer';
+import CloseIcon from '@/icons/error/CloseIcon';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import { InfluencerType } from '@/types/influencerType';
+import { UserType } from '@/types/userType';
+import { TouchableOpacity } from 'react-native';
+
 const PrefixIcon = () => {
     return (
         <View style={internalStyles.prefixIcon}>
@@ -21,11 +29,27 @@ const PrefixIcon = () => {
         </View>
     );
 };
+
+const SuffixIcon = ({ hide }: { hide?: boolean }) => {
+    return (
+        <View style={{ ...internalStyles.suffixIcon, display: hide ? 'none' : 'flex' }}>
+            <CloseIcon style={{ color: mainTextColor }} />
+        </View>
+    );
+};
+
 const InfluencerPage = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
+
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
     const influencers = toJS(userStates.influencers);
     const [page, setPage] = React.useState<number>(1);
     const [searchKey, setSearchKey] = React.useState<string>('');
+
+    const goUserPage = (item: UserType) => {
+        userStates.setSelectedAdOwner(item);
+        navigate.navigate('UserProductsPage');
+    };
 
     useEffect(() => {
         fetchInfluencers(page).finally(() => {
@@ -33,7 +57,18 @@ const InfluencerPage = () => {
         });
     }, []);
 
-    if (isLoading) return <LoadingComponent />;
+    const debuenceSearch = _.debounce(() => {
+        setIsLoading(true);
+        searchInfluencer(searchKey).finally(() => {
+            setIsLoading(false);
+        });
+    }, 500);
+
+    useEffect(() => {
+        if (searchKey.length > 0) {
+            debuenceSearch();
+        }
+    }, [searchKey]);
 
     return (
         <View style={internalStyles.container}>
@@ -42,70 +77,82 @@ const InfluencerPage = () => {
                     onChangeText={(text) => setSearchKey(text)}
                     placeholder='influenser axtar'
                     style={internalStyles.inputStyle}
-                    icon={<PrefixIcon />}
+                    icon={
+                        <>
+                            <PrefixIcon />
+                            <SuffixIcon hide={searchKey.length > 0 ? false : true} />
+                        </>
+                    }
+                    value={searchKey}
                 />
             </View>
-            <FlatList
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ marginTop: 16, rowGap: 8 }}
-                data={influencers}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <ImageBackground
-                        imageStyle={{ borderRadius: 8 }}
-                        source={{
-                            uri: item.cover,
-                        }}
-                    >
-                        <LinearGradient
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1.35, y: 0 }}
-                            colors={[
-                                '#F70F4B',
-                                'rgba(246, 99, 137, 0.612819)',
-                                'rgba(255, 255, 255, 0)',
-                                'rgba(255, 255, 255, 0) 123.13%)',
-                            ]}
-                            style={internalStyles.itemContainer}
-                        >
-                            <View style={internalStyles.avatarContainer}>
-                                <Avatar
-                                    size={48}
-                                    source={{
-                                        uri: item.photo,
-                                    }}
-                                    rounded
-                                />
-                                <View
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        gap: 4,
-                                    }}
+            {isLoading ? (
+                <LoadingComponent />
+            ) : (
+                <FlatList
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ marginTop: 16, rowGap: 8 }}
+                    data={influencers}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={() => goUserPage(item as any)}>
+                            <ImageBackground
+                                imageStyle={{ borderRadius: 8 }}
+                                source={{
+                                    uri: item.cover,
+                                }}
+                            >
+                                <LinearGradient
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1.35, y: 0 }}
+                                    colors={[
+                                        '#F70F4B',
+                                        'rgba(246, 99, 137, 0.612819)',
+                                        'rgba(255, 255, 255, 0)',
+                                        'rgba(255, 255, 255, 0) 123.13%)',
+                                    ]}
+                                    style={internalStyles.itemContainer}
                                 >
-                                    <CustomText style={internalStyles.name}>
-                                        {item.full_name}
-                                    </CustomText>
-                                    {item.isVip && <VerifiedIcon />}
-                                </View>
-                            </View>
-                            {(item?.social_links?.instagram || item.instagram) && (
-                                <View style={internalStyles.instagramContainer}>
-                                    <InstagramSquareIcon />
-                                    <Text style={{ color: 'white', paddingLeft: 4 }}>
-                                        {item?.social_links?.instagram
-                                            ? item?.social_links?.instagram
-                                                  .split('/')[3]
-                                                  ?.split('?')[0]
-                                            : item?.instagram.split('/')[3]?.split('?')[0]}
-                                    </Text>
-                                </View>
-                            )}
-                        </LinearGradient>
-                    </ImageBackground>
-                )}
-            />
+                                    <View style={internalStyles.avatarContainer}>
+                                        <Avatar
+                                            size={48}
+                                            source={{
+                                                uri: item.photo,
+                                            }}
+                                            rounded
+                                        />
+                                        <View
+                                            style={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                alignItems: 'center',
+                                                gap: 4,
+                                            }}
+                                        >
+                                            <CustomText style={internalStyles.name}>
+                                                {item.full_name}
+                                            </CustomText>
+                                            {item.isVip && <VerifiedIcon />}
+                                        </View>
+                                    </View>
+                                    {(item?.social_links?.instagram || item.instagram) && (
+                                        <View style={internalStyles.instagramContainer}>
+                                            <InstagramSquareIcon />
+                                            <Text style={{ color: 'white', paddingLeft: 4 }}>
+                                                {item?.social_links?.instagram
+                                                    ? item?.social_links?.instagram
+                                                          .split('/')[3]
+                                                          ?.split('?')[0]
+                                                    : item?.instagram.split('/')[3]?.split('?')[0]}
+                                            </Text>
+                                        </View>
+                                    )}
+                                </LinearGradient>
+                            </ImageBackground>
+                        </TouchableOpacity>
+                    )}
+                />
+            )}
         </View>
     );
 };
@@ -158,5 +205,13 @@ const internalStyles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    suffixIcon: {
+        position: 'absolute',
+        right: 16,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
     },
 });

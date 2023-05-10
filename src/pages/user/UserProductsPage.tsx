@@ -127,7 +127,7 @@ const UserProductsPage = () => {
 
     const changeTopContainerHeight = (height: number) => {
         topContainerHeight.value = withTiming(height, {
-            duration: 200,
+            duration: 300,
             easing: Easing.inOut(Easing.ease),
         });
     };
@@ -173,6 +173,7 @@ const UserProductsPage = () => {
             return () => {
                 generalStates.setBottomSheetVisible(false);
                 userStates.setUserProducts(null);
+                productStates.setProductListScrollDirection('up');
                 setIsLoading(true);
             };
         }, [filterStates.query]),
