@@ -13,22 +13,24 @@ import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/
 const ColorFilterPage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
     const colors = toJS(filterStates.colors);
-    const [selectedColors, setSelectedColors] = React.useState<string[]>(
-        filterStates.query?.color || [],
-    );
+
     const handleSelectColor = (color: string) => {
         if (filterStates.query?.color?.includes(color)) {
             filterStates.setQuery(
                 'color',
                 filterStates.query.color.filter((item: string) => item !== color),
             );
+            filterStates.setSelectedColors(
+                filterStates.selectedColors.filter((item: string) => item !== color),
+            );
             return;
         }
         filterStates.setQuery('color', [...(filterStates?.query?.color || []), color]);
+        filterStates.setSelectedColors([...filterStates.selectedColors, color]);
     };
 
     useEffect(() => {
-        setSelectedColors(filterStates.query?.color || []);
+        filterStates.setSelectedColors(filterStates.query?.color || []);
     }, [filterStates.query?.color]);
 
     return (
@@ -58,7 +60,7 @@ const ColorFilterPage = () => {
                                             height: '100%',
                                             width: '100%',
                                             alignItems: 'center',
-                                            display: selectedColors?.includes(
+                                            display: filterStates.selectedColors?.includes(
                                                 makeSlugify(item.name),
                                             )
                                                 ? 'flex'

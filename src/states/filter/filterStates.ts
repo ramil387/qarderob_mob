@@ -4,6 +4,8 @@ import { CityType } from "@/types/cityType";
 import { ColorType } from "@/types/colorType";
 import { SizeType } from "@/types/sizeType";
 import { makeAutoObservable, runInAction } from "mobx";
+import userStates from "../user/userStates";
+import shopStates from "../shop/shopStates";
 
 
 type QueryType = {
@@ -27,7 +29,7 @@ class FilterStates {
     colors: ColorType[] = [];
     sizes: SizeType[] = [];
     productStatus: Array<{ label: string, id: number }> = [{ label: "Yeni", id: 1 }, { label: "Yeni və etiketli", id: 2 }, { label: "Az istifadə olunmuş", id: 3 }];
-    prices: number[] = [];
+    prices: any[] = ['', ''];
 
     query: QueryType = {
         brand: {},
@@ -46,6 +48,12 @@ class FilterStates {
     isLoadingFilter: boolean = false;
     // for back page
     categoryLevel: number = 0;
+
+    // filter pages
+    selectedCategories: any = []
+    selectedProductStatus: any = []
+    selectedColors: any = []
+    selectedCities: any = []
 
     constructor() {
         makeAutoObservable(this)
@@ -127,12 +135,14 @@ class FilterStates {
                     price: ['', ''],
                     productStatus: [],
                     categories: [],
-
+                    user_id: userStates?.selectedAdOwner?.id,
+                    store_id: shopStates?.selectedShop?.id,
                 } as QueryType
             })
         } else if (page === 'CategoryFilterPage') {
             runInAction(() => {
                 this.query.categories = []
+                this.selectedCategories = []
             })
         } else if (page === 'BrandFilterPage') {
             runInAction(() => {
@@ -141,10 +151,12 @@ class FilterStates {
         } else if (page === 'PriceFilterPage') {
             runInAction(() => {
                 this.query.price = []
+                this.prices = ['', '']
             })
         } else if (page === 'ColorFilterPage') {
             runInAction(() => {
                 this.query.color = [] as QueryType['color']
+                this.selectedColors = []
             })
         } else if (page === 'SizeFilterPage') {
             runInAction(() => {
@@ -153,10 +165,12 @@ class FilterStates {
         } else if (page === 'CityFilterPage') {
             runInAction(() => {
                 this.query.city = {} as QueryType['city']
+                this.selectedCities = []
             })
         } else if (page === 'ProductStatusFilterPage') {
             runInAction(() => {
                 this.query.productStatus = []
+                this.selectedProductStatus = []
             })
         }
     }
@@ -171,7 +185,35 @@ class FilterStates {
                 price: ['', ''],
                 productStatus: [],
                 categories: [],
+                user_id: undefined,
+                store_id: undefined,
             } as QueryType
+            this.selectedCategories = []
+        })
+    }
+
+    // filter pages
+    setSelectedCategories = (selectedCategories: any) => {
+        runInAction(() => {
+            this.selectedCategories = selectedCategories
+        })
+    }
+
+    setSelectedProductStatus = (selectedProductStatus: any) => {
+        runInAction(() => {
+            this.selectedProductStatus = selectedProductStatus
+        })
+    }
+
+    setSelectedColors = (selectedColors: any) => {
+        runInAction(() => {
+            this.selectedColors = selectedColors
+        })
+    }
+
+    setSelectedCities = (selectedCities: any) => {
+        runInAction(() => {
+            this.selectedCities = selectedCities
         })
     }
 

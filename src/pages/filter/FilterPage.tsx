@@ -122,6 +122,10 @@ const FilterPage = () => {
                             navigate.navigate('UserProductsPage');
                             return;
                         }
+                        if (filterStates.query?.store_id) {
+                            navigate.navigate('ShopProductsPage');
+                            return;
+                        }
                         navigate.navigate('ProductsPage');
                     }}
                     title='Filtrlə'

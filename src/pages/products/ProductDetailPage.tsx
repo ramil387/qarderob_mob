@@ -2,7 +2,7 @@ import { View, Image, TouchableOpacity, ScrollView, FlatList } from 'react-nativ
 import React, { memo, useCallback } from 'react';
 import { observer } from 'mobx-react-lite';
 import productStates from '@/states/product/productStates';
-import { toJS } from 'mobx';
+import { runInAction, toJS } from 'mobx';
 import Carousel from 'react-native-reanimated-carousel';
 import {
     NunitoBold,
@@ -40,6 +40,11 @@ import {
 import profileStates from '@/states/profile/profileStates';
 import { fetchRelatedProducts } from '@/states/product/fetchRelatedProducts';
 import Product from '@/components/products/Product';
+import { showShouldAuth } from '@/helper/showShouldAuth';
+import { checkLikeByPage } from '@/helper/checkLikeByPage';
+import { http } from '@/services/httpMethods';
+import { APIS } from '@/constants';
+import { fetchLikeCount } from '@/states/product/fetchLikeCount';
 
 const ProductImages = memo(
     observer(() => {
@@ -88,8 +93,48 @@ const ProductImages = memo(
 );
 
 const TopInfoContainer = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
+    const [disableHeart, setDisableHeart] = React.useState(false);
+
     const product = toJS(productStates.selectedProduct);
-    const showLikeIcon = product?.user_id !== profileStates.user?.id;
+    const showLikeIcon = product?.user_id === profileStates.user?.id;
+    const toggleLike = async (id: number) => {
+        try {
+            if (!profileStates.token) {
+                showShouldAuth(
+                    navigate,
+                    'Bildiriş',
+                    'Favorilərə əlavə etmək üçün hesabınıza daxil olun',
+                );
+                return;
+            }
+
+            setDisableHeart(true);
+            const resp = await http.post(`${APIS.stats}/like/${id}`);
+            if (resp.data.fav === 1) {
+                runInAction(() => {
+                    productStates.selectedProduct = {
+                        ...productStates.selectedProduct,
+                        isFavourite: '1',
+                    };
+                });
+                checkLikeByPage(id, 1);
+            } else {
+                runInAction(() => {
+                    productStates.selectedProduct = {
+                        ...productStates.selectedProduct,
+                        isFavourite: '0',
+                    };
+                });
+                checkLikeByPage(id, 0);
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setDisableHeart(false);
+        }
+    };
+
     // todo add like count
     return (
         <View style={internalStyles.topInfoContainer}>
@@ -104,9 +149,13 @@ const TopInfoContainer = () => {
                     <CustomText style={internalStyles.price}>{product?.price}₼</CustomText>
                 </View>
             </View>
-            <View style={{ display: !showLikeIcon ? 'flex' : 'none', bottom: 20 }}>
+            <TouchableOpacity
+                onPress={() => toggleLike(product?.id)}
+                style={{ display: !showLikeIcon ? 'flex' : 'none', bottom: 20 }}
+            >
                 <OutlineHeartIcon style={{ color: mainTextColor }} />
-            </View>
+                <CustomText style={{ textAlign: 'center' }}>{product?.like_count}</CustomText>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -274,10 +323,8 @@ const ProductDetailPage = () => {
     useFocusEffect(
         useCallback(() => {
             increaseViewCount(product?.id || null, product?.slug || null);
-            fetchRelatedProducts(product!.category!.slug_az).then(() => {
-                console.log(productStates.relatedProducts?.count);
-            });
-
+            fetchRelatedProducts(product!.category!.slug_az);
+            fetchLikeCount(product?.id);
             return () => {
                 productStates.setRelatedProducts(null);
             };

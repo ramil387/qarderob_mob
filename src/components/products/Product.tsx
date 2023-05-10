@@ -22,8 +22,8 @@ import { runInAction, toJS } from 'mobx';
 import generalStates from '@/states/general/generalStates';
 import { fetchSingleProduct } from '@/states/product/fetchSingleProduct';
 import profileStates from '@/states/profile/profileStates';
-import errorStates from '@/states/error/errorStates';
 import { getImageRotations } from '../../helper/getImageRotations';
+import { showShouldAuth } from '@/helper/showShouldAuth';
 
 type ProductType = {
     item: AdListType;
@@ -94,18 +94,11 @@ const Product = ({ item, setToggleCheckLike, toggleCheckLike, type }: ProductTyp
     const toggleLike = async (id: number) => {
         try {
             if (!profileStates.token) {
-                errorStates.setCommonErrorVisible(true);
-                errorStates.setErrorHeader('Bildiriş');
-                errorStates.setErrorBody('Favorilərə əlavə etmək üçün hesabınıza daxil olun');
-                errorStates.setOkText('Daxil ol');
-                errorStates.setCancelText('Qeydiyyat');
-                errorStates.setOkFunc(() => {
-                    navigate.navigate('LoginPage');
-                });
-                errorStates.setCancelFunc(() => {
-                    navigate.navigate('RegisterPage');
-                });
-
+                showShouldAuth(
+                    navigate,
+                    'Bildiriş',
+                    'Favorilərə əlavə etmək üçün hesabınıza daxil olun',
+                );
                 return;
             }
 
@@ -131,7 +124,7 @@ const Product = ({ item, setToggleCheckLike, toggleCheckLike, type }: ProductTyp
         }
     };
 
-    const showLikeIcon = item?.user_id !== profileStates.user?.id;
+    const showLikeIcon = item?.user_id == profileStates.user?.id;
 
     return (
         <ProductCard phoneWidth={phoneWidth}>

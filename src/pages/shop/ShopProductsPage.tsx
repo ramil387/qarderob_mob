@@ -17,13 +17,14 @@ import Animated, {
 } from 'react-native-reanimated';
 import ProductList from '@/components/products/ProductList';
 import { FilterContainer } from '../products/ProductsPage';
-import { NunitoBold, e5Color, inactiveColor } from '@/styles/variables';
+import { NunitoBold, e5Color, inactiveColor, mainTextColor } from '@/styles/variables';
 import CustomText from '@/components/ui/CustomText';
 import moment from 'moment';
 import { TouchableOpacity } from 'react-native';
 import InstagramIcon from '@/icons/social/InstagramIcon';
 import FacebookCircleIcon from '@/icons/social/FacebookCircleIcon';
 import TiktokIcon from '@/icons/social/TiktokIcon';
+import { defineWorkingDays } from '@/helper/defineWorkingDays';
 
 const TopContainer = memo(
     observer(() => {
@@ -60,12 +61,25 @@ const TopContainer = memo(
                 >
                     <CustomText style={internalStyles.fullName}>{shop?.name}</CustomText>
                     <CustomText style={internalStyles.dateText}>
-                        {moment(shop?.createdAt).format('ll')} tarixindən Qarderob.az - da
-                    </CustomText>
-                    <CustomText style={{ ...internalStyles.dateText, marginTop: 4 }}>
-                        {toJS(shopStates.shopProducts?.count)} elan
+                        {defineWorkingDays(shop?.work_days)} | {shop?.start_hour} - {shop?.end_hour}
                     </CustomText>
                 </View>
+                <CustomText
+                    style={{ ...internalStyles.dateText, marginTop: 4, paddingHorizontal: 16 }}
+                >
+                    {shop?.address}
+                </CustomText>
+                <CustomText
+                    style={{
+                        ...internalStyles.dateText,
+                        marginTop: 4,
+                        paddingHorizontal: 16,
+                        color: mainTextColor,
+                        fontSize: 14,
+                    }}
+                >
+                    {shop?.desc}
+                </CustomText>
                 <View
                     style={{
                         ...internalStyles.socialContainer,
@@ -128,7 +142,8 @@ const ShopProductsPage = () => {
     };
 
     const getPageInfo = async () => {
-        fetchProducts(1, shop?.id)
+        filterStates.setQuery('store_id', shop?.id);
+        fetchProducts(1)
             .then((resp) => {
                 shopStates.setShopProducts(resp);
             })
@@ -140,7 +155,7 @@ const ShopProductsPage = () => {
     const loadMore = () => {
         if (shopStates.shopProducts?.has_next_page && !isLoadingMore) {
             setIsLoadingMore(true);
-            fetchProducts(shopStates.shopProducts?.next_page, shop?.id).then((resp) => {
+            fetchProducts(shopStates.shopProducts?.next_page).then((resp) => {
                 // spread operator is not working here
                 shopStates.setShopProducts({
                     data: [...(shopStates.shopProducts?.data || []), ...resp.data],

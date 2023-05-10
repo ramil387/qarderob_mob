@@ -98,33 +98,30 @@ const CategoryFilterPage = () => {
 export default observer(CategoryFilterPage);
 
 const MacroCategories = memo(
-    ({ mainCategoryId, searchKey }: { mainCategoryId: number; searchKey: string }) => {
+    observer(({ mainCategoryId, searchKey }: { mainCategoryId: number; searchKey: string }) => {
         const categories = toJS(filterStates.sortedCategories);
         const macroCategories = toJS(filterStates.sortedCategories).filter(
             (cat) => cat.parent_id === mainCategoryId,
         );
 
-        const [selectedCategories, setSelectedCategories] = React.useState<CategoryType[]>(
-            filterStates.query?.categories || [],
-        );
         const [perPage, setPerPage] = React.useState<number>(50);
 
         const selectCategories = (category: CategoryType) => {
-            const index = selectedCategories.findIndex(
+            const index = filterStates.selectedCategories.findIndex(
                 (cat: CategoryType) => cat.id === category.id,
             );
             if (index !== -1) {
-                const newCategories = [...selectedCategories];
+                const newCategories = [...filterStates.selectedCategories];
                 newCategories.splice(index, 1);
-                setSelectedCategories(newCategories);
+                filterStates.setSelectedCategories(newCategories);
                 return;
             }
-            setSelectedCategories([...selectedCategories, category]);
+            filterStates.setSelectedCategories([...filterStates.selectedCategories, category]);
         };
 
         useEffect(() => {
-            filterStates.setQuery('categories', selectedCategories);
-        }, [selectedCategories.length]);
+            filterStates.setQuery('categories', filterStates.selectedCategories);
+        }, [filterStates.selectedCategories.length]);
 
         const loadMoreData = () => {
             if (perPage >= macroCategories.length) return;
@@ -150,7 +147,7 @@ const MacroCategories = memo(
                 )}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item, index }) => {
-                    const showFillSquare = selectedCategories.find(
+                    const showFillSquare = filterStates.selectedCategories.find(
                         (cat: CategoryType) => cat.id === item.id,
                     );
                     return (
@@ -174,7 +171,7 @@ const MacroCategories = memo(
                             {categories
                                 .filter((cat) => cat?.parent_id === item?.id)
                                 ?.map((cat) => {
-                                    const showFillSquare = selectedCategories.find(
+                                    const showFillSquare = filterStates.selectedCategories.find(
                                         (f: CategoryType) => f.id === cat.id,
                                     );
                                     return (
@@ -213,7 +210,7 @@ const MacroCategories = memo(
                 onEndReached={loadMoreData}
             />
         );
-    },
+    }),
 );
 
 const internalStyles = StyleSheet.create({

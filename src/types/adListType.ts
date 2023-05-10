@@ -53,9 +53,10 @@ export type AdListType = {
     };
     _user: Partial<UserType>;
     _store: null;
-    viewCount: {
+    viewCount?: {
         count: number;
-    } | null
+    } | null,
+    like_count?: number;
 }
 
 

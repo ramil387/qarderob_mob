@@ -3,7 +3,7 @@ import { http } from "@/services/httpMethods"
 import filterStates from "../filter/filterStates"
 import { CategoryType } from "@/types/categoryType"
 
-export const fetchProducts = async (page: number, shopId?: boolean) => {
+export const fetchProducts = async (page: number) => {
     try {
         const brand = filterStates.query?.brand
         const category = filterStates.query?.categories
@@ -29,6 +29,7 @@ export const fetchProducts = async (page: number, shopId?: boolean) => {
             sortby: filterStates.query?.sortby,
             user_id: filterStates.query?.user_id,
             q: filterStates.query?.q,
+            store_id: filterStates.query?.store_id,
         }
 
         // console.log({ data: Object.entries(queries) })
@@ -45,7 +46,7 @@ export const fetchProducts = async (page: number, shopId?: boolean) => {
         }
 
         const queryString = queryStrings.join('&');
-        const resp = await http.get(`${APIS.ads}?page=${page}&${queryString}${shopId ? `&store_id=${shopId}` : ''}&verified=true`);
+        const resp = await http.get(`${APIS.ads}?page=${page}&${queryString}&verified=true`);
 
         return resp.data
 

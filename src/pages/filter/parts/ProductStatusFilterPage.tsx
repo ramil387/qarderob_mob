@@ -12,31 +12,32 @@ import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/
 const ProductStatusFilterPage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
 
-    const [selectedProductStatus, setSelectedProductStatus] = useState<any[]>(
-        filterStates.query?.productStatus || [],
-    );
     const selectProductStatus = (selected: any) => {
-        const selectedIndex = selectedProductStatus.findIndex(
-            (status) => status?.id === selected.id,
+        const selectedIndex = filterStates.selectedProductStatus.findIndex(
+            (status: any) => status?.id === selected.id,
         );
         if (selectedIndex !== -1) {
-            setSelectedProductStatus(
-                selectedProductStatus.filter((status) => status?.id !== selected.id),
+            filterStates.setSelectedProductStatus(
+                filterStates.selectedProductStatus.filter(
+                    (status: any) => status?.id !== selected.id,
+                ),
             );
             return;
         }
-        setSelectedProductStatus([...selectedProductStatus, selected]);
+        filterStates.setSelectedProductStatus([...filterStates.selectedProductStatus, selected]);
     };
 
     useEffect(() => {
-        filterStates.setQuery('productStatus', selectedProductStatus);
-    }, [selectedProductStatus.length]);
+        filterStates.setQuery('productStatus', filterStates.selectedProductStatus);
+    }, [filterStates.selectedProductStatus.length]);
 
     return (
         <View style={internalStyles.container}>
             {filterStates.productStatus.map((status, index) => {
                 const showFillSquare =
-                    selectedProductStatus.findIndex((s) => s?.id === status?.id) !== -1;
+                    filterStates.selectedProductStatus.findIndex(
+                        (s: any) => s?.id === status?.id,
+                    ) !== -1;
                 return (
                     <TouchableOpacity
                         onPress={() => selectProductStatus(status)}

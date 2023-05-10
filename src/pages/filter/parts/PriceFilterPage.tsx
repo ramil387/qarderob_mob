@@ -11,8 +11,6 @@ import validator from 'validator';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
 const PriceFilterPage = () => {
-    const [min, setMin] = useState<string>(filterStates.query?.price?.[0]?.split('₼')[0] || '');
-    const [max, setMax] = useState<string>(filterStates.query?.price?.[1]?.split('₼')[0] || '');
     const navigate: NavigationProp<ParamListBase> = useNavigation();
 
     const prices = [
@@ -41,26 +39,30 @@ const PriceFilterPage = () => {
     const handleSelect = (min: string, max: string) => {
         const minPrice = min.split('₼')[0];
         const maxPrice = max.split('₼')[0];
+        filterStates.setPrices([minPrice, maxPrice]);
         filterStates.setQuery('price', [minPrice, maxPrice]);
     };
 
     const handleMinChange = (text: string) => {
-        if (text.length === 0) return setMin('');
+        if (text.length === 0) return filterStates.setPrices(['', filterStates.prices[1]]);
         if (!validator.isNumeric(text)) return;
-        setMin(text);
+        // setMin(text);
+        filterStates.setPrices([text, filterStates.prices[1]]);
     };
 
     const handleMaxChange = (text: string) => {
-        if (text.length === 0) return setMax('');
+        if (text.length === 0) return filterStates.setPrices([filterStates.prices[0], '']);
         if (!validator.isNumeric(text)) return;
-        setMax(text);
+        filterStates.setPrices([filterStates.prices[0], text]);
     };
 
     useEffect(() => {
-        if (min.length > 0 && max.length > 0) {
-            handleSelect(min, max);
+        if (filterStates.prices[0]?.length > 0 && filterStates.prices[0]?.length > 0) {
+            handleSelect(filterStates.prices[0], filterStates.prices[1]);
         }
-    }, [min, max]);
+    }, [filterStates.prices.length]);
+
+    console.log(filterStates.prices);
 
     return (
         <View style={internalStyles.container}>
@@ -70,7 +72,7 @@ const PriceFilterPage = () => {
                         onChangeText={handleMinChange}
                         style={{ paddingLeft: 16 }}
                         placeholder='min:'
-                        value={min.toString()}
+                        value={String(filterStates.prices[0])}
                     />
                 </View>
                 <View style={internalStyles.input}>
@@ -78,7 +80,7 @@ const PriceFilterPage = () => {
                         onChangeText={handleMaxChange}
                         style={{ paddingLeft: 16 }}
                         placeholder='max:'
-                        value={max.toString()}
+                        value={String(filterStates.prices[1])}
                     />
                 </View>
             </View>

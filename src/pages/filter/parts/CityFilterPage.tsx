@@ -47,12 +47,9 @@ const CityFilterPage = () => {
 
     const cities = useMemo(() => toJS(filterStates.cities), []);
     const [searchKey, setSearchKey] = useState('');
-    const [selectedCities, setSelectedCities] = useState<Record<number, boolean>>(
-        filterStates.query?.city || {},
-    );
 
     const selectCity = useCallback((city: CityType) => {
-        setSelectedCities((prev) => {
+        filterStates.setSelectedCities((prev: any) => {
             const selected = prev[city.id];
             return { ...prev, [city.id]: !selected };
         });
@@ -60,10 +57,10 @@ const CityFilterPage = () => {
 
     const renderedBrand = useCallback(
         ({ item }: { item: CityType }) => {
-            const selected = Boolean(selectedCities[item.id]);
+            const selected = Boolean(filterStates.selectedCities[item.id]);
             return <CityItem item={item} onSelect={selectCity} selected={selected} />;
         },
-        [selectedCities, selectCity],
+        [filterStates.selectedCities, selectCity],
     );
 
     const filteredCities = useMemo(
@@ -72,8 +69,8 @@ const CityFilterPage = () => {
     );
 
     useEffect(() => {
-        filterStates.setQuery('city', selectedCities);
-    }, [selectedCities]);
+        filterStates.setQuery('city', filterStates.selectedCities);
+    }, [filterStates.selectedCities]);
 
     return (
         <View style={internalStyles.container}>
@@ -91,7 +88,7 @@ const CityFilterPage = () => {
                     initialNumToRender={20}
                     showsVerticalScrollIndicator={false}
                     data={filteredCities}
-                    extraData={selectedCities}
+                    extraData={filterStates.selectedCities}
                     renderItem={renderedBrand}
                     keyExtractor={(item) => item.id.toString()}
                 />
