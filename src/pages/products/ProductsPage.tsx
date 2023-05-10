@@ -88,7 +88,6 @@ const ProductsPage = () => {
 
     useFocusEffect(
         useCallback(() => {
-            filterStates.setQuery('verified', true);
             fetchProducts(1)
                 .then((resp) => {
                     productStates.setProducts(resp);

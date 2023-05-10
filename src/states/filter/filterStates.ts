@@ -16,7 +16,6 @@ type QueryType = {
     categories: any,
     sortby?: string,
     user_id?: number,
-    verified?: boolean,
     q?: string,
     store_id?: number,
 }
@@ -40,7 +39,6 @@ class FilterStates {
         categories: [],
         sortby: undefined,
         user_id: undefined,
-        verified: undefined,
         q: undefined,
         store_id: undefined,
     };

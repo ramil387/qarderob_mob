@@ -1,16 +1,20 @@
-import { View, Text, StyleSheet, Image, Linking } from 'react-native';
+import { View, StyleSheet, Image, Linking } from 'react-native';
 import React, { memo, useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { fetchProducts } from '@/states/product/fetchProducts';
 import shopStates from '@/states/shop/shopStates';
 import filterStates from '@/states/filter/filterStates';
 import { toJS } from 'mobx';
-import { fetchShopInfo } from '@/states/shop/fetchShopInfo';
 import generalStates from '@/states/general/generalStates';
 import productStates from '@/states/product/productStates';
 import { Avatar } from '@rneui/themed';
-import Animated from 'react-native-reanimated';
+import Animated, {
+    Easing,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
+} from 'react-native-reanimated';
 import ProductList from '@/components/products/ProductList';
 import { FilterContainer } from '../products/ProductsPage';
 import { NunitoBold, e5Color, inactiveColor } from '@/styles/variables';
@@ -105,10 +109,26 @@ const ShopProductsPage = () => {
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
     const shop = toJS(shopStates?.selectedShop);
 
+    const isFocused = useIsFocused();
+    const [initialTopHeight, setInitialTopHeight] = React.useState<any>(null);
+
+    const topContainerHeight = useSharedValue(initialTopHeight ? initialTopHeight : 0);
+
+    const useTopContainerHeightStyle = useAnimatedStyle(() => {
+        return {
+            height: topContainerHeight.value,
+            overflow: 'hidden',
+        };
+    });
+    const changeTopContainerHeight = (height: number) => {
+        topContainerHeight.value = withTiming(height, {
+            duration: 300,
+            easing: Easing.inOut(Easing.ease),
+        });
+    };
+
     const getPageInfo = async () => {
-        filterStates.setQuery('store_id', shop?.id);
-        filterStates.setQuery('verified', true);
-        fetchProducts(1)
+        fetchProducts(1, shop?.id)
             .then((resp) => {
                 shopStates.setShopProducts(resp);
             })
@@ -120,7 +140,7 @@ const ShopProductsPage = () => {
     const loadMore = () => {
         if (shopStates.shopProducts?.has_next_page && !isLoadingMore) {
             setIsLoadingMore(true);
-            fetchProducts(shopStates.shopProducts?.next_page).then((resp) => {
+            fetchProducts(shopStates.shopProducts?.next_page, shop?.id).then((resp) => {
                 // spread operator is not working here
                 shopStates.setShopProducts({
                     data: [...(shopStates.shopProducts?.data || []), ...resp.data],
@@ -153,19 +173,47 @@ const ShopProductsPage = () => {
         }, [filterStates.query]),
     );
 
+    useEffect(() => {
+        if (isFocused) {
+            if (productStates.productListScrollDirection === 'up') {
+                if (initialTopHeight) changeTopContainerHeight(initialTopHeight);
+            } else if (productStates.productListScrollDirection === 'down') {
+                changeTopContainerHeight(0);
+            }
+        }
+    }, [productStates.productListScrollDirection, initialTopHeight]);
+
+    useEffect(() => {
+        return () => {
+            filterStates.resetQuery();
+        };
+    }, []);
+
     return (
         <View style={internalStyles.container}>
-            <Animated.View>
-                <TopContainer />
+            <Animated.View style={[{}, initialTopHeight ? useTopContainerHeightStyle : {}]}>
+                <View
+                    onLayout={(e) => {
+                        if (!initialTopHeight) {
+                            setInitialTopHeight(e.nativeEvent.layout.height);
+                            topContainerHeight.value = e.nativeEvent.layout.height;
+                        }
+                    }}
+                >
+                    <TopContainer />
+                </View>
             </Animated.View>
+
             <FilterContainer search={false} />
-            <ProductList
-                data={toJS(shopStates.shopProducts?.data) || []}
-                isMoreLoading={isLoadingMore}
-                loadMore={loadMore}
-                selectSorting={selectSorting}
-                type='shop'
-            />
+            <View style={{ flex: 1 }}>
+                <ProductList
+                    data={toJS(shopStates.shopProducts?.data) || []}
+                    isMoreLoading={isLoadingMore}
+                    loadMore={loadMore}
+                    selectSorting={selectSorting}
+                    type='shop'
+                />
+            </View>
         </View>
     );
 };

@@ -3,7 +3,7 @@ import { http } from "@/services/httpMethods"
 import filterStates from "../filter/filterStates"
 import { CategoryType } from "@/types/categoryType"
 
-export const fetchProducts = async (page: number, isStore?: boolean) => {
+export const fetchProducts = async (page: number, shopId?: boolean) => {
     try {
         const brand = filterStates.query?.brand
         const category = filterStates.query?.categories
@@ -12,7 +12,6 @@ export const fetchProducts = async (page: number, isStore?: boolean) => {
 
         const selectedBrand = Object.keys(brand)?.filter((key) => brand[key]);
         const selectedCity = Object.keys(city)?.filter((key) => city[key]);
-        console.log('salam')
         const selectedCategory = category?.map((cat: CategoryType) => cat?.slug_az);
         const selectedColor = filterStates?.query.color
         const selectedSize = filterStates?.query.size
@@ -29,7 +28,6 @@ export const fetchProducts = async (page: number, isStore?: boolean) => {
             city: selectedCity,
             sortby: filterStates.query?.sortby,
             user_id: filterStates.query?.user_id,
-            verified: filterStates.query?.verified,
             q: filterStates.query?.q,
         }
 
@@ -47,7 +45,7 @@ export const fetchProducts = async (page: number, isStore?: boolean) => {
         }
 
         const queryString = queryStrings.join('&');
-        const resp = await http.get(`${APIS.ads}?page=${page}&${queryString}`);
+        const resp = await http.get(`${APIS.ads}?page=${page}&${queryString}${shopId ? `&store_id=${shopId}` : ''}&verified=true`);
 
         return resp.data
 

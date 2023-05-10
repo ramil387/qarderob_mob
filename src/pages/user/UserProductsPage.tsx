@@ -157,7 +157,6 @@ const UserProductsPage = () => {
     };
     const getPageInfo = async () => {
         filterStates.setQuery('user_id', user?.id);
-        filterStates.setQuery('verified', true);
         await fetchUserInfo(Number(user?.id));
         fetchProducts(1)
             .then((resp) => {
@@ -200,7 +199,6 @@ const UserProductsPage = () => {
             <Animated.View style={[{}, initialTopHeight ? useTopContainerHeightStyle : {}]}>
                 <View
                     onLayout={(e) => {
-                        console.log(e.nativeEvent.layout.height);
                         if (!initialTopHeight) {
                             setInitialTopHeight(e.nativeEvent.layout.height);
                             topContainerHeight.value = e.nativeEvent.layout.height;
