@@ -1,26 +1,36 @@
 import React from 'react';
 import { ClipPath, Defs, G, Path, Rect, Svg } from 'react-native-svg';
 
-const InstagramSquareIcon = () => {
+const InstagramSquareIcon = ({ style }: { style?: any }) => {
     return (
-        <Svg width='16' height='16' viewBox='0 0 16 16' fill='none'>
+        <Svg
+            width={style?.width || '16'}
+            height={style?.height || '16'}
+            viewBox='0 0 16 16'
+            fill='none'
+        >
             <G clipPath='url(#clip0_852_7580)'>
                 <Path
                     d='M10.4251 2H5.57486C3.60368 2 2 3.60368 2 5.57486V10.4251C2 12.3963 3.60368 14 5.57486 14H10.4251C12.3963 14 14 12.3963 14 10.4251V5.57486C14 3.60368 12.3963 2 10.4251 2ZM12.7928 10.4251C12.7928 11.7327 11.7327 12.7928 10.4251 12.7928H5.57486C4.26725 12.7928 3.2072 11.7327 3.2072 10.4251V5.57486C3.2072 4.26723 4.26725 3.2072 5.57486 3.2072H10.4251C11.7327 3.2072 12.7928 4.26723 12.7928 5.57486V10.4251Z'
-                    fill='white'
+                    fill={style?.color || 'white'}
                 />
                 <Path
                     d='M8 4.89636C6.28865 4.89636 4.89637 6.28865 4.89637 7.99997C4.89637 9.71129 6.28865 11.1036 8 11.1036C9.71134 11.1036 11.1036 9.71131 11.1036 7.99997C11.1036 6.28862 9.71134 4.89636 8 4.89636ZM8 9.89642C6.95262 9.89642 6.10357 9.04737 6.10357 7.99999C6.10357 6.95261 6.95264 6.10356 8 6.10356C9.04737 6.10356 9.89642 6.95261 9.89642 7.99999C9.89642 9.04734 9.04735 9.89642 8 9.89642Z'
-                    fill='white'
+                    fill={style?.color || 'white'}
                 />
                 <Path
                     d='M11.1096 5.66335C11.5204 5.66335 11.8533 5.33039 11.8533 4.91966C11.8533 4.50893 11.5204 4.17596 11.1096 4.17596C10.6989 4.17596 10.3659 4.50893 10.3659 4.91966C10.3659 5.33039 10.6989 5.66335 11.1096 5.66335Z'
-                    fill='white'
+                    fill={style?.color || 'white'}
                 />
             </G>
             <Defs>
                 <ClipPath id='clip0_852_7580'>
-                    <Rect width='12' height='12' fill='white' transform='translate(2 2)' />
+                    <Rect
+                        width='12'
+                        height='12'
+                        fill={style?.color || 'white'}
+                        transform='translate(2 2)'
+                    />
                 </ClipPath>
             </Defs>
         </Svg>

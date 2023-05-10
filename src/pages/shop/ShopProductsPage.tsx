@@ -89,28 +89,30 @@ const TopContainer = memo(
                 >
                     {shop?.social_links &&
                         Object.keys(shop?.social_links).map((key) => {
-                            return (
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        Linking.openURL(shop?.social_links[key]);
-                                    }}
-                                    style={internalStyles.socialLinkContainer}
-                                    key={key}
-                                >
-                                    {key === 'instagram' ? (
-                                        <InstagramIcon />
-                                    ) : key === 'facebook' ? (
-                                        <FacebookCircleIcon />
-                                    ) : (
-                                        key === 'tiktok' && <TiktokIcon />
-                                    )}
-                                    {shop?.social_links[key] && (
-                                        <CustomText style={internalStyles.socialText}>
-                                            {key}
-                                        </CustomText>
-                                    )}
-                                </TouchableOpacity>
-                            );
+                            if (shop?.social_links[key]?.length > 0) {
+                                return (
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            Linking.openURL(shop?.social_links[key]);
+                                        }}
+                                        style={internalStyles.socialLinkContainer}
+                                        key={key}
+                                    >
+                                        {key === 'instagram' ? (
+                                            <InstagramIcon />
+                                        ) : key === 'facebook' ? (
+                                            <FacebookCircleIcon />
+                                        ) : (
+                                            key === 'tiktok' && <TiktokIcon />
+                                        )}
+                                        {shop?.social_links[key] && (
+                                            <CustomText style={internalStyles.socialText}>
+                                                {key}
+                                            </CustomText>
+                                        )}
+                                    </TouchableOpacity>
+                                );
+                            }
                         })}
                 </View>
             </View>
@@ -197,10 +199,10 @@ const ShopProductsPage = () => {
             }
         }
     }, [productStates.productListScrollDirection, initialTopHeight]);
-
     useEffect(() => {
         return () => {
             filterStates.resetQuery();
+            shopStates.setSelectedShop(null);
         };
     }, []);
 

@@ -14,6 +14,7 @@ export const f3Color = "#F3F3F3";
 export const f8Color = "#F8FBFC";
 export const borderColor = 'rgba(0,0,0,0.5)'
 export const shadowColor = 'rgba(0,0,0,0.2)'
+export const lightBorder = 'rgba(0,0,0,0.05)'
 export const disableColor = '#ccc';
 export const e0Color = "#E0E0E0"
 // font families

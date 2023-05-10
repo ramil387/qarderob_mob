@@ -124,7 +124,7 @@ const Product = ({ item, setToggleCheckLike, toggleCheckLike, type }: ProductTyp
         }
     };
 
-    const showLikeIcon = item?.user_id == profileStates.user?.id;
+    const showLikeIcon = item?.user_id === profileStates.user?.id;
 
     return (
         <ProductCard phoneWidth={phoneWidth}>
@@ -137,7 +137,7 @@ const Product = ({ item, setToggleCheckLike, toggleCheckLike, type }: ProductTyp
                         source={{ uri: getAdImageBySize('md', item?.id, item?.images[0]) }}
                     />
                 </TouchableOpacity>
-                {showLikeIcon && (
+                {!showLikeIcon && (
                     <TouchableOpacity
                         disabled={disableHeart}
                         onPress={() => {
@@ -151,7 +151,7 @@ const Product = ({ item, setToggleCheckLike, toggleCheckLike, type }: ProductTyp
                         <FillHeartIcon />
                     </TouchableOpacity>
                 )}
-                {showLikeIcon && (
+                {!showLikeIcon && (
                     <TouchableOpacity
                         disabled={disableHeart}
                         onPress={() => {

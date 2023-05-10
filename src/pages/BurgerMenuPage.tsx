@@ -3,7 +3,17 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import CustomText from '@/components/ui/CustomText';
 import LoginIcon from '@/icons/burger/LoginIcon';
-import { NunitoMedium, e0Color, e5Color, primaryColor } from '@/styles/variables';
+import {
+    NunitoBold,
+    NunitoMedium,
+    e0Color,
+    e5Color,
+    f5Color,
+    lightBorder,
+    mainTextColor,
+    primaryColor,
+    shadowColor,
+} from '@/styles/variables';
 import PhoneIcon from '@/icons/product/PhoneIcon';
 import DealIcon from '@/icons/burger/DealIcon';
 import RuleIcon from '@/icons/burger/RuleIcon';
@@ -18,10 +28,16 @@ import UserSquareIcon from '@/icons/user/UserSquareIcon';
 import LogoutIcon from '@/icons/user/LogoutIcon';
 import { api } from '@/services/httpMethods';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CommonBottomSheet from '@/components/common/CommonBottomSheet';
+import MailIcon from '@/icons/product/MailIcon';
+import OutlineFacebookIcon from '@/icons/social/OutlineFacebookIcon';
+import InstagramSquareIcon from '@/icons/user/InstagramSquareIcon';
+import OutlineInstagramIcon from '@/icons/social/OutlineInstagramIcon';
+import OpenedMailIcon from '@/icons/social/OpenedMailIcon';
+import generalStates from '@/states/general/generalStates';
 
 const BurgerMenuPage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
-
     const goLoginPage = () => {
         navigate.navigate('LoginPage');
     };
@@ -41,7 +57,10 @@ const BurgerMenuPage = () => {
                         </View>
                         <ChevronRightIcon />
                     </TouchableOpacity>
-                    <TouchableOpacity style={internalStyles.menuItemContainer}>
+                    <TouchableOpacity
+                        onPress={() => generalStates.setBottomSheetVisible(true)}
+                        style={internalStyles.menuItemContainer}
+                    >
                         <View style={internalStyles.menuLeftContainer}>
                             <PhoneIcon style={{ color: primaryColor }} />
 
@@ -69,6 +88,29 @@ const BurgerMenuPage = () => {
                     </TouchableOpacity>
                 </View>
             )}
+            <CommonBottomSheet
+                visible={generalStates.bottomSheetVisible}
+                onClose={() => generalStates.setBottomSheetVisible(false)}
+                height={300}
+            >
+                <View style={internalStyles.bottomSheetContainer}>
+                    <CustomText style={internalStyles.bottomSheetheadText}>
+                        Əlaqə vasitələri
+                    </CustomText>
+                </View>
+                <View style={{ ...internalStyles.bottomSheetContactItem, marginTop: 8 }}>
+                    <OpenedMailIcon />
+                    <CustomText style={internalStyles.contactText}>Mesaj göndər</CustomText>
+                </View>
+                <View style={internalStyles.bottomSheetContactItem}>
+                    <OutlineFacebookIcon />
+                    <CustomText style={internalStyles.contactText}>Facebook</CustomText>
+                </View>
+                <View style={internalStyles.bottomSheetContactItem}>
+                    <OutlineInstagramIcon />
+                    <CustomText style={internalStyles.contactText}>Mesaj göndər</CustomText>
+                </View>
+            </CommonBottomSheet>
         </>
     );
 };
@@ -237,5 +279,30 @@ const internalStyles = StyleSheet.create({
     },
     btn: {
         width: '48%',
+    },
+    bottomSheetContainer: {
+        paddingVertical: 18,
+        backgroundColor: f5Color,
+    },
+    bottomSheetheadText: {
+        fontFamily: NunitoBold,
+        paddingHorizontal: 16,
+        fontSize: 18,
+    },
+    bottomSheetContactItem: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+        borderBottomWidth: 1,
+        borderBottomColor: lightBorder,
+        paddingVertical: 16,
+        paddingHorizontal: 16,
+    },
+    contactText: {
+        fontSize: 16,
+        fontFamily: NunitoMedium,
+        width: 200,
+        marginLeft: 4,
     },
 });

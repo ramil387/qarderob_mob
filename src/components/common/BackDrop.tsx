@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import React, { memo, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
-import { backdropBackground, phoneWidth } from '@/styles/variables';
+import { backdropBackground, phoneHeight, phoneWidth } from '@/styles/variables';
 import generalStates from '@/states/general/generalStates';
 import Animated, {
     Easing,
@@ -10,7 +10,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-const BackDrop = () => {
+const BackDrop = ({ bh }: { bh: number }) => {
     const opacityBackDrop = useSharedValue(0);
     const useChangeOpacityBackDropStyle = useAnimatedStyle(() => {
         return {
@@ -31,12 +31,13 @@ const BackDrop = () => {
             });
         }
     }, [generalStates.backDropVisible]);
-
+    console.log({ bh });
     return (
         <Animated.View
             style={[
                 {
                     ...internalStyles.backdrop,
+                    bottom: phoneHeight - phoneHeight + bh - 24,
                     display: generalStates.backDropVisible ? 'flex' : 'none',
                 },
                 useChangeOpacityBackDropStyle,
@@ -57,7 +58,6 @@ export default memo(observer(BackDrop));
 const internalStyles = StyleSheet.create({
     backdrop: {
         position: 'absolute',
-        top: '-50%',
         left: 0,
         width: phoneWidth,
         height: '100%',

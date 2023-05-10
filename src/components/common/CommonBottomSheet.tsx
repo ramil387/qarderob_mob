@@ -7,7 +7,6 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 import { observer } from 'mobx-react-lite';
-import { phoneWidth } from '@/styles/variables';
 import BackDrop from './BackDrop';
 import CloseIcon from '@/icons/error/CloseIcon';
 
@@ -51,7 +50,7 @@ const CommonBottomSheet = ({
 
     return (
         <>
-            <BackDrop />
+            <BackDrop bh={height} />
 
             <Animated.View style={[internalStyles.container, useChangeBottomHeightStyle]}>
                 <TouchableOpacity

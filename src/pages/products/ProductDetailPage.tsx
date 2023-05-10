@@ -259,18 +259,19 @@ const ContactContainer = () => {
         filterStates.resetQuery();
         navigate.dispatch(StackActions.push('UserProductsPage'));
     };
+
+    const imageUrl = product?.store_id > 0 ? product?._store?.img : product?._user?.photo;
+    const name = product?.store_id > 0 ? product?._store?.name : product?._user?.username;
     return (
         <View style={internalStyles.contactContainer}>
             <View style={internalStyles.avatarContainer}>
                 <TouchableOpacity onPress={goUserProductsPage}>
-                    <Avatar size={52} source={{ uri: product?._user.photo }} rounded />
+                    <Avatar size={52} source={{ uri: imageUrl }} rounded />
                 </TouchableOpacity>
                 <View>
                     <CustomText style={internalStyles.ownerHeadText}>Elanın sahibi</CustomText>
                     <TouchableOpacity onPress={goUserProductsPage}>
-                        <CustomText style={internalStyles.username}>
-                            {product?._user.username}
-                        </CustomText>
+                        <CustomText style={internalStyles.username}>{name}</CustomText>
                     </TouchableOpacity>
                 </View>
             </View>

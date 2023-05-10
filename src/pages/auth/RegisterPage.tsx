@@ -1,7 +1,7 @@
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import React, { useState } from 'react';
 import CustomText from '@/components/ui/CustomText';
-import { NunitoBold, NunitoMedium, f5Color, inactiveColor } from '@/styles/variables';
+import { NunitoBold, NunitoMedium, f5Color, inactiveColor, primaryColor } from '@/styles/variables';
 import CustomTextInput from '@/components/ui/CustomTextInput';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import EyeIcon from '@/icons/user/EyeIcon';
@@ -10,6 +10,7 @@ import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/
 import validator from 'validator';
 import generalStates from '@/states/general/generalStates';
 import { observer } from 'mobx-react-lite';
+import { website } from '@/constants';
 
 const SuffixIcon = ({ hide, showPassword }: { hide: boolean; showPassword: () => void }) => {
     return (
@@ -67,6 +68,20 @@ const RegisterPage = () => {
                     />
                 </View>
             </View>
+            <TouchableOpacity
+                onPress={() => {
+                    Linking.openURL(`${website}/istifadeci-razilasmasi`);
+                }}
+            >
+                <CustomText>
+                    Qeydiyyatdan keçməklə{' '}
+                    <CustomText style={{ color: primaryColor }}>Qarderob.az</CustomText> - ın
+                    <CustomText style={{ color: primaryColor }}>
+                        istifadəçi razılaşması və məxfilik siyasəti
+                    </CustomText>{' '}
+                    ilə razlaşmış olursunuz.
+                </CustomText>
+            </TouchableOpacity>
             <View style={internalStyles.btnContainer}>
                 <CustomMainButton func={() => {}} title='Daxil ol' />
             </View>

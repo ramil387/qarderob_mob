@@ -23,6 +23,7 @@ import { UserType } from '@/types/userType';
 import { TouchableOpacity } from 'react-native';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import profileStates from '@/states/profile/profileStates';
+import filterStates from '@/states/filter/filterStates';
 
 const PrefixIcon = () => {
     return (
@@ -52,6 +53,8 @@ const InfluencerPage = () => {
         userStates.setSelectedAdOwner(item);
         navigate.navigate('UserProductsPage');
     };
+
+    console.log(filterStates.query);
 
     useEffect(() => {
         if (searchKey.length === 0) {
