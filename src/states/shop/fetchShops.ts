@@ -4,7 +4,7 @@ import shopStates from "./shopStates";
 
 export const fetchShops = async (page?: number) => {
     try {
-        const response = await http.get(APIS.STORES);
+        const response = await http.get(APIS.stores);
         shopStates.setShops(response.data.data);
     } catch (error) {
         console.log(error)

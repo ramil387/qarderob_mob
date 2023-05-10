@@ -35,6 +35,8 @@ import VipServicePage from '@/pages/paid/VipServicePage';
 import PaidServicePageHeader from '@/components/headers/PaidServicePageHeader';
 import MoveForwardPage from '@/pages/paid/MoveForwardPage';
 import CommonAuthHeader from '@/components/headers/CommonAuthHeader';
+import ShopProductsPage from '@/pages/shop/ShopProductsPage';
+import ShopProductsPageHeader from '@/components/headers/ShopProductsPageHeader';
 
 type StackListType = {
     name: string;
@@ -279,6 +281,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <PaidServicePageHeader title='Elanı irəli çək' />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'ShopProductsPage',
+        component: ShopProductsPage,
+        options: {
+            headerShown: true,
+            header: () => <ShopProductsPageHeader />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',

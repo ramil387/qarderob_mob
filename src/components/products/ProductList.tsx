@@ -68,7 +68,10 @@ const ProductList = ({
                     contentContainerStyle={{
                         rowGap: 8,
                         marginTop:
-                            type === 'user_ads' || type === 'profile_ads' || type === 'products'
+                            type === 'user_ads' ||
+                            type === 'profile_ads' ||
+                            type === 'products' ||
+                            type === 'shop'
                                 ? 0
                                 : 16,
                     }}

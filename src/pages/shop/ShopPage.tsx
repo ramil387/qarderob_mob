@@ -14,6 +14,11 @@ import shopStates from '@/states/shop/shopStates';
 import { fetchShops } from '@/states/shop/fetchShops';
 import { defineWorkingDays } from '@/helper/defineWorkingDays';
 import LocationIcon from '@/icons/shop/LocationIcon';
+import _ from 'lodash';
+import { searchShop } from '@/states/shop/searchShop';
+import { ShopType } from '@/types/shopType';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+// TODO ADD NO RESULT COMPONENT FOR SHOP AND INFLUENCER
 const PrefixIcon = () => {
     return (
         <View style={internalStyles.prefixIcon}>
@@ -22,18 +27,37 @@ const PrefixIcon = () => {
     );
 };
 const ShopPage = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
+
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
     const shops = toJS(shopStates.shops);
-    const [page, setPage] = React.useState<number>(1);
     const [searchKey, setSearchKey] = React.useState<string>('');
 
-    useEffect(() => {
-        fetchShops(page).finally(() => {
+    const debueceSearch = _.debounce(() => {
+        searchShop(searchKey).finally(() => {
             setIsLoading(false);
         });
-    }, []);
+    }, 500);
 
-    if (isLoading) return <LoadingComponent />;
+    useEffect(() => {
+        if (searchKey.length === 0) {
+            fetchShops().finally(() => {
+                setIsLoading(false);
+            });
+        }
+    }, [searchKey]);
+
+    useEffect(() => {
+        if (searchKey.length > 0) {
+            setIsLoading(true);
+            debueceSearch();
+        }
+    }, [searchKey]);
+
+    const goShopProductsPage = (item: ShopType) => {
+        shopStates.setSelectedShop(item);
+        navigate.navigate('ShopProductsPage');
+    };
 
     return (
         <View style={internalStyles.container}>
@@ -45,79 +69,83 @@ const ShopPage = () => {
                     icon={<PrefixIcon />}
                 />
             </View>
-            <View style={{ flex: 1, width: '100%', marginVertical: 16 }}>
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ rowGap: 8, width: '100%' }}
-                    data={shops}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity>
-                            <ImageBackground
-                                imageStyle={{ borderRadius: 8 }}
-                                source={{
-                                    uri: item.cover,
-                                }}
-                                blurRadius={5}
-                                style={internalStyles.itemContainer}
-                            >
-                                <View
-                                    style={{
-                                        backgroundColor: '#2a2a2a',
-                                        position: 'absolute',
-                                        height: 128,
-                                        top: 0,
-                                        width: '100%',
-                                        opacity: 0.4,
-                                        borderRadius: 8,
+            {isLoading ? (
+                <LoadingComponent />
+            ) : (
+                <View style={{ flex: 1, width: '100%', marginVertical: 16 }}>
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{ rowGap: 8, width: '100%' }}
+                        data={shops}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity onPress={() => goShopProductsPage(item)}>
+                                <ImageBackground
+                                    imageStyle={{ borderRadius: 8 }}
+                                    source={{
+                                        uri: item.cover,
                                     }}
-                                />
-                                <View style={internalStyles.avatarContainer}>
-                                    <Avatar
-                                        size={48}
-                                        source={{
-                                            uri: item.img,
-                                        }}
-                                        rounded
-                                    />
+                                    blurRadius={5}
+                                    style={internalStyles.itemContainer}
+                                >
                                     <View
                                         style={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            gap: 4,
+                                            backgroundColor: '#2a2a2a',
+                                            position: 'absolute',
+                                            height: 128,
+                                            top: 0,
+                                            width: '100%',
+                                            opacity: 0.4,
+                                            borderRadius: 8,
                                         }}
-                                    >
-                                        <View>
-                                            <CustomText style={internalStyles.name}>
-                                                {item.name}
-                                            </CustomText>
-                                            <CustomText style={internalStyles.workingDays}>
-                                                {defineWorkingDays(item.work_days)}:{' '}
-                                                {item.start_hour}-{item.end_hour}
-                                            </CustomText>
-                                            <CustomText
-                                                style={internalStyles.desc}
-                                                numberOfLines={2}
-                                            >
-                                                {item.desc}
-                                            </CustomText>
+                                    />
+                                    <View style={internalStyles.avatarContainer}>
+                                        <Avatar
+                                            size={48}
+                                            source={{
+                                                uri: item.img,
+                                            }}
+                                            rounded
+                                        />
+                                        <View
+                                            style={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                gap: 4,
+                                            }}
+                                        >
+                                            <View>
+                                                <CustomText style={internalStyles.name}>
+                                                    {item.name}
+                                                </CustomText>
+                                                <CustomText style={internalStyles.workingDays}>
+                                                    {defineWorkingDays(item.work_days)}:{' '}
+                                                    {item.start_hour}-{item.end_hour}
+                                                </CustomText>
+                                                <CustomText
+                                                    style={internalStyles.desc}
+                                                    numberOfLines={2}
+                                                >
+                                                    {item.desc}
+                                                </CustomText>
+                                            </View>
                                         </View>
                                     </View>
-                                </View>
-                                <View style={internalStyles.address}>
-                                    <LocationIcon style={{ color: '#fff' }} />
-                                    <CustomText
-                                        numberOfLines={1}
-                                        style={internalStyles.addressText}
-                                    >
-                                        {item.address}
-                                    </CustomText>
-                                </View>
-                            </ImageBackground>
-                        </TouchableOpacity>
-                    )}
-                />
-            </View>
+                                    <View style={internalStyles.address}>
+                                        <LocationIcon style={{ color: '#fff' }} />
+                                        <CustomText
+                                            numberOfLines={1}
+                                            style={internalStyles.addressText}
+                                        >
+                                            {item.address}
+                                        </CustomText>
+                                    </View>
+                                </ImageBackground>
+                            </TouchableOpacity>
+                        )}
+                    />
+                </View>
+            )}
         </View>
     );
 };

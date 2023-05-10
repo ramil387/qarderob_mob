@@ -3,7 +3,7 @@ import { http } from "@/services/httpMethods"
 import filterStates from "../filter/filterStates"
 import { CategoryType } from "@/types/categoryType"
 
-export const fetchProducts = async (page: number) => {
+export const fetchProducts = async (page: number, isStore?: boolean) => {
     try {
         const brand = filterStates.query?.brand
         const category = filterStates.query?.categories

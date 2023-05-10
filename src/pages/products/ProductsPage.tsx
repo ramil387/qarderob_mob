@@ -41,7 +41,7 @@ export const FilterContainer = memo(
         const filterCount = defineFilterCount(filterStates.query);
 
         return (
-            <View style={{ paddingHorizontal: 16, marginTop: 16 }}>
+            <View style={{ paddingHorizontal: 16, marginTop: search ? 16 : 0 }}>
                 {search && (
                     <View style={internalStyles.searchContainer}>
                         <CustomTextInput

@@ -10,7 +10,7 @@ export const APIS = {
     filter: 'home/filter-data',
     banners: 'banners',
     influencers: 'auth/influencers',
-    STORES: 'stores',
+    stores: 'stores',
     login: 'auth/login',
     me: 'auth/me',
     ads: 'ads',

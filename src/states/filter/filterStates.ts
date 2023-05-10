@@ -18,6 +18,7 @@ type QueryType = {
     user_id?: number,
     verified?: boolean,
     q?: string,
+    store_id?: number,
 }
 class FilterStates {
 
@@ -41,6 +42,7 @@ class FilterStates {
         user_id: undefined,
         verified: undefined,
         q: undefined,
+        store_id: undefined,
     };
 
     isLoadingFilter: boolean = false;

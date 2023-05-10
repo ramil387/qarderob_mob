@@ -8,7 +8,7 @@ import { fetchInfluencers } from '@/states/user/fetchInfluencers';
 import LoadingComponent from '@/components/common/LoadingComponent';
 import LinearGradient from 'react-native-linear-gradient';
 import CustomText from '@/components/ui/CustomText';
-import { NunitoBold, f5Color, mainTextColor } from '@/styles/variables';
+import { NunitoBold, f5Color, mainTextColor, primaryColor } from '@/styles/variables';
 import CustomTextInput from '@/components/ui/CustomTextInput';
 import SearchIcon from '@/icons/home/SearchIcon';
 import { Avatar } from '@rneui/themed';
@@ -21,6 +21,8 @@ import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/
 import { InfluencerType } from '@/types/influencerType';
 import { UserType } from '@/types/userType';
 import { TouchableOpacity } from 'react-native';
+import CustomMainButton from '@/components/ui/CustomMainButton';
+import profileStates from '@/states/profile/profileStates';
 
 const PrefixIcon = () => {
     return (
@@ -52,13 +54,14 @@ const InfluencerPage = () => {
     };
 
     useEffect(() => {
-        fetchInfluencers(page).finally(() => {
-            setIsLoading(false);
-        });
-    }, []);
+        if (searchKey.length === 0) {
+            fetchInfluencers(page).finally(() => {
+                setIsLoading(false);
+            });
+        }
+    }, [searchKey]);
 
     const debuenceSearch = _.debounce(() => {
-        setIsLoading(true);
         searchInfluencer(searchKey).finally(() => {
             setIsLoading(false);
         });
@@ -66,6 +69,7 @@ const InfluencerPage = () => {
 
     useEffect(() => {
         if (searchKey.length > 0) {
+            setIsLoading(true);
             debuenceSearch();
         }
     }, [searchKey]);
@@ -86,12 +90,24 @@ const InfluencerPage = () => {
                     value={searchKey}
                 />
             </View>
+            <View style={{ marginVertical: 16, display: profileStates?.token ? 'none' : 'flex' }}>
+                <CustomMainButton
+                    title='İnfluenser qeydiyyat formu'
+                    func={() => {}}
+                    style={{
+                        backgroundColor: 'transparent',
+                        borderWidth: 1,
+                        borderColor: primaryColor,
+                    }}
+                    titleStyle={{ color: primaryColor }}
+                />
+            </View>
             {isLoading ? (
                 <LoadingComponent />
             ) : (
                 <FlatList
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ marginTop: 16, rowGap: 8 }}
+                    contentContainerStyle={{ rowGap: 8, marginTop: profileStates?.token ? 16 : 0 }}
                     data={influencers}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
