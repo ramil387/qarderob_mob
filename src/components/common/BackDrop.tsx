@@ -21,12 +21,12 @@ const BackDrop = ({ bh }: { bh: number }) => {
     useEffect(() => {
         if (generalStates.backDropVisible) {
             opacityBackDrop.value = withTiming(1, {
-                duration: 500,
+                duration: 300,
                 easing: Easing.inOut(Easing.ease),
             });
         } else {
             opacityBackDrop.value = withTiming(0, {
-                duration: 500,
+                duration: 300,
                 easing: Easing.inOut(Easing.ease),
             });
         }

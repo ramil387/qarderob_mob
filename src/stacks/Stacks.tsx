@@ -39,6 +39,9 @@ import ShopProductsPage from '@/pages/shop/ShopProductsPage';
 import ShopProductsPageHeader from '@/components/headers/ShopProductsPageHeader';
 import ContactPage from '@/pages/ContactPage';
 import ContactPageHeader from '@/components/headers/ContactPageHeader';
+import RulesPage from '@/pages/RulesPage';
+import DealsAndRulesHeader from '@/components/headers/DealsAndRulesHeader';
+import DealsPage from '@/pages/DealsPage';
 
 type StackListType = {
     name: string;
@@ -305,6 +308,28 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <ContactPageHeader />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'RulesPage',
+        component: RulesPage,
+        options: {
+            headerShown: true,
+            header: () => <DealsAndRulesHeader title='Qaydalar' />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'DealsPage',
+        component: DealsPage,
+        options: {
+            headerShown: true,
+            header: () => <DealsAndRulesHeader title='İstifadəçi razılaşması' />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',

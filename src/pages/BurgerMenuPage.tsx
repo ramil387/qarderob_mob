@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import CustomText from '@/components/ui/CustomText';
@@ -44,6 +44,12 @@ const BurgerMenuPage = () => {
     const goContactPage = () => {
         navigate.navigate('ContactPage');
     };
+    const goRulesPage = () => {
+        navigate.navigate('RulesPage');
+    };
+    const goDealsPage = () => {
+        navigate.navigate('DealsPage');
+    };
     return (
         <>
             {profileStates.user ? (
@@ -71,7 +77,10 @@ const BurgerMenuPage = () => {
                         </View>
                         <ChevronRightIcon />
                     </TouchableOpacity>
-                    <TouchableOpacity style={internalStyles.menuItemContainer}>
+                    <TouchableOpacity
+                        onPress={goDealsPage}
+                        style={internalStyles.menuItemContainer}
+                    >
                         <View style={internalStyles.menuLeftContainer}>
                             <DealIcon style={{ color: primaryColor }} />
 
@@ -81,7 +90,10 @@ const BurgerMenuPage = () => {
                         </View>
                         <ChevronRightIcon />
                     </TouchableOpacity>
-                    <TouchableOpacity style={internalStyles.menuItemContainer}>
+                    <TouchableOpacity
+                        onPress={goRulesPage}
+                        style={internalStyles.menuItemContainer}
+                    >
                         <View style={internalStyles.menuLeftContainer}>
                             <RuleIcon style={{ color: primaryColor }} />
 
@@ -108,14 +120,24 @@ const BurgerMenuPage = () => {
                     <OpenedMailIcon />
                     <CustomText style={internalStyles.contactText}>Mesaj göndər</CustomText>
                 </TouchableOpacity>
-                <View style={internalStyles.bottomSheetContactItem}>
+                <TouchableOpacity
+                    onPress={() => {
+                        Linking.openURL('https://www.facebook.com/profile.php?id=100064057661314');
+                    }}
+                    style={internalStyles.bottomSheetContactItem}
+                >
                     <OutlineFacebookIcon />
                     <CustomText style={internalStyles.contactText}>Facebook</CustomText>
-                </View>
-                <View style={internalStyles.bottomSheetContactItem}>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => {
+                        Linking.openURL('https://www.instagram.com/qarderob.az/');
+                    }}
+                    style={internalStyles.bottomSheetContactItem}
+                >
                     <OutlineInstagramIcon />
                     <CustomText style={internalStyles.contactText}>Mesaj göndər</CustomText>
-                </View>
+                </TouchableOpacity>
             </CommonBottomSheet>
         </>
     );
@@ -140,10 +162,12 @@ const ProfileBurgerMenu = observer(() => {
         {
             label: 'İstifadəçi razılaşması',
             icon: <DealIcon style={{ color: primaryColor }} />,
+            func: () => navigate.navigate('DealsPage'),
         },
         {
             label: 'Qaydalar',
             icon: <RuleIcon style={{ color: primaryColor }} />,
+            func: () => navigate.navigate('RulesPage'),
         },
         {
             label: 'Hesabı sil',

@@ -10,7 +10,7 @@ const PhoneInput = ({
 }: {
     phone: string;
     setPhone: (phone: string) => void;
-    onBlur: () => void;
+    onBlur?: () => void;
 }) => {
     const MAX_PHONE_LENGTH = 13; // Maximum length of phone number, including prefix
     const onTextChange = (text: string) => {
