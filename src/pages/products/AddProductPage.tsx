@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import React, { memo } from 'react';
 import BigCameraIcon from '@/icons/product/BigCameraIcon';
 import { NunitoBold, NunitoMedium, e5Color, f5Color, primaryColor } from '@/styles/variables';
@@ -15,6 +15,7 @@ import OutlineSquareIcon from '@/icons/filter/OutlineSquareIcon';
 import FillSquareIcon from '@/icons/filter/FillSquareIcon';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { setImages } from '@/states/product/addProduct/setImage';
+import { ImageBackground } from 'react-native';
 
 const ImagesContainer = memo(
     observer(() => {
@@ -34,12 +35,27 @@ const ImagesContainer = memo(
                 },
             );
         };
+
+        const imagesUrls = [
+            {
+                updatedUrl: '',
+                currentUrl: '',
+            },
+        ];
+
         return (
             <View style={internalStyles.imageContainer}>
                 <View style={internalStyles.firstImage}>
-                    <TouchableOpacity onPress={addImage}>
+                    <Image
+                        style={{ width: '100%', height: '100%', borderRadius: 8 }}
+                        source={{
+                            uri: 'https://storage.qarderob.az/a/2123/lg/rc-upload-1683827611802-6573.jpg',
+                        }}
+                    />
+
+                    {/* <TouchableOpacity onPress={addImage}>
                         <BigCameraIcon />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 <View style={internalStyles.secondImageContainer}>
                     {images.map((image) => {

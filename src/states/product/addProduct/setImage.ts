@@ -37,5 +37,7 @@ export const setImages = (images: Asset[] | undefined) => {
             }
 
             imgs['name'] = getImageName.name
+
+            addProductStates.setImages([...addProductStates.images, imgs]);
         })
 }
