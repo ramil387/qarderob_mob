@@ -29,7 +29,7 @@ const CommonFooter = () => {
 
     const goAddProductPage = () => {
         if (profileStates.token) {
-            // navigate.navigate('AddProductPage');
+            navigate.navigate('AddProductPage');
             return;
         }
         showShouldAuth(

@@ -42,6 +42,8 @@ import ContactPageHeader from '@/components/headers/ContactPageHeader';
 import RulesPage from '@/pages/RulesPage';
 import DealsAndRulesHeader from '@/components/headers/DealsAndRulesHeader';
 import DealsPage from '@/pages/DealsPage';
+import AddProductPage from '@/pages/products/AddProductPage';
+import AddProductPageHeader from '@/components/headers/AddProductPageHeader';
 
 type StackListType = {
     name: string;
@@ -330,6 +332,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <DealsAndRulesHeader title='İstifadəçi razılaşması' />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'AddProductPage',
+        component: AddProductPage,
+        options: {
+            headerShown: true,
+            header: () => <AddProductPageHeader />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',
