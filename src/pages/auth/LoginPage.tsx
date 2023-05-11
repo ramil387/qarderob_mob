@@ -46,7 +46,8 @@ const LoginPage = () => {
     };
 
     const onEmailChange = (value: string) => {
-        setEmail(value);
+        const email = value.trim().toLowerCase();
+        setEmail(email);
     };
     const onEmailBlur = () => {
         if (email.length === 0) {
@@ -116,6 +117,7 @@ const LoginPage = () => {
                         autoCapitalize='none'
                         onChangeText={onEmailChange}
                         placeholder='E-mail'
+                        value={email}
                     />
                 </View>
                 <CustomText

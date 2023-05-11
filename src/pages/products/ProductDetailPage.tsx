@@ -45,6 +45,7 @@ import { checkLikeByPage } from '@/helper/checkLikeByPage';
 import { http } from '@/services/httpMethods';
 import { APIS } from '@/constants';
 import { fetchLikeCount } from '@/states/product/fetchLikeCount';
+import FillHeartIcon from '@/icons/home/FillHeartIcon';
 
 const ProductImages = memo(
     observer(() => {
@@ -92,73 +93,86 @@ const ProductImages = memo(
     }),
 );
 
-const TopInfoContainer = () => {
-    const navigate: NavigationProp<ParamListBase> = useNavigation();
-    const [disableHeart, setDisableHeart] = React.useState(false);
+const TopInfoContainer = memo(
+    observer(() => {
+        const navigate: NavigationProp<ParamListBase> = useNavigation();
+        const [disableHeart, setDisableHeart] = React.useState(false);
 
-    const product = toJS(productStates.selectedProduct);
-    const showLikeIcon = product?.user_id === profileStates.user?.id;
-    const toggleLike = async (id: number) => {
-        try {
-            if (!profileStates.token) {
-                showShouldAuth(
-                    navigate,
-                    'Bildiriş',
-                    'Favorilərə əlavə etmək üçün hesabınıza daxil olun',
-                );
-                return;
+        const product = toJS(productStates.selectedProduct);
+        const showLikeIcon = product?.user_id === profileStates.user?.id;
+        const toggleLike = async (id: number) => {
+            try {
+                if (!profileStates.token) {
+                    showShouldAuth(
+                        navigate,
+                        'Bildiriş',
+                        'Favorilərə əlavə etmək üçün hesabınıza daxil olun',
+                    );
+                    return;
+                }
+
+                setDisableHeart(true);
+                const resp = await http.post(`${APIS.stats}/like/${id}`);
+                if (resp.data.fav === 1) {
+                    runInAction(() => {
+                        productStates.selectedProduct = {
+                            ...productStates.selectedProduct,
+                            isFavourite: '1',
+                        };
+                    });
+                    checkLikeByPage(id, 1);
+                } else {
+                    runInAction(() => {
+                        productStates.selectedProduct = {
+                            ...productStates.selectedProduct,
+                            isFavourite: '0',
+                        };
+                    });
+                    checkLikeByPage(id, 0);
+                }
+            } catch (error) {
+                console.log(error);
+            } finally {
+                await fetchLikeCount(product?.id);
+                setDisableHeart(false);
             }
+        };
 
-            setDisableHeart(true);
-            const resp = await http.post(`${APIS.stats}/like/${id}`);
-            if (resp.data.fav === 1) {
-                runInAction(() => {
-                    productStates.selectedProduct = {
-                        ...productStates.selectedProduct,
-                        isFavourite: '1',
-                    };
-                });
-                checkLikeByPage(id, 1);
-            } else {
-                runInAction(() => {
-                    productStates.selectedProduct = {
-                        ...productStates.selectedProduct,
-                        isFavourite: '0',
-                    };
-                });
-                checkLikeByPage(id, 0);
-            }
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setDisableHeart(false);
-        }
-    };
+        console.log(product?.like_count);
 
-    // todo add like count
-    return (
-        <View style={internalStyles.topInfoContainer}>
-            <View>
-                <View style={internalStyles.brandNameContainer}>
-                    <CustomText style={internalStyles.brandName}>{product?.brand?.name}</CustomText>
-                    <View style={{ display: product?.isVip ? 'flex' : 'none' }}>
-                        <VipIcon />
+        // todo add like count
+        return (
+            <View style={internalStyles.topInfoContainer}>
+                <View>
+                    <View style={internalStyles.brandNameContainer}>
+                        <CustomText style={internalStyles.brandName}>
+                            {product?.brand?.name}
+                        </CustomText>
+                        <View style={{ display: product?.isVip ? 'flex' : 'none' }}>
+                            <VipIcon />
+                        </View>
+                    </View>
+                    <View>
+                        <CustomText style={internalStyles.price}>{product?.price}₼</CustomText>
                     </View>
                 </View>
-                <View>
-                    <CustomText style={internalStyles.price}>{product?.price}₼</CustomText>
-                </View>
+                <TouchableOpacity
+                    onPress={() => toggleLike(product?.id)}
+                    style={{ display: !showLikeIcon ? 'flex' : 'none', bottom: 20 }}
+                >
+                    {product?.isFavourite === '1' ? (
+                        <FillHeartIcon />
+                    ) : (
+                        <OutlineHeartIcon style={{ color: mainTextColor }} />
+                    )}
+                    <CustomText style={{ textAlign: 'center' }}>
+                        {productStates?.selectedProduct?.like_count}
+                    </CustomText>
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity
-                onPress={() => toggleLike(product?.id)}
-                style={{ display: !showLikeIcon ? 'flex' : 'none', bottom: 20 }}
-            >
-                <OutlineHeartIcon style={{ color: mainTextColor }} />
-                <CustomText style={{ textAlign: 'center' }}>{product?.like_count}</CustomText>
-            </TouchableOpacity>
-        </View>
-    );
-};
+        );
+    }),
+);
 
 const SpecContainer = () => {
     const product = toJS(productStates.selectedProduct);

@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import React, { memo, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { backdropBackground, phoneHeight, phoneWidth } from '@/styles/variables';
@@ -31,7 +31,6 @@ const BackDrop = ({ bh }: { bh: number }) => {
             });
         }
     }, [generalStates.backDropVisible]);
-    console.log({ bh });
     return (
         <Animated.View
             style={[
