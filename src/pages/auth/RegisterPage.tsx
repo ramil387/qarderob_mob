@@ -11,6 +11,7 @@ import validator from 'validator';
 import generalStates from '@/states/general/generalStates';
 import { observer } from 'mobx-react-lite';
 import { website } from '@/constants';
+import PhoneInput from '@/components/common/PhoneInput';
 
 const SuffixIcon = ({ hide, showPassword }: { hide: boolean; showPassword: () => void }) => {
     return (
@@ -23,14 +24,7 @@ const SuffixIcon = ({ hide, showPassword }: { hide: boolean; showPassword: () =>
 const RegisterPage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
     const [hide, setHide] = React.useState<boolean>(true);
-    const [phoneNumber, setPhoneNumber] = useState<string>('+994');
-
-    const handlePhoneNumberChange = (value: string) => {
-        if (validator.isNumeric(value) === false) return;
-        if (value.length > 13) return;
-        if (value.length === 3) return setPhoneNumber('+994');
-        setPhoneNumber('+994' + value.split('+994').join(''));
-    };
+    const [phone, setPhone] = React.useState<string>('');
 
     const showPassword = () => {
         setHide(!hide);
@@ -51,13 +45,19 @@ const RegisterPage = () => {
                 <View style={internalStyles.inputContainer}>
                     <CustomTextInput placeholder='E-mail' />
                 </View>
-                <View style={internalStyles.inputContainer}>
-                    <CustomTextInput
-                        keyboardType='numeric'
-                        onChangeText={handlePhoneNumberChange}
-                        value={phoneNumber}
-                        placeholder='Telefon'
-                        maxLength={13}
+                <View style={{ ...internalStyles.inputContainer, paddingLeft: 0 }}>
+                    <PhoneInput
+                        blur={() => {
+                            // if (!phone) {
+                            //     generalStates.setErrors({ ...generalStates.errors, phone: 'Telefon nömrəsi daxil edin' });
+                            // } else if (!validator.isMobilePhone(phone)) {
+                            //     generalStates.setErrors({ ...generalStates.errors, phone: 'Telefon nömrəsi düzgün deyil' });
+                            // } else {
+                            //     generalStates.setErrors({ ...generalStates.errors, phone: '' });
+                            // }
+                        }}
+                        setPhone={setPhone}
+                        phone={phone}
                     />
                 </View>
                 <View style={internalStyles.inputContainer}>

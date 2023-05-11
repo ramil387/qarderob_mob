@@ -7,9 +7,10 @@ import { NunitoBold, inactiveColor, primaryColor } from '@/styles/variables';
 import CustomMainButton from '../ui/CustomMainButton';
 import CloseIcon from '@/icons/error/CloseIcon';
 import generalStates from '@/states/general/generalStates';
+import CheckIcon from '@/icons/success/CheckIcon';
 
 const DialogModal = () => {
-    const ActionBody = () => {
+    const ActionBody = observer(() => {
         return (
             <View style={internalStyles.actionContainer}>
                 <View style={internalStyles.btnItemContainer}>
@@ -19,7 +20,7 @@ const DialogModal = () => {
                             borderWidth: 1,
                             borderColor: primaryColor,
                         }}
-                        titleStyle={{ color: primaryColor }}
+                        titleStyle={{ color: primaryColor, fontSize: 14 }}
                         func={generalStates.dialogCancelFunc}
                         title={generalStates.dialogCancelText}
                     />
@@ -28,11 +29,12 @@ const DialogModal = () => {
                     <CustomMainButton
                         func={generalStates.dialogOkFunc}
                         title={generalStates.dialogOkText}
+                        titleStyle={{ fontSize: 14 }}
                     />
                 </View>
             </View>
         );
-    };
+    });
 
     return (
         <Modal animationType='fade' visible={generalStates.commonDialogVisible} transparent={true}>
@@ -45,7 +47,7 @@ const DialogModal = () => {
                         <CloseIcon />
                     </TouchableOpacity>
                     <View style={internalStyles.iconContainer}>
-                        <WarningIcon />
+                        <CheckIcon />
                     </View>
                     <CustomText style={internalStyles.errorHeader}>
                         {generalStates.dialogHeader}

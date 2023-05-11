@@ -37,6 +37,8 @@ import MoveForwardPage from '@/pages/paid/MoveForwardPage';
 import CommonAuthHeader from '@/components/headers/CommonAuthHeader';
 import ShopProductsPage from '@/pages/shop/ShopProductsPage';
 import ShopProductsPageHeader from '@/components/headers/ShopProductsPageHeader';
+import ContactPage from '@/pages/ContactPage';
+import ContactPageHeader from '@/components/headers/ContactPageHeader';
 
 type StackListType = {
     name: string;
@@ -292,6 +294,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <ShopProductsPageHeader />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'ContactPage',
+        component: ContactPage,
+        options: {
+            headerShown: true,
+            header: () => <ContactPageHeader />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',

@@ -36,7 +36,7 @@ const BackDrop = ({ bh }: { bh: number }) => {
             style={[
                 {
                     ...internalStyles.backdrop,
-                    bottom: phoneHeight - phoneHeight + bh - 24,
+                    bottom: bh - 50,
                     display: generalStates.backDropVisible ? 'flex' : 'none',
                 },
                 useChangeOpacityBackDropStyle,

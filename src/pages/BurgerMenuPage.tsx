@@ -41,6 +41,9 @@ const BurgerMenuPage = () => {
     const goLoginPage = () => {
         navigate.navigate('LoginPage');
     };
+    const goContactPage = () => {
+        navigate.navigate('ContactPage');
+    };
     return (
         <>
             {profileStates.user ? (
@@ -98,10 +101,13 @@ const BurgerMenuPage = () => {
                         Əlaqə vasitələri
                     </CustomText>
                 </View>
-                <View style={{ ...internalStyles.bottomSheetContactItem, marginTop: 8 }}>
+                <TouchableOpacity
+                    onPress={goContactPage}
+                    style={{ ...internalStyles.bottomSheetContactItem, marginTop: 8 }}
+                >
                     <OpenedMailIcon />
                     <CustomText style={internalStyles.contactText}>Mesaj göndər</CustomText>
-                </View>
+                </TouchableOpacity>
                 <View style={internalStyles.bottomSheetContactItem}>
                     <OutlineFacebookIcon />
                     <CustomText style={internalStyles.contactText}>Facebook</CustomText>
@@ -129,6 +135,7 @@ const ProfileBurgerMenu = observer(() => {
         {
             label: 'Bizimlə əlaqə',
             icon: <PhoneIcon style={{ color: primaryColor }} />,
+            func: () => generalStates.setBottomSheetVisible(true),
         },
         {
             label: 'İstifadəçi razılaşması',

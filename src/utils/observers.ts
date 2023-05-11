@@ -2,8 +2,13 @@ import generalStates from '@/states/general/generalStates';
 import { Keyboard } from 'react-native';
 
 export const keyboardObserver = () => {
+    const alwaysShowedPages = ['HomePage']
+    const pages = ['ContactPage']
     Keyboard.addListener('keyboardDidShow', () => {
-        if (generalStates.curPage === 'HomePage') {
+        if (alwaysShowedPages.includes(generalStates.curPage)) {
+            generalStates.setFooterVisible(true);
+        }
+        if (pages.includes(generalStates.curPage)) {
             generalStates.setFooterVisible(true);
         }
         if (generalStates.curPage === 'LoginPage' || generalStates.curPage === 'RegisterPage') {
@@ -11,8 +16,11 @@ export const keyboardObserver = () => {
         }
     });
     Keyboard.addListener('keyboardDidHide', () => {
-        if (generalStates.curPage === 'HomePage') {
+        if (alwaysShowedPages.includes(generalStates.curPage)) {
             generalStates.setFooterVisible(false);
+        }
+        if (pages.includes(generalStates.curPage)) {
+            generalStates.setFooterVisible(true);
         }
         if (generalStates.curPage === 'LoginPage' || generalStates.curPage === 'RegisterPage') {
             generalStates.setAuthFooterVisible(true);
@@ -49,7 +57,8 @@ export const footerVisibleObserver = () => {
         "ProductStatusFilterPage",
         "ColorFilterPage",
         "SizeFilterPage",
-        "CityFilterPage"
+        "CityFilterPage",
+        "ContactPage"
     ]
     const isVisiable = footerVisibles.includes(generalStates.curPage);
 

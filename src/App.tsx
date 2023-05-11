@@ -25,7 +25,9 @@ const App = () => {
     useFilterDatas();
     useEffect(() => {
         moment.locale('az');
-        fetchHome();
+        setTimeout(() => {
+            fetchHome();
+        }, 500);
     }, []);
 
     useFooterVisible();

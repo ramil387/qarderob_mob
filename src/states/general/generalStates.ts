@@ -25,7 +25,17 @@ class GeneralStates {
     dialogOkFunc: any = () => { };
     dialogCancelFunc: any = () => { };
     // -----------------------------
+    setOkFunc = (okFunc: any) => {
+        runInAction(() => {
+            this.dialogOkFunc = okFunc;
+        })
+    }
 
+    setCancelFunc = (cancelFunc: any) => {
+        runInAction(() => {
+            this.dialogCancelFunc = cancelFunc;
+        })
+    }
     constructor() {
         makeAutoObservable(this)
     }

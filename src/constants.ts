@@ -18,7 +18,8 @@ export const APIS = {
     userInfo: 'users',
     payment: 'payment',
     search: "search",
-    statLike: 'stats/ads-like'
+    statLike: 'stats/ads-like',
+    contact: 'contact'
 
 }
 
