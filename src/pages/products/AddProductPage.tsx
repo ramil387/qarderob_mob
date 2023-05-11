@@ -13,14 +13,33 @@ import { toJS } from 'mobx';
 import PhoneInput from '@/components/common/PhoneInput';
 import OutlineSquareIcon from '@/icons/filter/OutlineSquareIcon';
 import FillSquareIcon from '@/icons/filter/FillSquareIcon';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { setImages } from '@/states/product/addProduct/setImage';
 
 const ImagesContainer = memo(
     observer(() => {
         const images = [1, 2, 3, 4];
+        const addImage = () => {
+            launchImageLibrary(
+                {
+                    mediaType: 'photo',
+                    // includeBase64: true,
+                    includeExtra: true,
+                    quality: 0.7,
+                    selectionLimit: 5,
+                },
+                (response) => {
+                    const images = response.assets;
+                    setImages(images || undefined);
+                },
+            );
+        };
         return (
             <View style={internalStyles.imageContainer}>
                 <View style={internalStyles.firstImage}>
-                    <BigCameraIcon />
+                    <TouchableOpacity onPress={addImage}>
+                        <BigCameraIcon />
+                    </TouchableOpacity>
                 </View>
                 <View style={internalStyles.secondImageContainer}>
                     {images.map((image) => {

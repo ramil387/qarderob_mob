@@ -3,6 +3,7 @@ import { SERVER_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { errorHandlers } from './errorHandlers';
 import { baseUrl } from '@/constants';
+import { uploadImage } from '@/states/product/addProduct/uploadImage';
 
 export const api = axios.create({ baseURL: SERVER_URL });
 
@@ -30,7 +31,7 @@ const http = {
     post: (url: string, body?: any) => api.post(url, body),
     patch: (url: string, body?: any) => api.patch(url, body),
     upload: async (url: string, body: any) =>
-        axios.post(url, body, {
+        axios.post(uploadImage + url, body, {
             headers: {
                 'content-type': 'multipart/form-data',
                 Authorization: `Bearer ${await AsyncStorage.getItem('token')}`,

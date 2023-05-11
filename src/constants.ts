@@ -1,10 +1,12 @@
 import {
     SERVER_URL,
-    ASSET_URL, WEBSITE
+    ASSET_URL, WEBSITE, UPLOAD_URL
 } from "@env"
 export const baseUrl = SERVER_URL
 export const assetUrl = ASSET_URL
 export const website = WEBSITE
+export const uploadUrl = UPLOAD_URL
+
 export const APIS = {
     home: 'home/mobile',
     filter: 'home/filter-data',
@@ -22,6 +24,7 @@ export const APIS = {
     contact: 'contact',
     rules: 'rules',
     deals: 'deals',
+    upload: '/upload',
 
 }
 
