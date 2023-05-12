@@ -21,6 +21,9 @@ import { getAdImageBySize } from '@/utils/getImageBySize';
 import CloseIcon from '@/icons/error/CloseIcon';
 import generalStates from '@/states/general/generalStates';
 import validator from 'validator';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import filterStates from '@/states/filter/filterStates';
+import { defineProductStatus } from '@/helper/defineProductStatus';
 
 const ImageVariantModal = ({
     isCamera,
@@ -183,30 +186,47 @@ const ImagesContainer = memo(
 
 const FormContainer = memo(
     observer(() => {
+        const navigate: NavigationProp<ParamListBase> = useNavigation();
         const fields = [
             {
                 label: 'Kateqoriya',
                 key: 'category',
+                page: () => navigate.navigate('CategoryFilterPage'),
+                value: filterStates.sortedCategories.find(
+                    (cat) => cat.id === addProductStates.categoryId,
+                )?.name_az,
             },
             {
                 label: 'Brend',
                 key: 'brand',
+                page: () => navigate.navigate('BrandFilterPage'),
+                value: filterStates.brands.find((brand) => brand.id === addProductStates.brandId)
+                    ?.name,
             },
             {
                 label: 'Məhsulun vəziyyəti',
                 key: 'productStatus',
+                page: () => navigate.navigate('ProductStatusFilterPage'),
+                value: defineProductStatus(addProductStates.productStatus),
             },
             {
                 label: 'Ölçü',
                 key: 'size',
+                page: () => navigate.navigate('SizeFilterPage'),
+                value: filterStates.sizes?.find((size) => size.id === addProductStates.sizeId)
+                    ?.size,
             },
             {
                 label: 'Rəng',
                 key: 'color',
+                page: () => navigate.navigate('ColorFilterPage'),
+                value: filterStates.colors?.find((color) => color.id === addProductStates.colorId)
+                    ?.name,
             },
             {
                 label: 'Qiymət',
                 key: 'price',
+                page: () => navigate.navigate('PriceFilterPage'),
             },
         ];
         const onChangeDesc = (text: string) => {
@@ -228,6 +248,8 @@ const FormContainer = memo(
             }
             addProductStates.setProductPrice(text);
         };
+
+        console.log(addProductStates.productStatus);
 
         return (
             <View style={internalStyles.formContainer}>
@@ -274,11 +296,19 @@ const FormContainer = memo(
                                     </View>
                                 </View>
                             ) : (
-                                <TouchableOpacity style={internalStyles.fieldItem}>
+                                <TouchableOpacity
+                                    onPress={field.page}
+                                    style={internalStyles.fieldItem}
+                                >
                                     <CustomText style={internalStyles.fieldText}>
                                         {field.label}
                                     </CustomText>
-                                    <ChevronRightIcon style={{ color: primaryColor }} />
+                                    <View style={internalStyles.itemRightContainer}>
+                                        <CustomText style={internalStyles.valueText}>
+                                            {field.value ? field.value : ''}
+                                        </CustomText>
+                                        <ChevronRightIcon style={{ color: primaryColor }} />
+                                    </View>
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -493,5 +523,15 @@ const internalStyles = StyleSheet.create({
         marginBottom: 8,
         borderWidth: 1,
         borderColor: '#fff',
+    },
+    itemRightContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 16,
+    },
+    valueText: {
+        fontFamily: NunitoBold,
+        fontSize: 16,
     },
 });

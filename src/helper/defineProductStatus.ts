@@ -6,7 +6,6 @@ export const defineProductStatus = (status: number | null) => {
             return 'Yeni və etiketli'
         case 1:
             return 'Yeni'
-        default:
-            return 'Az istifadə olunmuş'
+
     }
 }

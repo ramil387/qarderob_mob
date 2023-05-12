@@ -8,11 +8,18 @@ import FillSquareIcon from '@/icons/filter/FillSquareIcon';
 import OutlineSquareIcon from '@/icons/filter/OutlineSquareIcon';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import generalStates from '@/states/general/generalStates';
+import addProductStates from '@/states/product/addProduct/addProductStates';
 
 const ProductStatusFilterPage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
 
     const selectProductStatus = (selected: any) => {
+        if (generalStates.prevPage === 'AddProductPage') {
+            addProductStates.setProductStatus(selected?.id);
+            navigate.goBack();
+            return;
+        }
         const selectedIndex = filterStates.selectedProductStatus.findIndex(
             (status: any) => status?.id === selected.id,
         );

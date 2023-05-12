@@ -14,6 +14,7 @@ import { makeSlugify } from '@/helper/makeSlugify';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import generalStates from '@/states/general/generalStates';
+import addProductStates from '@/states/product/addProduct/addProductStates';
 
 const PrefixIcon = () => {
     return (
@@ -24,9 +25,14 @@ const PrefixIcon = () => {
 };
 
 const BrandItem = React.memo(({ item, onSelect, selected }: any) => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
     const shownFillSquare = selected;
-
     const handleSelect = useCallback(() => {
+        if (generalStates.prevPage === 'AddProductPage') {
+            addProductStates.setBrandId(item.id);
+            navigate.goBack();
+            return;
+        }
         onSelect(item);
     }, [item, onSelect]);
 

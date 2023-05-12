@@ -9,6 +9,8 @@ import CustomMainButton from '@/components/ui/CustomMainButton';
 import { makeSlugify } from '@/helper/makeSlugify';
 import CheckIcon from '@/icons/categories/CheckIcon';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import generalStates from '@/states/general/generalStates';
+import addProductStates from '@/states/product/addProduct/addProductStates';
 
 const ColorFilterPage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
@@ -47,7 +49,14 @@ const ColorFilterPage = () => {
                     renderItem={({ item }) => {
                         return (
                             <TouchableOpacity
-                                onPress={() => handleSelectColor(makeSlugify(item.name))}
+                                onPress={() => {
+                                    if (generalStates.prevPage === 'AddProductPage') {
+                                        addProductStates.setColorId(item.id);
+                                        navigate.goBack();
+                                        return;
+                                    }
+                                    handleSelectColor(makeSlugify(item.name));
+                                }}
                                 style={internalStyles.itemContainer}
                             >
                                 <View

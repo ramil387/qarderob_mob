@@ -8,6 +8,8 @@ import { NunitoMedium, e5Color, mainTextColor, primaryColor } from '@/styles/var
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import { makeSlugify } from '@/helper/makeSlugify';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import generalStates from '@/states/general/generalStates';
+import addProductStates from '@/states/product/addProduct/addProductStates';
 
 const SizesFilterPage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
@@ -41,7 +43,14 @@ const SizesFilterPage = () => {
                     );
                     return (
                         <TouchableOpacity
-                            onPress={() => handleSelectSize(makeSlugify(item.size))}
+                            onPress={() => {
+                                if (generalStates.prevPage === 'AddProductPage') {
+                                    addProductStates.setSizeId(item.id);
+                                    navigate.goBack();
+                                    return;
+                                }
+                                handleSelectSize(makeSlugify(item.size));
+                            }}
                             style={internalStyles.itemContainer}
                         >
                             <View

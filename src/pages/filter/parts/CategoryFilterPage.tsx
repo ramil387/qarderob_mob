@@ -15,6 +15,8 @@ import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
 import { makeSlugify } from '@/helper/makeSlugify';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import generalStates from '@/states/general/generalStates';
+import addProductStates from '@/states/product/addProduct/addProductStates';
 
 const PrefixIcon = () => {
     return (
@@ -99,6 +101,7 @@ export default observer(CategoryFilterPage);
 
 const MacroCategories = memo(
     observer(({ mainCategoryId, searchKey }: { mainCategoryId: number; searchKey: string }) => {
+        const navigate: NavigationProp<ParamListBase> = useNavigation();
         const categories = toJS(filterStates.sortedCategories);
         const macroCategories = toJS(filterStates.sortedCategories).filter(
             (cat) => cat.parent_id === mainCategoryId,
@@ -107,6 +110,11 @@ const MacroCategories = memo(
         const [perPage, setPerPage] = React.useState<number>(50);
 
         const selectCategories = (category: CategoryType) => {
+            if (generalStates.prevPage === 'AddProductPage') {
+                addProductStates.setCategoryId(category.id);
+                navigate.goBack();
+                return;
+            }
             const index = filterStates.selectedCategories.findIndex(
                 (cat: CategoryType) => cat.id === category.id,
             );
@@ -135,6 +143,14 @@ const MacroCategories = memo(
                   )
                 : macroCategories;
 
+        const disabledCats = (item: CategoryType) => {
+            if (item.level === 1) {
+                const childCats = categories.filter((cat) => cat.parent_id === item.id);
+                if (!childCats.length) return false;
+                return true;
+            }
+        };
+
         return (
             <FlatList
                 showsVerticalScrollIndicator={false}
@@ -157,6 +173,7 @@ const MacroCategories = memo(
                                     ...internalStyles.item,
                                 }}
                                 onPress={() => selectCategories(item)}
+                                disabled={disabledCats(item)}
                             >
                                 <CustomText
                                     style={{
@@ -166,7 +183,12 @@ const MacroCategories = memo(
                                 >
                                     {item.name_az}
                                 </CustomText>
-                                {showFillSquare ? <FillSquareIcon /> : <OutlineSquareIcon />}
+
+                                {disabledCats(item) ? null : showFillSquare ? (
+                                    <FillSquareIcon />
+                                ) : (
+                                    <OutlineSquareIcon />
+                                )}
                             </TouchableOpacity>
                             {categories
                                 .filter((cat) => cat?.parent_id === item?.id)
