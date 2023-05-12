@@ -1,5 +1,5 @@
 import { View, StyleSheet, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import BigCameraIcon from '@/icons/product/BigCameraIcon';
 import { NunitoBold, NunitoMedium, e5Color, f5Color, primaryColor } from '@/styles/variables';
 import CustomText from '@/components/ui/CustomText';
@@ -24,6 +24,9 @@ import validator from 'validator';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import filterStates from '@/states/filter/filterStates';
 import { defineProductStatus } from '@/helper/defineProductStatus';
+import errorStates from '@/states/error/errorStates';
+import { addProductValidator } from '@/helper/addProductValidator';
+import { createProduct } from '@/states/product/addProduct/createProduct';
 
 const ImageVariantModal = ({
     isCamera,
@@ -224,6 +227,13 @@ const FormContainer = memo(
                     ?.name,
             },
             {
+                label: 'Şəhər',
+                key: 'city',
+                page: () => navigate.navigate('CityFilterPage'),
+                value: filterStates.cities?.find((city) => city.id === addProductStates.cityId)
+                    ?.name_az,
+            },
+            {
                 label: 'Qiymət',
                 key: 'price',
                 page: () => navigate.navigate('PriceFilterPage'),
@@ -320,6 +330,18 @@ const FormContainer = memo(
 const ContactContainer = memo(
     observer(() => {
         const user = toJS(profileStates.user);
+
+        const onChangeFullname = (text: string) => {
+            addProductStates.setFullName(text);
+        };
+
+        const onChangeEmail = (text: string) => {
+            addProductStates.setEmail(text);
+        };
+
+        useEffect(() => {
+            addProductStates.setPhone('+994' + user?.phone?.slice(1) || '');
+        }, []);
         return (
             <View style={internalStyles.contactContainer}>
                 <CustomText style={internalStyles.headText}>Əlaqə məlumatları</CustomText>
@@ -328,6 +350,8 @@ const ContactContainer = memo(
                     <CustomText style={internalStyles.contactLabel}>Ad/Soyad *</CustomText>
                     <View style={internalStyles.inpContainer}>
                         <CustomTextInput
+                            onChangeText={onChangeFullname}
+                            defaultValue={user?.full_name}
                             style={internalStyles.inp}
                             placeholder='Ad soyadı daxil edin'
                         />
@@ -335,14 +359,17 @@ const ContactContainer = memo(
                     <CustomText style={internalStyles.contactLabel}>E-mail *</CustomText>
                     <View style={internalStyles.inpContainer}>
                         <CustomTextInput
+                            onChangeText={onChangeEmail}
+                            defaultValue={user?.email}
                             style={internalStyles.inp}
-                            placeholder='Ad soyadı daxil edin'
+                            placeholder='E-mail'
                         />
                     </View>
                     <CustomText style={internalStyles.contactLabel}>Telefon *</CustomText>
                     <View style={internalStyles.inpContainer}>
                         <PhoneInput
-                        // style={internalStyles.inp}
+                            setPhone={(text) => addProductStates.setPhone(text)}
+                            phone={addProductStates.phone}
                         />
                     </View>
                 </View>
@@ -372,6 +399,11 @@ const ContactContainer = memo(
 );
 
 const AddProductPage = () => {
+    const publish = () => {
+        if (addProductValidator()) {
+            createProduct();
+        }
+    };
     return (
         <View style={internalStyles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -379,12 +411,12 @@ const AddProductPage = () => {
                 <FormContainer />
                 <ContactContainer />
             </ScrollView>
-            <CustomMainButton func={() => {}} title='Dərc et' />
+            <CustomMainButton func={publish} title='Dərc et' />
         </View>
     );
 };
 
-export default AddProductPage;
+export default memo(observer(AddProductPage));
 
 const internalStyles = StyleSheet.create({
     container: {

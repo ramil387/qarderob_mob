@@ -13,6 +13,10 @@ class AddProductStates {
     productPrice: string = ''
     cityId: number | null = null;
     hideNumber: boolean = false;
+    // contact
+    fullName: string = '';
+    email: string = '';
+    phone: string = '';
 
     constructor() {
         makeAutoObservable(this);
@@ -82,6 +86,24 @@ class AddProductStates {
     setHideNumber(hideNumber: boolean) {
         runInAction(() => {
             this.hideNumber = hideNumber;
+        })
+    }
+
+    setFullName(fullName: string) {
+        runInAction(() => {
+            this.fullName = fullName;
+        })
+    }
+
+    setEmail(email: string) {
+        runInAction(() => {
+            this.email = email;
+        })
+    }
+
+    setPhone(phone: string) {
+        runInAction(() => {
+            this.phone = phone;
         })
     }
 
