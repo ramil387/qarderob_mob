@@ -3,7 +3,7 @@ import addProductStates from "@/states/product/addProduct/addProductStates";
 import validator from 'validator';
 
 export const addProductValidator = () => {
-
+    console.log(addProductStates.fullName, 'xxx')
     if (addProductStates.images.length === 0) {
         errorStates.setCommonErrorVisible(true);
         errorStates.setErrorAction(false);
@@ -71,11 +71,7 @@ export const addProductValidator = () => {
         errorStates.setErrorAction(false);
         errorStates.setErrorHeader('Ad soyad 3-30 simvoldan ibarət olmalıdır');
         return;
-    } else if (!validator.isAlpha(addProductStates?.fullName.replace(/\s/g, ''))) {
-        errorStates.setCommonErrorVisible(true);
-        errorStates.setErrorAction(false);
-        errorStates.setErrorHeader('Ad soyad yalnız hərflərdən ibarət olmalıdır');
-        return;
+
     }
 
     if (!addProductStates?.email) {

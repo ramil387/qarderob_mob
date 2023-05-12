@@ -36,8 +36,8 @@ export const setImages = (images: Asset[] | undefined, setCamera?: any) => {
                 errorMessageForImage()
                 return;
             }
-
-            img['name'] = JSON.parse(getImageName).name
+            console.log(JSON.parse(getImageName)?.data?.name, 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+            img['name'] = JSON.parse(getImageName)?.data?.name
 
             addProductStates.setImages([...addProductStates.images, img]);
             setCamera(false)

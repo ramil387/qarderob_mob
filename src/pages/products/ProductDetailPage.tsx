@@ -50,11 +50,12 @@ import FillHeartIcon from '@/icons/home/FillHeartIcon';
 const ProductImages = memo(
     observer(() => {
         const product = toJS(productStates.selectedProduct);
+        console.log({ product });
         return (
             <Carousel<any>
                 style={{ height: 400 }}
                 loop={false}
-                enabled={product?.images.length === 1 ? false : true}
+                enabled={product?.images?.length === 1 ? false : true}
                 width={phoneWidth}
                 data={product!.images}
                 renderItem={({ image, index }: any) => {

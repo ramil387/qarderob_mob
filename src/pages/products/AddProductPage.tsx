@@ -1,7 +1,14 @@
 import { View, StyleSheet, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
 import React, { memo, useEffect } from 'react';
 import BigCameraIcon from '@/icons/product/BigCameraIcon';
-import { NunitoBold, NunitoMedium, e5Color, f5Color, primaryColor } from '@/styles/variables';
+import {
+    NunitoBold,
+    NunitoMedium,
+    e5Color,
+    f5Color,
+    phoneWidth,
+    primaryColor,
+} from '@/styles/variables';
 import CustomText from '@/components/ui/CustomText';
 import SmCameraIcon from '@/icons/product/SmCameraIcon';
 import { observer } from 'mobx-react-lite';
@@ -16,17 +23,14 @@ import FillSquareIcon from '@/icons/filter/FillSquareIcon';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { setImages } from '@/states/product/addProduct/setImage';
 import addProductStates from '@/states/product/addProduct/addProductStates';
-import productStates from '@/states/product/productStates';
 import { getAdImageBySize } from '@/utils/getImageBySize';
 import CloseIcon from '@/icons/error/CloseIcon';
-import generalStates from '@/states/general/generalStates';
-import validator from 'validator';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import filterStates from '@/states/filter/filterStates';
 import { defineProductStatus } from '@/helper/defineProductStatus';
-import errorStates from '@/states/error/errorStates';
 import { addProductValidator } from '@/helper/addProductValidator';
 import { createProduct } from '@/states/product/addProduct/createProduct';
+import LoadingComponent from '@/components/common/LoadingComponent';
 
 const ImageVariantModal = ({
     isCamera,
@@ -91,7 +95,7 @@ const ImageVariantModal = ({
 
 const ImagesContainer = memo(
     observer(() => {
-        const product = toJS(productStates.selectedProduct);
+        const product = toJS(addProductStates.updatedProduct);
         const [isCamera, setIsCamera] = React.useState(false);
         const images = [1, 2, 3, 4];
         const addImage = () => {
@@ -342,6 +346,8 @@ const ContactContainer = memo(
 
         useEffect(() => {
             addProductStates.setPhone('+994' + user?.phone?.slice(1) || '');
+            addProductStates.setFullName(user?.full_name || '');
+            addProductStates.setEmail(user?.email || '');
         }, []);
         return (
             <View style={internalStyles.contactContainer}>
@@ -407,6 +413,14 @@ const AddProductPage = () => {
     };
     return (
         <View style={internalStyles.container}>
+            <View
+                style={{
+                    ...internalStyles.loading,
+                    display: addProductStates.isLoading ? 'flex' : 'none',
+                }}
+            >
+                <LoadingComponent />
+            </View>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <ImagesContainer />
                 <FormContainer />
@@ -583,5 +597,14 @@ const internalStyles = StyleSheet.create({
     },
     hideNumberText: {
         fontSize: 16,
+    },
+    loading: {
+        position: 'absolute',
+        height: '100%',
+        width: phoneWidth,
+        backgroundColor: 'rgba(0,0,0,0.2)',
+        zIndex: 100,
+        display: 'flex',
+        justifyContent: 'center',
     },
 });

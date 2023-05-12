@@ -1,8 +1,11 @@
+import { AdListType } from "@/types/adListType";
 import { makeAutoObservable, runInAction } from "mobx";
 
 class AddProductStates {
     images: any[] = [];
     imageDate: string = '';
+
+    updatedProduct: AdListType | null = null;
 
     productDescription: string = "";
     categoryId: number | null = null;
@@ -17,6 +20,8 @@ class AddProductStates {
     fullName: string = '';
     email: string = '';
     phone: string = '';
+
+    isLoading: boolean = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -107,7 +112,11 @@ class AddProductStates {
         })
     }
 
-
+    setIsLoading(isLoading: boolean) {
+        runInAction(() => {
+            this.isLoading = isLoading;
+        })
+    }
 }
 
 export default new AddProductStates();
