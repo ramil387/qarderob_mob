@@ -249,8 +249,6 @@ const FormContainer = memo(
             addProductStates.setProductPrice(text);
         };
 
-        console.log(addProductStates.productStatus);
-
         return (
             <View style={internalStyles.formContainer}>
                 <View style={internalStyles.formItemContainer}>
@@ -348,11 +346,26 @@ const ContactContainer = memo(
                         />
                     </View>
                 </View>
-                <View style={internalStyles.hidePhoneContainer}>
-                    {/* <OutlineSquareIcon /> */}
-                    <FillSquareIcon />
-                    <CustomText>Nömrəni gizlət</CustomText>
-                </View>
+                <TouchableOpacity
+                    onPress={() => {
+                        addProductStates.setHideNumber(!addProductStates.hideNumber);
+                    }}
+                    style={internalStyles.hidePhoneContainer}
+                >
+                    <View style={{ top: 4 }}>
+                        {addProductStates.hideNumber ? <FillSquareIcon /> : <OutlineSquareIcon />}
+                    </View>
+                    <View>
+                        <CustomText style={internalStyles.hideNumberText}>
+                            Nömrəni gizlət
+                        </CustomText>
+                        <CustomText
+                            style={{ display: addProductStates.hideNumber ? 'flex' : 'none' }}
+                        >
+                            Nömrəni gizlətməklə sizə yalnız mesaj yazmaq mümkün olacaq
+                        </CustomText>
+                    </View>
+                </TouchableOpacity>
             </View>
         );
     }),
@@ -494,7 +507,7 @@ const internalStyles = StyleSheet.create({
     hidePhoneContainer: {
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center',
+        // alignItems: 'center',
         gap: 8,
         marginTop: 16,
     },
@@ -532,6 +545,9 @@ const internalStyles = StyleSheet.create({
     },
     valueText: {
         fontFamily: NunitoBold,
+        fontSize: 16,
+    },
+    hideNumberText: {
         fontSize: 16,
     },
 });

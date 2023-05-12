@@ -12,6 +12,7 @@ class AddProductStates {
     colorId: number | null = null;
     productPrice: string = ''
     cityId: number | null = null;
+    hideNumber: boolean = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -75,6 +76,12 @@ class AddProductStates {
     setImageDate(imageDate: string) {
         runInAction(() => {
             this.imageDate = imageDate;
+        })
+    }
+
+    setHideNumber(hideNumber: boolean) {
+        runInAction(() => {
+            this.hideNumber = hideNumber;
         })
     }
 
