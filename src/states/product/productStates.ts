@@ -36,6 +36,18 @@ class ProductStates {
         })
     }
 
+    resetSelectedProduct() {
+        runInAction(() => {
+            this.selectedProduct = null;
+        })
+    }
+
+    resetRelatedProducts() {
+        runInAction(() => {
+            this.relatedProducts = null;
+        })
+    }
+
 }
 
 export default new ProductStates();

@@ -108,69 +108,77 @@ const InfluencerPage = () => {
             {isLoading ? (
                 <LoadingComponent />
             ) : (
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ rowGap: 8, marginTop: profileStates?.token ? 16 : 0 }}
-                    data={influencers}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity onPress={() => goUserPage(item as any)}>
-                            <ImageBackground
-                                imageStyle={{ borderRadius: 8 }}
-                                source={{
-                                    uri: item.cover,
-                                }}
-                            >
-                                <LinearGradient
-                                    start={{ x: 0, y: 0 }}
-                                    end={{ x: 1.35, y: 0 }}
-                                    colors={[
-                                        '#F70F4B',
-                                        'rgba(246, 99, 137, 0.612819)',
-                                        'rgba(255, 255, 255, 0)',
-                                        'rgba(255, 255, 255, 0) 123.13%)',
-                                    ]}
-                                    style={internalStyles.itemContainer}
+                <View style={{ flex: 1 }}>
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{
+                            rowGap: 8,
+                            marginTop: profileStates?.token ? 16 : 0,
+                            paddingBottom: 16,
+                        }}
+                        data={influencers}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity onPress={() => goUserPage(item as any)}>
+                                <ImageBackground
+                                    imageStyle={{ borderRadius: 8 }}
+                                    source={{
+                                        uri: item.cover,
+                                    }}
                                 >
-                                    <View style={internalStyles.avatarContainer}>
-                                        <Avatar
-                                            size={48}
-                                            source={{
-                                                uri: item.photo,
-                                            }}
-                                            rounded
-                                        />
-                                        <View
-                                            style={{
-                                                display: 'flex',
-                                                flexDirection: 'row',
-                                                alignItems: 'center',
-                                                gap: 4,
-                                            }}
-                                        >
-                                            <CustomText style={internalStyles.name}>
-                                                {item.full_name}
-                                            </CustomText>
-                                            {item.isVip && <VerifiedIcon />}
+                                    <LinearGradient
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1.35, y: 0 }}
+                                        colors={[
+                                            '#F70F4B',
+                                            'rgba(246, 99, 137, 0.612819)',
+                                            'rgba(255, 255, 255, 0)',
+                                            'rgba(255, 255, 255, 0) 123.13%)',
+                                        ]}
+                                        style={internalStyles.itemContainer}
+                                    >
+                                        <View style={internalStyles.avatarContainer}>
+                                            <Avatar
+                                                size={48}
+                                                source={{
+                                                    uri: item.photo,
+                                                }}
+                                                rounded
+                                            />
+                                            <View
+                                                style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'row',
+                                                    alignItems: 'center',
+                                                    gap: 4,
+                                                }}
+                                            >
+                                                <CustomText style={internalStyles.name}>
+                                                    {item.full_name}
+                                                </CustomText>
+                                                {item.isVip && <VerifiedIcon />}
+                                            </View>
                                         </View>
-                                    </View>
-                                    {(item?.social_links?.instagram || item.instagram) && (
-                                        <View style={internalStyles.instagramContainer}>
-                                            <InstagramSquareIcon />
-                                            <Text style={{ color: 'white', paddingLeft: 4 }}>
-                                                {item?.social_links?.instagram
-                                                    ? item?.social_links?.instagram
-                                                          .split('/')[3]
-                                                          ?.split('?')[0]
-                                                    : item?.instagram.split('/')[3]?.split('?')[0]}
-                                            </Text>
-                                        </View>
-                                    )}
-                                </LinearGradient>
-                            </ImageBackground>
-                        </TouchableOpacity>
-                    )}
-                />
+                                        {(item?.social_links?.instagram || item.instagram) && (
+                                            <View style={internalStyles.instagramContainer}>
+                                                <InstagramSquareIcon />
+                                                <Text style={{ color: 'white', paddingLeft: 4 }}>
+                                                    {item?.social_links?.instagram
+                                                        ? item?.social_links?.instagram
+                                                              .split('/')[3]
+                                                              ?.split('?')[0]
+                                                        : item?.instagram
+                                                              .split('/')[3]
+                                                              ?.split('?')[0]}
+                                                </Text>
+                                            </View>
+                                        )}
+                                    </LinearGradient>
+                                </ImageBackground>
+                            </TouchableOpacity>
+                        )}
+                    />
+                </View>
             )}
         </View>
     );

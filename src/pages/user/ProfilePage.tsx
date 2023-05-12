@@ -1,5 +1,5 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { toJS } from 'mobx';
 import profileStates from '@/states/profile/profileStates';
 import { Avatar, Switch } from '@rneui/themed';
@@ -21,7 +21,7 @@ import CustomMainButton from '@/components/ui/CustomMainButton';
 import EditIcon from '@/icons/user/EditIcon';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useIsFocused, useRoute } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused, useRoute } from '@react-navigation/native';
 import { fetchUserProducts } from '@/states/user/fetchUserProducts';
 import ProductList from '@/components/products/ProductList';
 import productStates from '@/states/product/productStates';
@@ -29,6 +29,7 @@ import LoadingComponent from '@/components/common/LoadingComponent';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import userStates from '@/states/user/userStates';
 import NotFoundIcon from '@/icons/user/NotFoundIcon';
+import ShopIcon from '@/icons/shop/ShopIcon';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -40,8 +41,8 @@ const ProductSection = observer(() => {
     const route: any = useRoute();
     const key = route.params?.key;
 
-    useEffect(() => {
-        if (isFocused) {
+    useFocusEffect(
+        useCallback(() => {
             setIsLoading(true);
             fetchUserProducts(user!.id, key, 1, profileStates.storeMode)
                 .then((resp) => {
@@ -50,8 +51,8 @@ const ProductSection = observer(() => {
                 .finally(() => {
                     setIsLoading(false);
                 });
-        }
-    }, [profileStates.storeMode]);
+        }, [profileStates.storeMode]),
+    );
 
     const loadMore = () => {
         if (isFocused) {
@@ -163,9 +164,10 @@ const TabView = () => {
 
 const ProfilePage = () => {
     const user = toJS(profileStates.user);
-    const userContainerHeight = useSharedValue(294.2);
+    const [initialHeight, setInitialHeight] = useState<number>(0);
+    const userContainerHeight = useSharedValue(initialHeight ? initialHeight : 0);
     const userContainerPadding = useSharedValue(16);
-
+    console.log(initialHeight);
     const changeUserContainerHeight = (height: number, padding: number) => {
         userContainerHeight.value = withTiming(height, { duration: 300 });
         userContainerPadding.value = withTiming(padding, { duration: 300 });
@@ -182,9 +184,9 @@ const ProfilePage = () => {
         if (productStates.productListScrollDirection === 'down') {
             changeUserContainerHeight(0, 0);
         } else {
-            changeUserContainerHeight(294.2, 16);
+            changeUserContainerHeight(initialHeight, 16);
         }
-    }, [productStates.productListScrollDirection]);
+    }, [productStates.productListScrollDirection, initialHeight]);
 
     const addUserBalance = () => {};
 
@@ -230,6 +232,18 @@ const ProfilePage = () => {
                     </View>
                     <ChevronRightIcon />
                 </TouchableOpacity>
+                <TouchableOpacity
+                    style={{
+                        ...internalStyles.balanceItemContainer,
+                        display: user?._store?.id ? 'none' : 'flex',
+                    }}
+                >
+                    <View style={internalStyles.balanceLeftContainer}>
+                        <ShopIcon />
+                        <CustomText style={internalStyles.balanceText}>Mağaza yarat</CustomText>
+                    </View>
+                    <ChevronRightIcon />
+                </TouchableOpacity>
             </View>
         );
     };
@@ -241,53 +255,75 @@ const ProfilePage = () => {
                     {
                         padding: 16,
                     },
-                    useContainerStyle,
+                    initialHeight ? useContainerStyle : {},
                 ]}
             >
-                <View style={internalStyles.avatarContainer}>
-                    <Avatar size={60} rounded source={{ uri: user?.photo }} />
-                    <View>
-                        <CustomText style={internalStyles.username}>{user?.username}</CustomText>
-                        <View style={internalStyles.dateContainer}>
-                            <CalendarIcon style={{ color: inactiveColor }} />
-                            <CustomText style={internalStyles.dateText}>
-                                {moment(user?.createdAt).format('ll')} tarixindən Qarderob - da
+                <View
+                    onLayout={(e) => {
+                        if (!initialHeight) {
+                            setInitialHeight(e.nativeEvent.layout.height + 16);
+                            userContainerHeight.value = e.nativeEvent.layout.height + 16;
+                        }
+                    }}
+                >
+                    <View style={internalStyles.avatarContainer}>
+                        <Avatar
+                            size={60}
+                            rounded
+                            source={{
+                                uri: profileStates?.storeMode ? user?._store?.img : user?.photo,
+                            }}
+                        />
+                        <View>
+                            <CustomText style={internalStyles.username}>
+                                {user?.username}
+                            </CustomText>
+                            <View style={internalStyles.dateContainer}>
+                                <CalendarIcon style={{ color: inactiveColor }} />
+                                <CustomText style={internalStyles.dateText}>
+                                    {moment(user?.createdAt).format('ll')} tarixindən Qarderob - da
+                                </CustomText>
+                            </View>
+                            <CustomText style={internalStyles.limit}>
+                                Elan limi: {user?._store?._active_package?.limit ?? 0}
                             </CustomText>
                         </View>
-                        <CustomText style={internalStyles.limit}>
-                            Elan limi: {user?._store?._active_package?.limit ?? 0}
+                    </View>
+                    <View
+                        style={{
+                            ...internalStyles.modeContainer,
+                            display: user?._store?.id ? 'flex' : 'none',
+                        }}
+                    >
+                        <CustomText
+                            style={{
+                                ...internalStyles.modeText,
+
+                                color: !profileStates.storeMode ? primaryColor : inactiveColor,
+                            }}
+                        >
+                            İstifadəçi
+                        </CustomText>
+                        <Switch
+                            style={{ width: 48 }}
+                            onChange={() => {
+                                profileStates.setStoreMode(!profileStates.storeMode);
+                            }}
+                            thumbColor={primaryColor}
+                            value={profileStates.storeMode}
+                            color={primaryColor}
+                        />
+                        <CustomText
+                            style={{
+                                ...internalStyles.modeText,
+                                color: profileStates.storeMode ? primaryColor : inactiveColor,
+                            }}
+                        >
+                            Mağaza
                         </CustomText>
                     </View>
+                    <UserActions />
                 </View>
-                <View style={internalStyles.modeContainer}>
-                    <CustomText
-                        style={{
-                            ...internalStyles.modeText,
-
-                            color: !profileStates.storeMode ? primaryColor : inactiveColor,
-                        }}
-                    >
-                        İstifadəçi
-                    </CustomText>
-                    <Switch
-                        style={{ width: 48 }}
-                        onChange={() => {
-                            profileStates.setStoreMode(!profileStates.storeMode);
-                        }}
-                        thumbColor={primaryColor}
-                        value={profileStates.storeMode}
-                        color={primaryColor}
-                    />
-                    <CustomText
-                        style={{
-                            ...internalStyles.modeText,
-                            color: profileStates.storeMode ? primaryColor : inactiveColor,
-                        }}
-                    >
-                        Mağaza
-                    </CustomText>
-                </View>
-                <UserActions />
             </Animated.View>
             <TabView />
         </View>

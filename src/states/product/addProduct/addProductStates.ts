@@ -117,6 +117,27 @@ class AddProductStates {
             this.isLoading = isLoading;
         })
     }
+
+    resetAddProductStates() {
+        runInAction(() => {
+            this.images = [];
+            this.imageDate = '';
+            this.productDescription = "";
+            this.categoryId = null;
+            this.brandId = null;
+            this.productStatus = null;
+            this.sizeId = null;
+            this.colorId = null;
+            this.productPrice = ''
+            this.cityId = null;
+            this.hideNumber = false;
+            this.fullName = '';
+            this.email = '';
+            this.phone = '';
+            this.isLoading = false;
+        })
+    }
+
 }
 
 export default new AddProductStates();

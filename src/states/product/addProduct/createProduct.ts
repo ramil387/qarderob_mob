@@ -75,5 +75,6 @@ export const createProduct = async () => {
         console.log(error)
     } finally {
         addProductStates.setIsLoading(false);
+        addProductStates.resetAddProductStates();
     }
 }
