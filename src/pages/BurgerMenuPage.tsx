@@ -10,15 +10,18 @@ import {
     e5Color,
     f5Color,
     lightBorder,
-    mainTextColor,
     primaryColor,
-    shadowColor,
 } from '@/styles/variables';
 import PhoneIcon from '@/icons/product/PhoneIcon';
 import DealIcon from '@/icons/burger/DealIcon';
 import RuleIcon from '@/icons/burger/RuleIcon';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
-import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import {
+    NavigationProp,
+    ParamListBase,
+    StackActions,
+    useNavigation,
+} from '@react-navigation/native';
 import { Avatar } from '@rneui/themed';
 import profileStates from '@/states/profile/profileStates';
 import CustomMainButton from '@/components/ui/CustomMainButton';
@@ -30,11 +33,11 @@ import { api } from '@/services/httpMethods';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CommonBottomSheet from '@/components/common/CommonBottomSheet';
 import MailIcon from '@/icons/product/MailIcon';
-import OutlineFacebookIcon from '@/icons/social/OutlineFacebookIcon';
 import InstagramSquareIcon from '@/icons/user/InstagramSquareIcon';
-import OutlineInstagramIcon from '@/icons/social/OutlineInstagramIcon';
 import OpenedMailIcon from '@/icons/social/OpenedMailIcon';
 import generalStates from '@/states/general/generalStates';
+import OutlineFacebookIcon from '@/icons/social/OutlineFacebookIcon';
+import OutlineInstagramIcon from '@/icons/social/OutlineInstagramIcon';
 
 const BurgerMenuPage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
@@ -189,6 +192,7 @@ const ProfileBurgerMenu = observer(() => {
         profileStates.setToken(null);
         api.defaults.headers.common['Authorization'] = null;
         AsyncStorage.removeItem('token');
+        navigate.navigate('HomePage');
     };
 
     return (

@@ -281,10 +281,20 @@ const ProfilePage = () => {
                             <View style={internalStyles.dateContainer}>
                                 <CalendarIcon style={{ color: inactiveColor }} />
                                 <CustomText style={internalStyles.dateText}>
-                                    {moment(user?.createdAt).format('ll')} tarixindən Qarderob - da
+                                    {moment(
+                                        profileStates?.storeMode
+                                            ? user?._store?.createdAt
+                                            : user?.createdAt,
+                                    ).format('ll')}{' '}
+                                    tarixindən Qarderob - da
                                 </CustomText>
                             </View>
-                            <CustomText style={internalStyles.limit}>
+                            <CustomText
+                                style={{
+                                    ...internalStyles.limit,
+                                    display: profileStates?.storeMode ? 'flex' : 'none',
+                                }}
+                            >
                                 Elan limi: {user?._store?._active_package?.limit ?? 0}
                             </CustomText>
                         </View>
