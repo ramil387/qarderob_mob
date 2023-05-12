@@ -1,4 +1,4 @@
-import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Modal, Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 import React, { memo } from 'react';
 import CustomText from '../ui/CustomText';
 import { observer } from 'mobx-react-lite';
@@ -38,26 +38,35 @@ const ErrorModal = () => {
 
     return (
         <Modal animationType='fade' visible={errorStates.commonErrorVisible} transparent={true}>
-            <View style={internalStyles.container}>
-                <View style={internalStyles.contentContainer}>
-                    <TouchableOpacity
-                        onPress={errorStates.resetErrorStates}
-                        style={internalStyles.closeIcon}
-                    >
-                        <CloseIcon />
-                    </TouchableOpacity>
-                    <View style={internalStyles.iconContainer}>
-                        <WarningIcon />
-                    </View>
-                    <CustomText style={internalStyles.errorHeader}>
-                        {errorStates.errorHeader}
-                    </CustomText>
-                    <CustomText style={internalStyles.errorBody}>
-                        {errorStates.errorBody}
-                    </CustomText>
-                    <ActionBody />
+            <Pressable
+                onPress={() => {
+                    errorStates.setCommonErrorVisible(false);
+                }}
+                style={internalStyles.container}
+            >
+                <View style={internalStyles.container}>
+                    <Pressable onPress={() => {}}>
+                        <View style={internalStyles.contentContainer}>
+                            <TouchableOpacity
+                                onPress={errorStates.resetErrorStates}
+                                style={internalStyles.closeIcon}
+                            >
+                                <CloseIcon />
+                            </TouchableOpacity>
+                            <View style={internalStyles.iconContainer}>
+                                <WarningIcon />
+                            </View>
+                            <CustomText style={internalStyles.errorHeader}>
+                                {errorStates.errorHeader}
+                            </CustomText>
+                            <CustomText style={internalStyles.errorBody}>
+                                {errorStates.errorBody}
+                            </CustomText>
+                            <ActionBody />
+                        </View>
+                    </Pressable>
                 </View>
-            </View>
+            </Pressable>
         </Modal>
     );
 };

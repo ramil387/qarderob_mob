@@ -300,6 +300,7 @@ const FormContainer = memo(
                                                 </View>
                                             }
                                             style={internalStyles.priceInp}
+                                            maxLength={5}
                                         />
                                     </View>
                                 </View>
@@ -507,6 +508,7 @@ const internalStyles = StyleSheet.create({
     priceInp: {
         height: '100%',
         paddingLeft: 16,
+        fontFamily: NunitoBold,
     },
     priceInpSuffix: {
         position: 'absolute',
