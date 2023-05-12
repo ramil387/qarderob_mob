@@ -10,7 +10,7 @@ class AddProductStates {
     productStatus: number | null = null;
     sizeId: number | null = null;
     colorId: number | null = null;
-    productPrice: number | null = null;
+    productPrice: string = ''
     cityId: number | null = null;
 
     constructor() {
@@ -60,7 +60,7 @@ class AddProductStates {
     }
 
 
-    setProductPrice(productPrice: number | null) {
+    setProductPrice(productPrice: string) {
         runInAction(() => {
             this.productPrice = productPrice;
         })

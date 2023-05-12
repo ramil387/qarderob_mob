@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
 import React, { memo } from 'react';
 import BigCameraIcon from '@/icons/product/BigCameraIcon';
 import { NunitoBold, NunitoMedium, e5Color, f5Color, primaryColor } from '@/styles/variables';
@@ -9,64 +9,173 @@ import CustomTextInput from '@/components/ui/CustomTextInput';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import profileStates from '@/states/profile/profileStates';
-import { toJS } from 'mobx';
+import { runInAction, toJS } from 'mobx';
 import PhoneInput from '@/components/common/PhoneInput';
 import OutlineSquareIcon from '@/icons/filter/OutlineSquareIcon';
 import FillSquareIcon from '@/icons/filter/FillSquareIcon';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { setImages } from '@/states/product/addProduct/setImage';
-import { ImageBackground } from 'react-native';
+import addProductStates from '@/states/product/addProduct/addProductStates';
+import productStates from '@/states/product/productStates';
+import { getAdImageBySize } from '@/utils/getImageBySize';
+import CloseIcon from '@/icons/error/CloseIcon';
+import generalStates from '@/states/general/generalStates';
+import validator from 'validator';
+
+const ImageVariantModal = ({
+    isCamera,
+    setIsCamera,
+}: {
+    isCamera: boolean;
+    setIsCamera: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+    return (
+        <Modal visible={isCamera} transparent={true}>
+            <View style={internalStyles.modalContainer}>
+                <View style={internalStyles.contentContainer}>
+                    <CustomMainButton
+                        containerStyle={internalStyles.btnContainer}
+                        title='Şəkil yüklə'
+                        func={() => {
+                            launchImageLibrary(
+                                {
+                                    mediaType: 'photo',
+                                    includeBase64: true,
+                                    includeExtra: true,
+                                    quality: 0.7,
+                                    selectionLimit: 5,
+                                },
+                                (response) => {
+                                    const images = response.assets;
+                                    setImages(images || undefined, setIsCamera);
+                                },
+                            );
+                        }}
+                    />
+                    <CustomMainButton
+                        containerStyle={internalStyles.btnContainer}
+                        title='Şəkil çək'
+                        func={() => {
+                            launchCamera(
+                                {
+                                    mediaType: 'photo',
+                                    includeBase64: true,
+                                    includeExtra: true,
+                                    quality: 0.7,
+                                },
+                                (response) => {
+                                    const images = response.assets;
+                                    setImages(images || undefined, setIsCamera);
+                                },
+                            );
+                        }}
+                    />
+                    <CustomMainButton
+                        containerStyle={internalStyles.btnContainer}
+                        title='İmtina'
+                        func={() => {
+                            setIsCamera(false);
+                        }}
+                    ></CustomMainButton>
+                </View>
+            </View>
+        </Modal>
+    );
+};
 
 const ImagesContainer = memo(
     observer(() => {
+        const product = toJS(productStates.selectedProduct);
+        const [isCamera, setIsCamera] = React.useState(false);
         const images = [1, 2, 3, 4];
         const addImage = () => {
-            launchImageLibrary(
-                {
-                    mediaType: 'photo',
-                    // includeBase64: true,
-                    includeExtra: true,
-                    quality: 0.7,
-                    selectionLimit: 5,
-                },
-                (response) => {
-                    const images = response.assets;
-                    setImages(images || undefined);
-                },
-            );
+            setIsCamera(true);
         };
 
-        const imagesUrls = [
-            {
-                updatedUrl: '',
-                currentUrl: '',
-            },
-        ];
+        const removeImage = (index: number) => {
+            const images = addProductStates.images;
+            runInAction(() => {
+                images.splice(index, 1);
+            });
+        };
+
+        const mainImageUrl = addProductStates.images[0]
+            ? `data:image/jpeg;base64,${addProductStates.images[0]?.base64}`
+            : product
+            ? getAdImageBySize('md', product?.id, product?.images[0])
+            : '';
+
+        const secondaryImagesUrl = (index: number) => {
+            return addProductStates.images[index]
+                ? `data:image/jpeg;base64,${addProductStates.images[index]?.base64}`
+                : product
+                ? getAdImageBySize('md', product?.id, product?.images[index])
+                : '';
+        };
 
         return (
             <View style={internalStyles.imageContainer}>
                 <View style={internalStyles.firstImage}>
-                    <Image
-                        style={{ width: '100%', height: '100%', borderRadius: 8 }}
-                        source={{
-                            uri: 'https://storage.qarderob.az/a/2123/lg/rc-upload-1683827611802-6573.jpg',
-                        }}
-                    />
-
-                    {/* <TouchableOpacity onPress={addImage}>
-                        <BigCameraIcon />
-                    </TouchableOpacity> */}
+                    {mainImageUrl.length > 0 ? (
+                        <>
+                            <Image
+                                style={{ width: '100%', height: '100%', borderRadius: 8 }}
+                                source={{
+                                    uri: mainImageUrl,
+                                }}
+                            />
+                            <TouchableOpacity
+                                onPress={() => removeImage(0)}
+                                style={internalStyles.closeIcon}
+                            >
+                                <CloseIcon style={{ color: '#fff', width: 18, height: 18 }} />
+                            </TouchableOpacity>
+                        </>
+                    ) : (
+                        <TouchableOpacity onPress={addImage}>
+                            <BigCameraIcon />
+                        </TouchableOpacity>
+                    )}
                 </View>
                 <View style={internalStyles.secondImageContainer}>
-                    {images.map((image) => {
+                    {images.map((image, index) => {
                         return (
                             <View style={internalStyles.secondImage} key={image}>
-                                {/* <CustomText>{image}</CustomText> */}
-                                <SmCameraIcon />
+                                {secondaryImagesUrl(image).length > 0 ? (
+                                    <>
+                                        <Image
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                borderRadius: 8,
+                                            }}
+                                            source={{
+                                                uri: secondaryImagesUrl(index + 1),
+                                            }}
+                                        />
+                                        <TouchableOpacity
+                                            onPress={() => removeImage(image)}
+                                            style={{
+                                                ...internalStyles.closeIcon,
+                                                right: 4,
+                                                top: 4,
+                                            }}
+                                        >
+                                            <CloseIcon
+                                                style={{ color: '#fff', width: 12, height: 12 }}
+                                            />
+                                        </TouchableOpacity>
+                                    </>
+                                ) : (
+                                    <TouchableOpacity onPress={addImage}>
+                                        <SmCameraIcon />
+                                    </TouchableOpacity>
+                                )}
                             </View>
                         );
                     })}
                 </View>
+                <ImageVariantModal isCamera={isCamera} setIsCamera={setIsCamera} />
             </View>
         );
     }),
@@ -100,14 +209,38 @@ const FormContainer = memo(
                 key: 'price',
             },
         ];
+        const onChangeDesc = (text: string) => {
+            addProductStates.setProductDescription(text);
+        };
+        const onChangePrice = (text: string) => {
+            // string can be empty
+            if (text.length === 0) {
+                addProductStates.setProductPrice('');
+                return;
+            }
+            // shuld numeric
+            if (isNaN(Number(text))) {
+                return;
+            }
+            // should be positive
+            if (Number(text) < 0) {
+                return;
+            }
+            addProductStates.setProductPrice(text);
+        };
+
         return (
             <View style={internalStyles.formContainer}>
                 <View style={internalStyles.formItemContainer}>
                     <CustomText style={internalStyles.headText}>Məhsul haqqında</CustomText>
                     <View style={internalStyles.descInpContainer}>
                         <CustomTextInput
+                            onChangeText={onChangeDesc}
                             style={internalStyles.inp}
                             placeholder='Məs: Yeni alınıb və bir dəfə geyinilib.'
+                            value={addProductStates.productDescription}
+                            maxLength={500}
+                            multiline={true}
                         />
                     </View>
                 </View>
@@ -124,6 +257,8 @@ const FormContainer = memo(
                                     </CustomText>
                                     <View style={internalStyles.priceInpContainer}>
                                         <CustomTextInput
+                                            onChangeText={onChangePrice}
+                                            value={addProductStates.productPrice}
                                             placeholder='Qiymət'
                                             icon={
                                                 <View style={internalStyles.priceInpSuffix}>
@@ -332,5 +467,31 @@ const internalStyles = StyleSheet.create({
         alignItems: 'center',
         gap: 8,
         marginTop: 16,
+    },
+    closeIcon: {
+        backgroundColor: 'red',
+        borderRadius: 100,
+        position: 'absolute',
+        top: 8,
+        right: 8,
+        padding: 4,
+    },
+    modalContainer: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    contentContainer: {
+        backgroundColor: 'transparent',
+        width: '80%',
+        borderRadius: 8,
+        padding: 16,
+        height: 200,
+    },
+    btnContainer: {
+        marginBottom: 8,
+        borderWidth: 1,
+        borderColor: '#fff',
     },
 });

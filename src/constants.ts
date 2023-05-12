@@ -24,7 +24,7 @@ export const APIS = {
     contact: 'contact',
     rules: 'rules',
     deals: 'deals',
-    upload: '/upload',
+    upload: 'upload/create',
 
 }
 

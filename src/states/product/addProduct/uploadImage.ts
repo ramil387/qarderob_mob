@@ -3,11 +3,10 @@ import { http } from "@/services/httpMethods";
 
 export const uploadImage = async (fd: any) => {
     try {
-        await http.upload(
+        const resp = await http.upload(
             APIS.upload,
             fd,
         );
-
         return true
 
     } catch (error) {

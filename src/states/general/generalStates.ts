@@ -22,6 +22,8 @@ class GeneralStates {
     dialogAction: boolean = false;
     dialogOkText: string = "";
     dialogCancelText: string = "";
+    dialogType: string = 'check';
+
     dialogOkFunc: any = () => { };
     dialogCancelFunc: any = () => { };
     // -----------------------------
@@ -145,8 +147,16 @@ class GeneralStates {
         })
     }
 
+    setDialogType(type: string) {
+        runInAction(() => {
+            this.dialogType = type
+        })
+    }
+
+
     resetDialogStates() {
         runInAction(() => {
+            this.dialogType = 'check'
             this.dialogHeader = ''
             this.dialogBody = ''
             this.dialogAction = false

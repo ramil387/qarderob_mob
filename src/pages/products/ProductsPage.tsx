@@ -35,9 +35,11 @@ const PrefixIcon = () => {
 export const FilterContainer = memo(
     observer(({ search }: { search?: boolean }) => {
         const navigate: NavigationProp<ParamListBase> = useNavigation();
+
         const goFilterPage = () => {
             navigate.navigate('FilterPage');
         };
+
         const filterCount = defineFilterCount(filterStates.query);
 
         return (
