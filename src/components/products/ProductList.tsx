@@ -84,7 +84,11 @@ const ProductList = ({
                                 </View>
                             );
                         }
-                        if (generalStates.curPage === 'ProfilePage') {
+                        if (
+                            generalStates.curPage === 'ProfilePage' ||
+                            generalStates.curPage === 'ShopProductsPage' ||
+                            generalStates.curPage === 'UserProductsPage'
+                        ) {
                             return (
                                 <TouchableOpacity
                                     onPress={() =>
