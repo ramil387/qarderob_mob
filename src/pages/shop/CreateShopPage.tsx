@@ -23,16 +23,18 @@ const TopContainer = memo(
     observer(() => {
         const user = toJS(profileStates?.user);
         const shop = toJS(user?._store);
-        const coverImgUrl = shopStates?.shopCover
-            ? `data:image/png;base64,${shopStates?.shopCover?.base64}`
-            : shop?.cover
-            ? shop?.cover
-            : shopCoverImage;
-        const profileImgUrl = shopStates?.shopImg
-            ? `data:image/png;base64,${shopStates?.shopImg?.base64}`
-            : shop?.img
-            ? shop?.img
-            : shopLogoImage;
+        const coverImgUrl =
+            Object.keys(shopStates?.shopCover).length > 0
+                ? `data:image/png;base64,${shopStates?.shopCover?.base64}`
+                : shop?.cover
+                ? shop?.cover
+                : shopCoverImage;
+        const profileImgUrl =
+            Object.keys(shopStates?.shopImg).length > 0
+                ? `data:image/png;base64,${shopStates?.shopImg?.base64}`
+                : shop?.img
+                ? shop?.img
+                : shopLogoImage;
 
         const setImg = (type: string) => {
             launchImageLibrary(
@@ -152,30 +154,28 @@ const CreateShopPage = () => {
             placeholder: 'Facebook linkini daxil edin',
             key: 'facebook',
             value: shopStates?.facebook,
+            func: (text: string) => shopStates.setFacebook(text),
         },
         {
             label: 'Instagram linki*',
             placeholder: 'Instagram linkini daxil edin',
             key: 'instagram',
             value: shopStates?.instagram,
+            func: (text: string) => shopStates.setInstagram(text),
         },
         {
             label: 'Tiktok linki',
             placeholder: 'Tiktok linkini daxil edin',
             key: 'tiktok',
             value: shopStates?.tiktok,
+            func: (text: string) => shopStates.setTiktok(text),
         },
     ];
 
     useEffect(() => {
-        if (shopStates?.isOnline) {
-            shopStates.setAddress('Onlayn mağaza');
-        } else {
-            shopStates.setAddress('');
+        if (shopStates?.address === 'Onlayn mağaza') {
+            shopStates?.setIsOnline(true);
         }
-    }, [shopStates?.isOnline]);
-
-    useEffect(() => {
         return () => {
             shopStates.resetCreateShop();
         };
@@ -288,9 +288,10 @@ const CreateShopPage = () => {
                                 </View>
                                 {field?.key === 'address' && (
                                     <TouchableOpacity
-                                        onPress={() =>
-                                            shopStates.setIsOnline(!shopStates?.isOnline)
-                                        }
+                                        onPress={() => {
+                                            shopStates.setAddress('Onlayn mağaza');
+                                            shopStates.setIsOnline(!shopStates?.isOnline);
+                                        }}
                                         style={internalStyles?.isOnlineContainer}
                                     >
                                         {shopStates?.isOnline ? (

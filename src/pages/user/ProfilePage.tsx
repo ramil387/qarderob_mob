@@ -1,5 +1,5 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { toJS } from 'mobx';
 import profileStates from '@/states/profile/profileStates';
 import { Avatar, Switch } from '@rneui/themed';
@@ -9,11 +9,17 @@ import {
     NunitoBold,
     NunitoMedium,
     e5Color,
+    errorBackground,
+    errorColor,
     f5Color,
     f8Color,
     inactiveColor,
+    mainTextColor,
     phoneHeight,
+    phoneWidth,
     primaryColor,
+    successBackground,
+    successColor,
 } from '@/styles/variables';
 import CalendarIcon from '@/icons/user/CalendarIcon';
 import moment from 'moment';
@@ -38,6 +44,13 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 import userStates from '@/states/user/userStates';
 import NotFoundIcon from '@/icons/user/NotFoundIcon';
 import ShopIcon from '@/icons/shop/ShopIcon';
+import PackageIcon from '@/icons/user/PackageIcon';
+import GiftIcon from '@/icons/user/GiftIcon';
+import shopStates from '@/states/shop/shopStates';
+import { fillShopForm } from '@/helper/fillShopForm';
+import { ShopType } from '@/types/shopType';
+import CheckIcon from '@/icons/categories/CheckIcon';
+import CloseIcon from '@/icons/error/CloseIcon';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -123,7 +136,7 @@ const ProductSection = observer(() => {
     return null;
 });
 
-const TabView = () => {
+const TabView = memo(() => {
     return (
         <Tab.Navigator
             // content background color red
@@ -174,15 +187,60 @@ const TabView = () => {
             />
         </Tab.Navigator>
     );
-};
+});
+
+const VerifiedMessage = memo(() => {
+    const shop = toJS(profileStates?.user?._store);
+    const isRejected = shop?.isRejected;
+    const rejectReason = shop?.rejectReason;
+    const headRejectText = rejectReason?.split('.')[0];
+    const tailRejectText = rejectReason?.split(' ').slice(1).join(' ');
+    if (isRejected) {
+        return (
+            <View
+                style={{
+                    ...internalStyles.verifiedMessage,
+                    backgroundColor: errorBackground,
+                    borderColor: errorColor,
+                }}
+            >
+                <View style={{ ...internalStyles.checkIcon, backgroundColor: 'red' }}>
+                    <CloseIcon style={{ color: '#fff', width: 16, height: 16 }} />
+                </View>
+                <CustomText style={internalStyles.verifiedMessageText}>
+                    <CustomText style={{ fontFamily: NunitoBold, color: mainTextColor }}>
+                        {headRejectText}
+                    </CustomText>{' '}
+                    {'\n'}
+                    {tailRejectText}
+                </CustomText>
+            </View>
+        );
+    }
+    return (
+        <View style={internalStyles.verifiedMessage}>
+            <View style={internalStyles.checkIcon}>
+                <CheckIcon style={{ color: '#fff', width: 16, height: 16 }} />
+            </View>
+            <CustomText style={internalStyles.verifiedMessageText}>
+                <CustomText style={{ fontFamily: NunitoBold, color: mainTextColor }}>
+                    Mağaza məlumatlarınız uğurla göndərildi!
+                </CustomText>{' '}
+                {'\n'}
+                Təsdiq olunduqdan sonra elanlarınızı dərc edə bilərsiniz.
+            </CustomText>
+        </View>
+    );
+});
 
 const ProfilePage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
     const user = toJS(profileStates.user);
-    const [initialHeight, setInitialHeight] = useState<number>(0);
+    const shop = toJS(user?._store);
+    const [initialHeight, setInitialHeight] = useState<any>(null);
     const userContainerHeight = useSharedValue(initialHeight ? initialHeight : 0);
     const userContainerPadding = useSharedValue(16);
-    console.log(initialHeight);
+
     const changeUserContainerHeight = (height: number, padding: number) => {
         userContainerHeight.value = withTiming(height, { duration: 300 });
         userContainerPadding.value = withTiming(padding, { duration: 300 });
@@ -201,10 +259,17 @@ const ProfilePage = () => {
         } else {
             changeUserContainerHeight(initialHeight, 16);
         }
-    }, [productStates.productListScrollDirection, initialHeight]);
+    }, [productStates.productListScrollDirection, initialHeight, profileStates?.storeMode]);
+
+    useEffect(() => {
+        setInitialHeight(null);
+    }, [profileStates.storeMode]);
 
     const addUserBalance = () => {};
-    const goShopEditPage = () => {
+    const goShopEditPage = (status: boolean) => {
+        if (status) {
+            fillShopForm(shop as ShopType);
+        }
         navigate.navigate('CreateShopPage');
     };
 
@@ -251,7 +316,7 @@ const ProfilePage = () => {
                     <ChevronRightIcon />
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={goShopEditPage}
+                    onPress={() => goShopEditPage(false)}
                     style={{
                         ...internalStyles.balanceItemContainer,
                         display: user?._store?.id ? 'none' : 'flex',
@@ -259,8 +324,80 @@ const ProfilePage = () => {
                 >
                     <View style={internalStyles.balanceLeftContainer}>
                         <ShopIcon />
+                        <CustomText style={internalStyles.balanceText}>Mağaza yarat</CustomText>
+                    </View>
+                    <ChevronRightIcon />
+                </TouchableOpacity>
+            </View>
+        );
+    };
+
+    const ShopActions = () => {
+        return (
+            <View>
+                <View style={internalStyles.balanceItemContainer}>
+                    <View style={internalStyles.balanceLeftContainer}>
+                        <PackageIcon />
                         <CustomText style={internalStyles.balanceText}>
-                            {user?._store ? 'Mağazanı idarə et' : 'Mağaza yarat'}
+                            Mağaza paketi:
+                            <CustomText
+                                style={{
+                                    ...internalStyles.balanceText,
+                                    fontFamily: NunitoBold,
+                                    paddingVertical: 0,
+                                }}
+                            >
+                                {' ' + shop?._active_package?.package_az}
+                            </CustomText>
+                        </CustomText>
+                    </View>
+                    <View
+                        style={{
+                            width: '30%',
+                            justifyContent: 'center',
+                            display: 'flex',
+                        }}
+                    >
+                        <CustomMainButton
+                            containerStyle={internalStyles.addBtn}
+                            titleStyle={{ fontSize: 14, fontFamily: NunitoBold }}
+                            style={internalStyles.addBtn}
+                            func={addUserBalance}
+                            title='Artır'
+                        />
+                    </View>
+                </View>
+                <TouchableOpacity
+                    style={{
+                        ...internalStyles.balanceItemContainer,
+                        display: 'flex',
+                    }}
+                >
+                    <View style={internalStyles.balanceLeftContainer}>
+                        <GiftIcon />
+                        <CustomText style={internalStyles.balanceText}>
+                            Bonus balansı:{' '}
+                            <CustomText
+                                style={{
+                                    ...internalStyles.balanceText,
+                                    fontFamily: NunitoBold,
+                                    paddingVertical: 0,
+                                }}
+                            >
+                                {' ' + user?.shop_balance}₼
+                            </CustomText>
+                        </CustomText>
+                    </View>
+                    <ChevronRightIcon />
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => goShopEditPage(true)}
+                    style={internalStyles.balanceItemContainer}
+                >
+                    <View style={internalStyles.balanceLeftContainer}>
+                        <EditIcon />
+                        <CustomText style={internalStyles.balanceText}>
+                            Mağazanı idarə et
                         </CustomText>
                     </View>
                     <ChevronRightIcon />
@@ -297,7 +434,7 @@ const ProfilePage = () => {
                         />
                         <View>
                             <CustomText style={internalStyles.username}>
-                                {user?.username}
+                                {profileStates?.storeMode ? user?._store?.name : user?.username}
                             </CustomText>
                             <View style={internalStyles.dateContainer}>
                                 <CalendarIcon style={{ color: inactiveColor }} />
@@ -353,10 +490,14 @@ const ProfilePage = () => {
                             Mağaza
                         </CustomText>
                     </View>
-                    <UserActions />
+                    {!profileStates?.storeMode ? <UserActions /> : <ShopActions />}
                 </View>
             </Animated.View>
-            <TabView />
+            {(profileStates?.storeMode && shop?.verified) || !profileStates?.storeMode ? (
+                <TabView />
+            ) : (
+                <VerifiedMessage />
+            )}
         </View>
     );
 };
@@ -447,6 +588,34 @@ const internalStyles = StyleSheet.create({
         marginTop: 16,
         fontSize: 16,
         fontFamily: NunitoBold,
+        color: inactiveColor,
+    },
+    verifiedMessage: {
+        padding: 16,
+        borderWidth: 1,
+        borderColor: successColor,
+        backgroundColor: successBackground,
+        margin: 16,
+        borderRadius: 8,
+        display: 'flex',
+        flexDirection: 'row',
+        gap: 8,
+    },
+    checkIcon: {
+        top: 4,
+        width: 24,
+        height: 24,
+        backgroundColor: 'green',
+        padding: 4,
+        borderRadius: 100,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    verifiedMessageText: {
+        fontSize: 16,
+        paddingRight: 24,
+        lineHeight: 24,
         color: inactiveColor,
     },
 });

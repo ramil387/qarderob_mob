@@ -9,8 +9,9 @@ export type ShopType = {
     phone: string,
     email: string,
     social_links: {
-        instagram: string,
-        tiktok: string
+        instagram: string;
+        tiktok: string;
+        facebook: string;
     },
     start_hour: string,
     end_hour: string,

@@ -10,8 +10,9 @@ class ShopStates {
     shopProducts: ProdListType | null = null;
 
     // createShop ------------------------------
-    shopImg: any = null;
-    shopCover: any = null;
+    isUpdate: boolean = false;
+    shopImg: any = {};
+    shopCover: any = {};
     name: string = '';
     address: string = '';
     desc: string = '';
@@ -155,6 +156,13 @@ class ShopStates {
         })
     }
 
+    setIsUpdate(isUpdate: boolean) {
+        runInAction(() => {
+            this.isUpdate = isUpdate;
+        })
+    }
+
+
     resetCreateShop() {
         runInAction(() => {
             this.shopImg = {};
@@ -173,6 +181,7 @@ class ShopStates {
             this.facebook = '';
             this.instagram = '';
             this.tiktok = '';
+            this.isUpdate = false;
         })
     }
 
