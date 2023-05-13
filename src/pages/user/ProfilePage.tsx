@@ -22,7 +22,14 @@ import CustomMainButton from '@/components/ui/CustomMainButton';
 import EditIcon from '@/icons/user/EditIcon';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useFocusEffect, useIsFocused, useRoute } from '@react-navigation/native';
+import {
+    NavigationProp,
+    ParamListBase,
+    useFocusEffect,
+    useIsFocused,
+    useNavigation,
+    useRoute,
+} from '@react-navigation/native';
 import { fetchUserProducts } from '@/states/user/fetchUserProducts';
 import ProductList from '@/components/products/ProductList';
 import productStates from '@/states/product/productStates';
@@ -170,6 +177,7 @@ const TabView = () => {
 };
 
 const ProfilePage = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
     const user = toJS(profileStates.user);
     const [initialHeight, setInitialHeight] = useState<number>(0);
     const userContainerHeight = useSharedValue(initialHeight ? initialHeight : 0);
@@ -196,6 +204,9 @@ const ProfilePage = () => {
     }, [productStates.productListScrollDirection, initialHeight]);
 
     const addUserBalance = () => {};
+    const goShopEditPage = () => {
+        navigate.navigate('CreateShopPage');
+    };
 
     const UserActions = () => {
         return (
@@ -240,6 +251,7 @@ const ProfilePage = () => {
                     <ChevronRightIcon />
                 </TouchableOpacity>
                 <TouchableOpacity
+                    onPress={goShopEditPage}
                     style={{
                         ...internalStyles.balanceItemContainer,
                         display: user?._store?.id ? 'none' : 'flex',
@@ -247,7 +259,9 @@ const ProfilePage = () => {
                 >
                     <View style={internalStyles.balanceLeftContainer}>
                         <ShopIcon />
-                        <CustomText style={internalStyles.balanceText}>Mağaza yarat</CustomText>
+                        <CustomText style={internalStyles.balanceText}>
+                            {user?._store ? 'Mağazanı idarə et' : 'Mağaza yarat'}
+                        </CustomText>
                     </View>
                     <ChevronRightIcon />
                 </TouchableOpacity>

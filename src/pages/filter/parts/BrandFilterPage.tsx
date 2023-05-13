@@ -39,10 +39,20 @@ const BrandItem = React.memo(({ item, onSelect, selected }: any) => {
     return (
         <TouchableOpacity onPress={handleSelect} style={internalStyles.item}>
             <CustomText style={internalStyles.brandName}>{item.name}</CustomText>
-            <View style={{ display: shownFillSquare ? 'flex' : 'none' }}>
+            <View
+                style={{
+                    display:
+                        shownFillSquare || item?.id === addProductStates?.brandId ? 'flex' : 'none',
+                }}
+            >
                 <FillSquareIcon />
             </View>
-            <View style={{ display: shownFillSquare ? 'none' : 'flex' }}>
+            <View
+                style={{
+                    display:
+                        shownFillSquare || item?.id === addProductStates?.brandId ? 'none' : 'flex',
+                }}
+            >
                 <OutlineSquareIcon />
             </View>
         </TouchableOpacity>
@@ -76,8 +86,6 @@ const BrandFilterPage = () => {
         () => brands.filter((brand) => makeSlugify(brand.name).includes(makeSlugify(searchKey))),
         [brands, searchKey],
     );
-
-    console.log({ cur: generalStates.curPage });
 
     return (
         <View style={internalStyles.container}>

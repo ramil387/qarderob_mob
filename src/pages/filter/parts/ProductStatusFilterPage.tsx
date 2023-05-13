@@ -1,5 +1,5 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import filterStates from '@/states/filter/filterStates';
 import CustomText from '@/components/ui/CustomText';
@@ -52,12 +52,11 @@ const ProductStatusFilterPage = () => {
                         key={index}
                     >
                         <CustomText style={internalStyles.item}>{status.label}</CustomText>
-                        <View style={{ display: showFillSquare ? 'flex' : 'none' }}>
+                        {showFillSquare || addProductStates?.productStatus === status?.id ? (
                             <FillSquareIcon />
-                        </View>
-                        <View style={{ display: showFillSquare ? 'none' : 'flex' }}>
+                        ) : (
                             <OutlineSquareIcon />
-                        </View>
+                        )}
                     </TouchableOpacity>
                 );
             })}

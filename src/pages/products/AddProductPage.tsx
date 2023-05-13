@@ -527,7 +527,7 @@ const internalStyles = StyleSheet.create({
         marginTop: 8,
     },
     inp: {
-        paddingLeft: 16,
+        paddingHorizontal: 16,
     },
     fieldItem: {
         paddingVertical: 16,

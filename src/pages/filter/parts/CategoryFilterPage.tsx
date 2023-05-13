@@ -166,6 +166,7 @@ const MacroCategories = memo(
                     const showFillSquare = filterStates.selectedCategories.find(
                         (cat: CategoryType) => cat.id === item.id,
                     );
+
                     return (
                         <View>
                             <TouchableOpacity
@@ -184,7 +185,8 @@ const MacroCategories = memo(
                                     {item.name_az}
                                 </CustomText>
 
-                                {disabledCats(item) ? null : showFillSquare ? (
+                                {disabledCats(item) ? null : showFillSquare ||
+                                  item?.id === addProductStates?.categoryId ? (
                                     <FillSquareIcon />
                                 ) : (
                                     <OutlineSquareIcon />
@@ -218,7 +220,8 @@ const MacroCategories = memo(
                                             >
                                                 {cat.name_az}
                                             </CustomText>
-                                            {showFillSquare ? (
+                                            {showFillSquare ||
+                                            cat?.id === addProductStates?.categoryId ? (
                                                 <FillSquareIcon />
                                             ) : (
                                                 <OutlineSquareIcon />

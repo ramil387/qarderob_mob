@@ -246,7 +246,7 @@ const internalStyles = StyleSheet.create({
         borderRadius: 8,
     },
     inp: {
-        paddingLeft: 16,
+        paddingHorizontal: 16,
     },
     subjectContainer: {
         display: 'flex',

@@ -129,7 +129,7 @@ const internalStyles = StyleSheet.create({
         backgroundColor: f5Color,
         marginVertical: 8,
         borderRadius: 8,
-        paddingLeft: 16,
+        paddingHorizontal: 16,
     },
     btnContainer: {
         marginTop: 24,

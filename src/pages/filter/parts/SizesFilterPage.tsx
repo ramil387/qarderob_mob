@@ -56,7 +56,10 @@ const SizesFilterPage = () => {
                             <View
                                 style={{
                                     ...internalStyles.badge,
-                                    borderColor: isSelected ? primaryColor : e5Color,
+                                    borderColor:
+                                        isSelected || addProductStates?.sizeId === item?.id
+                                            ? primaryColor
+                                            : e5Color,
                                 }}
                             >
                                 <CustomText

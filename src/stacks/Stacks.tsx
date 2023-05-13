@@ -44,6 +44,8 @@ import DealsAndRulesHeader from '@/components/headers/DealsAndRulesHeader';
 import DealsPage from '@/pages/DealsPage';
 import AddProductPage from '@/pages/products/AddProductPage';
 import AddProductPageHeader from '@/components/headers/AddProductPageHeader';
+import CreateShopPage from '@/pages/shop/CreateShopPage';
+import CreateShopPageHeader from '@/components/headers/CreateShopPageHeader';
 
 type StackListType = {
     name: string;
@@ -343,6 +345,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <AddProductPageHeader />,
+            statusBarTranslucent: false,
+            statusBarColor: 'red',
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'CreateShopPage',
+        component: CreateShopPage,
+        options: {
+            headerShown: true,
+            header: () => <CreateShopPageHeader />,
             statusBarTranslucent: false,
             statusBarColor: 'red',
             statusBarStyle: 'dark',

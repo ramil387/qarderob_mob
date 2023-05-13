@@ -1,12 +1,11 @@
 import {
     SERVER_URL,
-    ASSET_URL, WEBSITE, UPLOAD_URL
+    ASSET_URL, WEBSITE, SERVER_BASE
 } from "@env"
 export const baseUrl = SERVER_URL
 export const assetUrl = ASSET_URL
 export const website = WEBSITE
-export const uploadUrl = UPLOAD_URL
-
+export const serverBase = SERVER_BASE
 export const APIS = {
     home: 'home/mobile',
     filter: 'home/filter-data',
@@ -27,5 +26,10 @@ export const APIS = {
     upload: 'upload/create',
 
 }
+
+export const shopCoverImage = `${serverBase}/shop_cover.png`
+export const shopLogoImage = `${serverBase}/shop_profile.png`
+export const userProfileImage = `${serverBase}/profile.png`
+
 
 export const providers = ['050', '051', '055', '077', '010', '099', '070', '077', '060']

@@ -70,17 +70,19 @@ const PriceFilterPage = () => {
                 <View style={internalStyles.input}>
                     <CustomTextInput
                         onChangeText={handleMinChange}
-                        style={{ paddingLeft: 16 }}
+                        style={{ paddingHorizontal: 16 }}
                         placeholder='min:'
                         value={String(filterStates.prices[0])}
+                        maxLength={5}
                     />
                 </View>
                 <View style={internalStyles.input}>
                     <CustomTextInput
                         onChangeText={handleMaxChange}
-                        style={{ paddingLeft: 16 }}
+                        style={{ paddingHorizontal: 16 }}
                         placeholder='max:'
                         value={String(filterStates.prices[1])}
+                        maxLength={5}
                     />
                 </View>
             </View>

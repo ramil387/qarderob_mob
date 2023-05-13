@@ -30,7 +30,7 @@ const PhoneInput = ({
         <View>
             <CustomTextInput
                 onBlur={onBlur}
-                style={{ paddingLeft: 16 }}
+                style={{ paddingHorizontal: 16 }}
                 value={phone}
                 onChangeText={onTextChange}
                 placeholder='Telefon'

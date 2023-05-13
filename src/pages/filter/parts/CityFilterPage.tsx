@@ -39,12 +39,11 @@ const CityItem = React.memo(({ item, onSelect, selected }: any) => {
     return (
         <TouchableOpacity onPress={handleSelect} style={internalStyles.item}>
             <CustomText style={internalStyles.brandName}>{item.name_az}</CustomText>
-            <View style={{ display: shownFillSquare ? 'flex' : 'none' }}>
+            {shownFillSquare || addProductStates?.cityId === item?.id ? (
                 <FillSquareIcon />
-            </View>
-            <View style={{ display: shownFillSquare ? 'none' : 'flex' }}>
+            ) : (
                 <OutlineSquareIcon />
-            </View>
+            )}
         </TouchableOpacity>
     );
 });

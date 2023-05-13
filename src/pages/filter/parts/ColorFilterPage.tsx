@@ -69,11 +69,12 @@ const ColorFilterPage = () => {
                                             height: '100%',
                                             width: '100%',
                                             alignItems: 'center',
-                                            display: filterStates.selectedColors?.includes(
-                                                makeSlugify(item.name),
-                                            )
-                                                ? 'flex'
-                                                : 'none',
+                                            display:
+                                                filterStates.selectedColors?.includes(
+                                                    makeSlugify(item.name),
+                                                ) || addProductStates.colorId === item.id
+                                                    ? 'flex'
+                                                    : 'none',
                                         }}
                                     >
                                         <CheckIcon />
