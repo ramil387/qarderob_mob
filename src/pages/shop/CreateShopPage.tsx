@@ -1,5 +1,5 @@
 import { View, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
 import profileStates from '@/states/profile/profileStates';
@@ -14,6 +14,10 @@ import PhoneInput from '@/components/common/PhoneInput';
 import shopStates from '@/states/shop/shopStates';
 import OutlineSquareIcon from '@/icons/filter/OutlineSquareIcon';
 import FillSquareIcon from '@/icons/filter/FillSquareIcon';
+import { defineWorkingDays } from '@/helper/defineWorkingDays';
+import { createShop } from '@/states/shop/createShop';
+import HoursModal from '@/components/common/HoursModal';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const TopContainer = memo(
     observer(() => {
@@ -21,6 +25,28 @@ const TopContainer = memo(
         const shop = toJS(user?._store);
         const coverImgUrl = shop?.cover ? shop?.cover : shopCoverImage;
         const profileImgUrl = shop?.img ? shop?.img : shopLogoImage;
+
+        const setImg = (type: string) => {
+            launchImageLibrary(
+                {
+                    mediaType: 'photo',
+                    includeBase64: true,
+                    quality: 0.7,
+                    selectionLimit: 1,
+                },
+                (response) => {
+                    if (response?.assets) {
+                        const image: any = response?.assets[0];
+                        if (type === 'img') {
+                            shopStates.setImg(image);
+                        } else {
+                            shopStates.setCover(image);
+                        }
+                    }
+                },
+            );
+        };
+
         return (
             <View style={internalStyles.topContainer}>
                 <Image style={internalStyles.coverImage} source={{ uri: coverImgUrl }} />
@@ -30,11 +56,17 @@ const TopContainer = memo(
                         containerStyle={{ width: 92, height: 92 }}
                         avatarStyle={{ borderRadius: 100 }}
                     />
-                    <TouchableOpacity style={internalStyles.profileAddIcon}>
+                    <TouchableOpacity
+                        onPress={() => setImg('img')}
+                        style={internalStyles.profileAddIcon}
+                    >
                         <AddPhotoIcon style={{ color: primaryColor }} />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={internalStyles.coverAddIcon}>
+                <TouchableOpacity
+                    onPress={() => setImg('cover')}
+                    style={internalStyles.coverAddIcon}
+                >
                     <AddPhotoIcon style={{ color: primaryColor, width: 24, height: 24 }} />
                 </TouchableOpacity>
             </View>
@@ -48,43 +80,60 @@ const CreateShopPage = () => {
             label: 'Adı*',
             placeholder: 'Mağaza Adını daxil edin',
             key: 'name',
+            value: shopStates?.name,
+            func: (text: string) => shopStates.setName(text),
         },
         {
             label: 'Haqqında*',
             placeholder: 'Mağaza haqqında məlumat daxil edin',
             key: 'desc',
+            value: shopStates?.desc,
+            func: (text: string) => shopStates.setDesc(text),
         },
         {
             label: 'Ünvan',
             placeholder: 'Ünvanı daxil edin',
             key: 'address',
+            value: shopStates?.address,
+            func: (text: string) => shopStates.setAddress(text),
         },
         {
             label: 'Telefon*',
             placeholder: 'Telefonu daxil edin',
             key: 'phone',
+            value: '',
+            func: (text: string) => shopStates.setPhone(text),
         },
         {
             label: 'E-mail*',
             placeholder: 'E-mail daxil edin',
             key: 'email',
+            value: shopStates?.email,
+            func: (text: string) => shopStates.setEmail(text),
         },
         {
-            label: 'Başlama saatı*',
-            placeholder: 'Başlama saatını daxil edin',
-            key: 'end_hour',
-        },
-        {
-            label: 'Bitmə saatı*',
-            placeholder: 'Bitmə saatını daxil edin',
-            key: 'start_hour',
+            label: 'İş saatları*',
+            // placeholder: 'Başlama saatını daxil edin',
+            key: 'hours',
+            value: shopStates?.start_hour,
+            func: (text: string) => shopStates.setStartHour(text),
         },
         {
             label: 'İş günləri*',
             placeholder: 'İş günlərini seçin',
             key: 'work_days',
+            value: defineWorkingDays(shopStates?.work_days),
+            func: (text: string) => shopStates.setWorkDays(Number(text)),
         },
     ];
+
+    useEffect(() => {
+        if (shopStates?.isOnline) {
+            shopStates.setAddress('Onlayn mağaza');
+        } else {
+            shopStates.setAddress('');
+        }
+    }, [shopStates?.isOnline]);
 
     return (
         <View style={internalStyles.container}>
@@ -97,14 +146,40 @@ const CreateShopPage = () => {
                                 <CustomText style={internalStyles?.label}>
                                     {field.label}:
                                 </CustomText>
-                                <View style={internalStyles?.inputContainer}>
+                                <View
+                                    style={{
+                                        ...internalStyles?.inputContainer,
+                                        backgroundColor:
+                                            field?.key === 'hours' ? 'transparent' : f5Color,
+                                    }}
+                                >
                                     {field?.key === 'phone' ? (
                                         <PhoneInput
                                             phone={shopStates.phone}
                                             setPhone={(text) => shopStates.setPhone(text)}
                                         />
+                                    ) : field?.key === 'hours' ? (
+                                        <TouchableOpacity
+                                            onPress={() => shopStates.setIsHourModalOpen(true)}
+                                            style={internalStyles.hourContainer}
+                                        >
+                                            <CustomText style={internalStyles.hourText}>
+                                                <CustomText>Başlama saatı: </CustomText>
+                                                {shopStates?.start_hour}
+                                            </CustomText>
+                                            <CustomText style={internalStyles.hourText}>
+                                                <CustomText>Qapanış saatı: </CustomText>
+                                                {shopStates?.end_hour}
+                                            </CustomText>
+                                        </TouchableOpacity>
                                     ) : (
                                         <CustomTextInput
+                                            editable={
+                                                field?.key === 'address' && shopStates?.isOnline
+                                                    ? false
+                                                    : true
+                                            }
+                                            onChangeText={field?.func}
                                             style={{
                                                 paddingHorizontal: 16,
                                                 height: field?.key === 'desc' ? 80 : 'auto',
@@ -113,6 +188,7 @@ const CreateShopPage = () => {
                                             }}
                                             placeholder={field?.placeholder}
                                             multiline={field?.key === 'desc' ? true : false}
+                                            value={String(field?.value)}
                                         />
                                     )}
                                 </View>
@@ -137,8 +213,9 @@ const CreateShopPage = () => {
                 </ScrollView>
             </View>
             <View style={internalStyles.submitBtn}>
-                <CustomMainButton func={() => {}} title={'Mağazanı yarat'} />
+                <CustomMainButton func={createShop} title={'Mağazanı yarat'} />
             </View>
+            <HoursModal />
         </View>
     );
 };
@@ -218,5 +295,22 @@ const internalStyles = StyleSheet.create({
         alignItems: 'center',
         gap: 8,
         marginTop: 12,
+    },
+    hourContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: f5Color,
+        height: 48,
+        paddingHorizontal: 16,
+        borderRadius: 8,
+    },
+
+    hourText: {
+        fontFamily: NunitoMedium,
+        width: '50%',
+        textAlign: 'center',
+        color: primaryColor,
     },
 });

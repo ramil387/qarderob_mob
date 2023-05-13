@@ -3,22 +3,29 @@ import { ShopType } from "@/types/shopType";
 import { makeAutoObservable, runInAction } from "mobx";
 
 class ShopStates {
+    isCreateShopLoading: boolean = false;
+
     shops: ShopType[] = [];
     selectedShop: ShopType | null = null;
     shopProducts: ProdListType | null = null;
 
     // createShop ------------------------------
+    shopImg: any = null;
+    shopCover: any = null;
     name: string = '';
     address: string = '';
     desc: string = '';
     phone: string = '+994';
     email: string = '';
-    startHour: string = '';
-    endHour: string = '';
+    start_hour: string = '';
+    end_hour: string = '';
     work_days: '1' | '2' | '3' = '1';
     img: string = '';
     cover: string = '';
     isOnline: boolean = false;
+    isHourModalOpen: boolean = false;
+
+
     // ------------------------------------------
 
     constructor() {
@@ -75,13 +82,13 @@ class ShopStates {
 
     setStartHour(startHour: string) {
         runInAction(() => {
-            this.startHour = startHour;
+            this.start_hour = startHour;
         })
     }
 
     setEndHour(endHour: string) {
         runInAction(() => {
-            this.endHour = endHour;
+            this.end_hour = endHour;
         })
     }
 
@@ -109,6 +116,48 @@ class ShopStates {
         })
     }
 
+    setShopImg(img: any) {
+        runInAction(() => {
+            this.shopImg = img;
+        })
+    }
+
+    setShopCover(cover: any) {
+        runInAction(() => {
+            this.shopCover = cover;
+        })
+    }
+
+    setCreateShopLoading(isLoading: boolean) {
+        runInAction(() => {
+            this.isCreateShopLoading = isLoading;
+        })
+    }
+
+    setIsHourModalOpen(isOpen: boolean) {
+        runInAction(() => {
+            this.isHourModalOpen = isOpen;
+        })
+    }
+
+
+    resetCreateShop() {
+        runInAction(() => {
+            this.shopImg = {};
+            this.shopCover = {};
+            this.name = '';
+            this.address = '';
+            this.desc = '';
+            this.phone = '+994';
+            this.email = '';
+            this.start_hour = '';
+            this.end_hour = '';
+            this.work_days = '1';
+            this.img = '';
+            this.cover = '';
+            this.isOnline = false;
+        })
+    }
 
     // ------------------------------------------
 

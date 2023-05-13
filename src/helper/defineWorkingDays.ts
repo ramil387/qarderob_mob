@@ -1,4 +1,5 @@
-export const defineWorkingDays = (work_days: string) => {
+export const defineWorkingDays = (work_days: string | undefined) => {
+    if (!work_days) return
     if (work_days === '1') {
         return 'Bazar e. - Cümə'
     }
