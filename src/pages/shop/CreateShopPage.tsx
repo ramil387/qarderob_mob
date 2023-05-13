@@ -6,10 +6,14 @@ import profileStates from '@/states/profile/profileStates';
 import { shopCoverImage, shopLogoImage } from '@/constants';
 import { Avatar } from '@rneui/themed';
 import CustomText from '@/components/ui/CustomText';
-import { f5Color, primaryColor } from '@/styles/variables';
+import { NunitoMedium, f5Color, primaryColor } from '@/styles/variables';
 import CustomTextInput from '@/components/ui/CustomTextInput';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import AddPhotoIcon from '@/icons/shop/AddPhotoIcon';
+import PhoneInput from '@/components/common/PhoneInput';
+import shopStates from '@/states/shop/shopStates';
+import OutlineSquareIcon from '@/icons/filter/OutlineSquareIcon';
+import FillSquareIcon from '@/icons/filter/FillSquareIcon';
 
 const TopContainer = memo(
     observer(() => {
@@ -41,12 +45,12 @@ const TopContainer = memo(
 const CreateShopPage = () => {
     const fields = [
         {
-            label: 'Adı',
+            label: 'Adı*',
             placeholder: 'Mağaza Adını daxil edin',
             key: 'name',
         },
         {
-            label: 'Haqqında',
+            label: 'Haqqında*',
             placeholder: 'Mağaza haqqında məlumat daxil edin',
             key: 'desc',
         },
@@ -56,27 +60,27 @@ const CreateShopPage = () => {
             key: 'address',
         },
         {
-            label: 'Telefon',
+            label: 'Telefon*',
             placeholder: 'Telefonu daxil edin',
             key: 'phone',
         },
         {
-            label: 'E-mail',
+            label: 'E-mail*',
             placeholder: 'E-mail daxil edin',
             key: 'email',
         },
         {
-            label: 'Başlama saatı',
+            label: 'Başlama saatı*',
             placeholder: 'Başlama saatını daxil edin',
             key: 'end_hour',
         },
         {
-            label: 'Bitmə saatı',
+            label: 'Bitmə saatı*',
             placeholder: 'Bitmə saatını daxil edin',
             key: 'start_hour',
         },
         {
-            label: 'İş günləri',
+            label: 'İş günləri*',
             placeholder: 'İş günlərini seçin',
             key: 'work_days',
         },
@@ -90,13 +94,43 @@ const CreateShopPage = () => {
                     {fields.map((field, index) => {
                         return (
                             <View style={internalStyles.formItemContainer} key={index}>
-                                <CustomText>{field.label}</CustomText>
+                                <CustomText style={internalStyles?.label}>
+                                    {field.label}:
+                                </CustomText>
                                 <View style={internalStyles?.inputContainer}>
-                                    <CustomTextInput
-                                        style={{ paddingHorizontal: 16 }}
-                                        placeholder={field?.placeholder}
-                                    />
+                                    {field?.key === 'phone' ? (
+                                        <PhoneInput
+                                            phone={shopStates.phone}
+                                            setPhone={(text) => shopStates.setPhone(text)}
+                                        />
+                                    ) : (
+                                        <CustomTextInput
+                                            style={{
+                                                paddingHorizontal: 16,
+                                                height: field?.key === 'desc' ? 80 : 'auto',
+                                                textAlignVertical:
+                                                    field?.key === 'desc' ? 'top' : 'center',
+                                            }}
+                                            placeholder={field?.placeholder}
+                                            multiline={field?.key === 'desc' ? true : false}
+                                        />
+                                    )}
                                 </View>
+                                {field?.key === 'address' && (
+                                    <TouchableOpacity
+                                        onPress={() =>
+                                            shopStates.setIsOnline(!shopStates?.isOnline)
+                                        }
+                                        style={internalStyles?.isOnlineContainer}
+                                    >
+                                        {shopStates?.isOnline ? (
+                                            <FillSquareIcon />
+                                        ) : (
+                                            <OutlineSquareIcon />
+                                        )}
+                                        <CustomText>Online mağaza</CustomText>
+                                    </TouchableOpacity>
+                                )}
                             </View>
                         );
                     })}
@@ -172,5 +206,17 @@ const internalStyles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    label: {
+        fontFamily: NunitoMedium,
+        fontSize: 16,
+        paddingBottom: 4,
+    },
+    isOnlineContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+        marginTop: 12,
     },
 });
