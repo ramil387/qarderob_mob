@@ -2,7 +2,9 @@ import { AdListType } from "@/types/adListType";
 import { makeAutoObservable, runInAction } from "mobx";
 
 class AddProductStates {
+    isUpdate: boolean = false;
     images: any[] = [];
+    updatedImages: any[] = [];
     imageDate: string = '';
 
     updatedProduct: AdListType | null = null;
@@ -118,6 +120,24 @@ class AddProductStates {
         })
     }
 
+    setUpdatedProduct(updatedProduct: AdListType | null) {
+        runInAction(() => {
+            this.updatedProduct = updatedProduct;
+        })
+    }
+
+    setUpdatedImages(updatedImages: any[]) {
+        runInAction(() => {
+            this.updatedImages = updatedImages;
+        })
+    }
+
+    setUpdate(isUpdate: boolean) {
+        runInAction(() => {
+            this.isUpdate = isUpdate;
+        })
+    }
+
     resetAddProductStates() {
         runInAction(() => {
             this.images = [];
@@ -135,6 +155,9 @@ class AddProductStates {
             this.email = '';
             this.phone = '';
             this.isLoading = false;
+            this.updatedProduct = null;
+            this.updatedImages = [];
+            this.isUpdate = false;
         })
     }
 

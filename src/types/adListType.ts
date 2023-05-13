@@ -1,4 +1,5 @@
 import { CategoryType } from "./categoryType";
+import { ShopType } from "./shopType";
 import { UserType } from "./userType";
 
 export type AdListType = {
@@ -52,7 +53,7 @@ export type AdListType = {
         color: string;
     };
     _user: Partial<UserType>;
-    _store: null;
+    _store?: ShopType;
     viewCount?: {
         count: number;
     } | null,

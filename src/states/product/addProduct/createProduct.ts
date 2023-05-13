@@ -3,17 +3,17 @@ import filterStates from "@/states/filter/filterStates";
 import addProductStates from "./addProductStates";
 import { makeSlugify } from "@/helper/makeSlugify";
 import profileStates from "@/states/profile/profileStates";
-import slugify from "slugify";
 import { APIS } from "@/constants";
 import { fetchMe } from "@/states/profile/fetchMe";
-import { fetchSingleProduct } from "../fetchSingleProduct";
+import { fetchSingleProduct, fetchSingleProductById } from "../fetchSingleProduct";
 import generalStates from "@/states/general/generalStates";
 import productStates from "../productStates";
 import { StackActions } from "@react-navigation/native";
+import { toJS } from "mobx";
 
 export const createProduct = async () => {
     try {
-
+        const product = toJS(addProductStates?.updatedProduct)
         addProductStates.setIsLoading(true);
 
         const macroCat = filterStates.sortedCategories.find(
@@ -33,7 +33,7 @@ export const createProduct = async () => {
         const keywords = `${title},${macroCat?.slug_az ?? ""},${mainCat?.slug_az ?? ""},${sub?.slug_az ?? ""}`
 
         const images = addProductStates.images.map((image) => {
-            return image?.name
+            return typeof image === 'string' ? image : image?.name
         })
 
         const body = {
@@ -61,11 +61,17 @@ export const createProduct = async () => {
                 hide: addProductStates.hideNumber
             }
         }
-        console.log({ body })
-        const resp = await http.post(APIS.ads, body)
-        const data = await fetchSingleProduct(resp?.data?.id, body?.slug)
-        console.log({ data })
-        productStates.setSelectedProduct(data?.data)
+        console.log({ body }, { update: addProductStates?.isUpdate })
+        if (addProductStates?.isUpdate) {
+            await http.patch(`${APIS.ads}/${product?.id}/client`, body)
+            const data = await fetchSingleProductById(product?.id)
+            console.log({ gelenData: data.data })
+            productStates.setSelectedProduct(data?.data)
+        } else {
+            const resp = await http.post(APIS.ads, body)
+            const data = await fetchSingleProduct(resp?.data?.id, body?.slug)
+            productStates.setSelectedProduct(data?.data)
+        }
         await fetchMe()
         generalStates.navigationRef?.current?.dispatch(
             StackActions.replace("ProductDetailPage")

@@ -156,6 +156,7 @@ class GeneralStates {
 
     resetDialogStates() {
         runInAction(() => {
+            this.commonDialogVisible = false
             this.dialogType = 'check'
             this.dialogHeader = ''
             this.dialogBody = ''

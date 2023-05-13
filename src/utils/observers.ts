@@ -2,7 +2,7 @@ import generalStates from '@/states/general/generalStates';
 import { Keyboard } from 'react-native';
 
 export const keyboardObserver = () => {
-    const alwaysShowedPages = ['HomePage']
+    const alwaysShowedPages = ['HomePage',]
     const pages = ['ContactPage']
     Keyboard.addListener('keyboardDidShow', () => {
         if (alwaysShowedPages.includes(generalStates.curPage)) {

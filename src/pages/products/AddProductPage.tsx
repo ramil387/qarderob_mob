@@ -1,4 +1,12 @@
-import { View, StyleSheet, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    ScrollView,
+    TouchableOpacity,
+    Image,
+    Modal,
+    ActivityIndicator,
+} from 'react-native';
 import React, { memo, useEffect } from 'react';
 import BigCameraIcon from '@/icons/product/BigCameraIcon';
 import {
@@ -109,17 +117,21 @@ const ImagesContainer = memo(
             });
         };
 
-        const mainImageUrl = addProductStates.images[0]
-            ? `data:image/jpeg;base64,${addProductStates.images[0]?.base64}`
-            : product
+        const mainImageUrl = product
             ? getAdImageBySize('md', product?.id, product?.images[0])
+            : addProductStates.images[0]
+            ? `data:image/jpeg;base64,${addProductStates.images[0]?.base64}`
             : '';
+
+        console.log(mainImageUrl);
 
         const secondaryImagesUrl = (index: number) => {
             return addProductStates.images[index]
                 ? `data:image/jpeg;base64,${addProductStates.images[index]?.base64}`
                 : product
-                ? getAdImageBySize('md', product?.id, product?.images[index])
+                ? product?.images[index]
+                    ? getAdImageBySize('md', product?.id, product?.images[index])
+                    : ''
                 : '';
         };
 
@@ -151,7 +163,7 @@ const ImagesContainer = memo(
                     {images.map((image, index) => {
                         return (
                             <View style={internalStyles.secondImage} key={image}>
-                                {secondaryImagesUrl(image).length > 0 ? (
+                                {secondaryImagesUrl(index + 1).length > 0 ? (
                                     <>
                                         <Image
                                             style={{
@@ -411,8 +423,15 @@ const AddProductPage = () => {
             createProduct();
         }
     };
+
+    useEffect(() => {
+        return () => {
+            addProductStates.resetAddProductStates();
+        };
+    }, []);
+
     return (
-        <View style={internalStyles.container}>
+        <View style={{ flex: 1 }}>
             <View
                 style={{
                     ...internalStyles.loading,
@@ -421,12 +440,23 @@ const AddProductPage = () => {
             >
                 <LoadingComponent />
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <ImagesContainer />
-                <FormContainer />
-                <ContactContainer />
-            </ScrollView>
-            <CustomMainButton func={publish} title='Dərc et' />
+            <View style={internalStyles.container}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <ImagesContainer />
+                    <FormContainer />
+                    <ContactContainer />
+                </ScrollView>
+                <CustomMainButton
+                    func={publish}
+                    title={
+                        addProductStates?.isLoading ? (
+                            <ActivityIndicator color={'#fff'} />
+                        ) : (
+                            'Dərc et'
+                        )
+                    }
+                />
+            </View>
         </View>
     );
 };

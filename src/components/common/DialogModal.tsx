@@ -36,18 +36,20 @@ const DialogModal = () => {
         );
     });
 
+    console.log(generalStates?.commonDialogVisible);
+
     return (
         <Modal animationType='fade' visible={generalStates.commonDialogVisible} transparent={true}>
             <View style={internalStyles.container}>
                 <View style={internalStyles.contentContainer}>
                     <TouchableOpacity
-                        onPress={generalStates.resetDialogStates}
+                        onPress={() => generalStates.resetDialogStates()}
                         style={internalStyles.closeIcon}
                     >
                         <CloseIcon />
                     </TouchableOpacity>
                     <View style={internalStyles.iconContainer}>
-                        <CheckIcon />
+                        {generalStates.dialogType === 'check' ? <CheckIcon /> : <WarningIcon />}
                     </View>
                     <CustomText style={internalStyles.errorHeader}>
                         {generalStates.dialogHeader}

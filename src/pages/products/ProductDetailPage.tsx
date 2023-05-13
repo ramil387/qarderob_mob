@@ -46,6 +46,10 @@ import { http } from '@/services/httpMethods';
 import { APIS } from '@/constants';
 import { fetchLikeCount } from '@/states/product/fetchLikeCount';
 import FillHeartIcon from '@/icons/home/FillHeartIcon';
+import addProductStates from '@/states/product/addProduct/addProductStates';
+import { fillUpdateProductForm } from '@/helper/fillUpdateProductForm';
+import generalStates from '@/states/general/generalStates';
+import { showDeleteProductDialog } from '@/helper/showDeleteProductDialog';
 
 const ProductImages = memo(
     observer(() => {
@@ -57,7 +61,7 @@ const ProductImages = memo(
                 loop={false}
                 enabled={product?.images?.length === 1 ? false : true}
                 width={phoneWidth}
-                data={product!.images}
+                data={product?.images || []}
                 renderItem={({ image, index }: any) => {
                     return (
                         <View>
@@ -101,8 +105,9 @@ const TopInfoContainer = memo(
 
         const product = toJS(productStates.selectedProduct);
         const showLikeIcon = product?.user_id === profileStates.user?.id;
-        const toggleLike = async (id: number) => {
+        const toggleLike = async (id: number | undefined) => {
             try {
+                if (!id) return;
                 if (!profileStates.token) {
                     showShouldAuth(
                         navigate,
@@ -116,18 +121,22 @@ const TopInfoContainer = memo(
                 const resp = await http.post(`${APIS.stats}/like/${id}`);
                 if (resp.data.fav === 1) {
                     runInAction(() => {
-                        productStates.selectedProduct = {
-                            ...productStates.selectedProduct,
-                            isFavourite: '1',
-                        };
+                        if (productStates.selectedProduct) {
+                            productStates.selectedProduct = {
+                                ...productStates.selectedProduct,
+                                isFavourite: '1',
+                            };
+                        }
                     });
                     checkLikeByPage(id, 1);
                 } else {
                     runInAction(() => {
-                        productStates.selectedProduct = {
-                            ...productStates.selectedProduct,
-                            isFavourite: '0',
-                        };
+                        if (productStates.selectedProduct) {
+                            productStates.selectedProduct = {
+                                ...productStates.selectedProduct,
+                                isFavourite: '0',
+                            };
+                        }
                     });
                     checkLikeByPage(id, 0);
                 }
@@ -138,8 +147,6 @@ const TopInfoContainer = memo(
                 setDisableHeart(false);
             }
         };
-
-        console.log(product?.like_count);
 
         // todo add like count
         return (
@@ -159,6 +166,7 @@ const TopInfoContainer = memo(
                 </View>
                 <TouchableOpacity
                     onPress={() => toggleLike(product?.id)}
+                    disabled={disableHeart}
                     style={{ display: !showLikeIcon ? 'flex' : 'none', bottom: 20 }}
                 >
                     {product?.isFavourite === '1' ? (
@@ -275,8 +283,10 @@ const ContactContainer = () => {
         navigate.dispatch(StackActions.push('UserProductsPage'));
     };
 
-    const imageUrl = product?.store_id > 0 ? product?._store?.img : product?._user?.photo;
-    const name = product?.store_id > 0 ? product?._store?.name : product?._user?.username;
+    const imageUrl =
+        (product?.store_id ?? 0) > 0 ? product?._store?.img ?? '' : product?._user?.photo;
+    const name =
+        (product?.store_id ?? 0) > 0 ? product?._store?.name ?? '' : product?._user?.username;
     return (
         <View style={internalStyles.contactContainer}>
             <View style={internalStyles.avatarContainer}>
@@ -334,6 +344,8 @@ const StatsContainer = () => {
 };
 
 const ProductDetailPage = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
+
     const product = toJS(productStates.selectedProduct);
 
     useFocusEffect(
@@ -346,6 +358,16 @@ const ProductDetailPage = () => {
             };
         }, [product?.id]),
     );
+
+    const updateProduct = () => {
+        addProductStates.setUpdatedProduct(product);
+        fillUpdateProductForm(product);
+        navigate.navigate('AddProductPage');
+    };
+
+    const deleteProduct = () => {
+        showDeleteProductDialog();
+    };
 
     return (
         <View style={{ flex: 1 }}>
@@ -371,10 +393,15 @@ const ProductDetailPage = () => {
                     <RelatedProducts />
                 </View>
             </ScrollView>
-            <View style={internalStyles.footerContainer}>
+            <View
+                style={{
+                    ...internalStyles.footerContainer,
+                    display: product?.user_id === profileStates.user?.id ? 'flex' : 'none',
+                }}
+            >
                 <View style={internalStyles.footerItemContainer}>
                     <CustomMainButton
-                        func={() => {}}
+                        func={deleteProduct}
                         title='Elanı sil'
                         style={{
                             backgroundColor: 'transparent',
@@ -385,7 +412,7 @@ const ProductDetailPage = () => {
                     />
                 </View>
                 <View style={internalStyles.footerItemContainer}>
-                    <CustomMainButton func={() => {}} title='Düzəliş et' />
+                    <CustomMainButton func={updateProduct} title='Düzəliş et' />
                 </View>
             </View>
         </View>
