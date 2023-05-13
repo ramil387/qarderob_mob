@@ -51,6 +51,7 @@ import { fillShopForm } from '@/helper/fillShopForm';
 import { ShopType } from '@/types/shopType';
 import CheckIcon from '@/icons/categories/CheckIcon';
 import CloseIcon from '@/icons/error/CloseIcon';
+import { fillProfileForm } from '@/helper/fillProfileForm';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -257,7 +258,9 @@ const ProfilePage = () => {
         if (productStates.productListScrollDirection === 'down') {
             changeUserContainerHeight(0, 0);
         } else {
-            changeUserContainerHeight(initialHeight, 16);
+            if (initialHeight) {
+                changeUserContainerHeight(initialHeight, 16);
+            }
         }
     }, [productStates.productListScrollDirection, initialHeight, profileStates?.storeMode]);
 
@@ -271,6 +274,10 @@ const ProfilePage = () => {
             fillShopForm(shop as ShopType);
         }
         navigate.navigate('CreateShopPage');
+    };
+    const goProfileEditPage = () => {
+        fillProfileForm();
+        navigate.navigate('ProfileEditPage');
     };
 
     const UserActions = () => {
@@ -308,7 +315,10 @@ const ProfilePage = () => {
                         />
                     </View>
                 </View>
-                <TouchableOpacity style={internalStyles.balanceItemContainer}>
+                <TouchableOpacity
+                    onPress={goProfileEditPage}
+                    style={internalStyles.balanceItemContainer}
+                >
                     <View style={internalStyles.balanceLeftContainer}>
                         <EditIcon />
                         <CustomText style={internalStyles.balanceText}>Profili idarə et</CustomText>

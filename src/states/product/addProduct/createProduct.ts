@@ -61,7 +61,6 @@ export const createProduct = async () => {
                 hide: addProductStates.hideNumber
             }
         }
-        console.log({ body }, { update: addProductStates?.isUpdate })
         if (addProductStates?.isUpdate) {
             await http.patch(`${APIS.ads}/${product?.id}/client`, body)
             const data = await fetchSingleProductById(product?.id)

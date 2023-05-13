@@ -227,7 +227,7 @@ const ProfileBurgerMenu = observer(() => {
             <View
                 style={{
                     ...internalStyles.btnContainer,
-                    display: profileStates.user?.is_store ? 'flex' : 'none',
+                    display: profileStates.user?._store?.verified ? 'flex' : 'none',
                 }}
             >
                 <View style={internalStyles.btn}>

@@ -18,6 +18,7 @@ import { defineWorkingDays } from '@/helper/defineWorkingDays';
 import { createShop, uploadShopImage } from '@/states/shop/createShop';
 import HoursModal from '@/components/common/HoursModal';
 import { launchImageLibrary } from 'react-native-image-picker';
+import LoadingComponent from '@/components/common/LoadingComponent';
 
 const TopContainer = memo(
     observer(() => {
@@ -181,6 +182,10 @@ const CreateShopPage = () => {
         };
     }, []);
 
+    if (shopStates?.isCreateShopLoading) {
+        return <LoadingComponent />;
+    }
+
     return (
         <View style={internalStyles.container}>
             <TopContainer />
@@ -308,7 +313,10 @@ const CreateShopPage = () => {
                 </ScrollView>
             </View>
             <View style={internalStyles.submitBtn}>
-                <CustomMainButton func={createShop} title={'Mağazanı yarat'} />
+                <CustomMainButton
+                    func={createShop}
+                    title={shopStates?.isUpdate ? 'Düzəliş et' : 'Mağazanı yarat'}
+                />
             </View>
             <HoursModal />
         </View>

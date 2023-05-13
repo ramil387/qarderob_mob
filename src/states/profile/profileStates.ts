@@ -5,6 +5,18 @@ class ProfileStates {
     user: ProfileType | null = null;
     token: string | null = null;
     storeMode: boolean = false;
+
+    // editProfile ------------------------------
+    isProfileEditLoading: boolean = false;
+    shopImg: any = {};
+    shopCover: any = {};
+    imageDate: string = '';
+    full_name: string = '';
+    username: string = '';
+    email: string = '';
+    phone: string = '+994';
+
+
     constructor() {
         makeAutoObservable(this);
     }
@@ -26,6 +38,73 @@ class ProfileStates {
             this.storeMode = storeMode;
         })
     }
+
+    // editProfile ------------------------------
+    setShopImg(shopImg: any) {
+        runInAction(() => {
+            this.shopImg = shopImg;
+        })
+    }
+
+    setShopCover(shopCover: any) {
+        runInAction(() => {
+            this.shopCover = shopCover;
+        })
+    }
+
+    setFullName(full_name: string) {
+        runInAction(() => {
+            this.full_name = full_name;
+        })
+    }
+
+    setUsername(username: string) {
+        runInAction(() => {
+            this.username = username;
+        })
+    }
+
+    setEmail(email: string) {
+        runInAction(() => {
+            this.email = email;
+        })
+    }
+
+    setPhone(phone: string) {
+        runInAction(() => {
+            this.phone = phone;
+        })
+    }
+
+    setImageDate(imageDate: string) {
+        runInAction(() => {
+            this.imageDate = imageDate;
+        })
+    }
+
+    setProfileEditLoading(isProfileEditLoading: boolean) {
+        runInAction(() => {
+            this.isProfileEditLoading = isProfileEditLoading;
+        })
+    }
+
+
+    resetForm() {
+        runInAction(() => {
+            this.shopImg = {};
+            this.shopCover = {};
+            this.imageDate = '';
+            this.full_name = '';
+            this.username = '';
+            this.email = '';
+            this.phone = '+994';
+            this.isProfileEditLoading = false;
+        })
+    }
+
+
+    // ------------------------------------------
+
 
 }
 

@@ -3,7 +3,7 @@ import { Path, Svg } from 'react-native-svg';
 
 const RuleIcon = ({ style }: { style: any }) => {
     return (
-        <Svg width='16' height='20' viewBox='0 0 16 20' fill='none'>
+        <Svg width='20' height='20' viewBox='0 0 16 20' fill='none'>
             <Path
                 fillRule='evenodd'
                 clipRule='evenodd'

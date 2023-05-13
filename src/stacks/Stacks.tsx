@@ -47,6 +47,8 @@ import AddProductPageHeader from '@/components/headers/AddProductPageHeader';
 import CreateShopPage from '@/pages/shop/CreateShopPage';
 import CreateShopPageHeader from '@/components/headers/CreateShopPageHeader';
 import { f8Color } from '@/styles/variables';
+import ProfileEditPage from '@/pages/user/ProfileEditPage';
+import ProfileEditHeader from '@/components/headers/ProfileEditHeader';
 
 type StackListType = {
     name: string;
@@ -357,6 +359,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <CreateShopPageHeader />,
+            statusBarTranslucent: false,
+            statusBarColor: f8Color,
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'ProfileEditPage',
+        component: ProfileEditPage,
+        options: {
+            headerShown: true,
+            header: () => <ProfileEditHeader />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',

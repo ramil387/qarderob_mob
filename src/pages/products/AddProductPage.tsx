@@ -451,6 +451,8 @@ const AddProductPage = () => {
                     title={
                         addProductStates?.isLoading ? (
                             <ActivityIndicator color={'#fff'} />
+                        ) : addProductStates.isUpdate ? (
+                            'Düzəliş et'
                         ) : (
                             'Dərc et'
                         )

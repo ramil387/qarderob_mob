@@ -14,6 +14,7 @@ export const APIS = {
     stores: 'stores',
     login: 'auth/login',
     me: 'auth/me',
+    updateProfile: 'auth/user',
     ads: 'ads',
     stats: "stats",
     userInfo: 'users',

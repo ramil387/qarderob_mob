@@ -60,7 +60,8 @@ export const footerVisibleObserver = () => {
         "CityFilterPage",
         "ContactPage",
         "AddProductPage",
-        "CreateShopPage"
+        "CreateShopPage",
+        "ProfileEditPage"
     ]
     const isVisiable = footerVisibles.includes(generalStates.curPage);
 
