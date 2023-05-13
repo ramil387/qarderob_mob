@@ -6,7 +6,7 @@ import profileStates from '@/states/profile/profileStates';
 import { shopCoverImage, shopLogoImage } from '@/constants';
 import { Avatar } from '@rneui/themed';
 import CustomText from '@/components/ui/CustomText';
-import { NunitoMedium, f5Color, primaryColor } from '@/styles/variables';
+import { NunitoMedium, e5Color, f5Color, lightBorder, primaryColor } from '@/styles/variables';
 import CustomTextInput from '@/components/ui/CustomTextInput';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import AddPhotoIcon from '@/icons/shop/AddPhotoIcon';
@@ -15,7 +15,7 @@ import shopStates from '@/states/shop/shopStates';
 import OutlineSquareIcon from '@/icons/filter/OutlineSquareIcon';
 import FillSquareIcon from '@/icons/filter/FillSquareIcon';
 import { defineWorkingDays } from '@/helper/defineWorkingDays';
-import { createShop } from '@/states/shop/createShop';
+import { createShop, uploadShopImage } from '@/states/shop/createShop';
 import HoursModal from '@/components/common/HoursModal';
 import { launchImageLibrary } from 'react-native-image-picker';
 
@@ -23,8 +23,16 @@ const TopContainer = memo(
     observer(() => {
         const user = toJS(profileStates?.user);
         const shop = toJS(user?._store);
-        const coverImgUrl = shop?.cover ? shop?.cover : shopCoverImage;
-        const profileImgUrl = shop?.img ? shop?.img : shopLogoImage;
+        const coverImgUrl = shopStates?.shopCover
+            ? `data:image/png;base64,${shopStates?.shopCover?.base64}`
+            : shop?.cover
+            ? shop?.cover
+            : shopCoverImage;
+        const profileImgUrl = shopStates?.shopImg
+            ? `data:image/png;base64,${shopStates?.shopImg?.base64}`
+            : shop?.img
+            ? shop?.img
+            : shopLogoImage;
 
         const setImg = (type: string) => {
             launchImageLibrary(
@@ -35,17 +43,18 @@ const TopContainer = memo(
                     selectionLimit: 1,
                 },
                 (response) => {
+                    const image: any = response?.assets;
+                    if (!shopStates?.imageDate) {
+                        shopStates.setImageDate(Date.now().toString());
+                    }
                     if (response?.assets) {
-                        const image: any = response?.assets[0];
-                        if (type === 'img') {
-                            shopStates.setImg(image);
-                        } else {
-                            shopStates.setCover(image);
-                        }
+                        uploadShopImage(image[0], shopStates?.imageDate, type);
                     }
                 },
             );
         };
+
+        console.log(shopStates?.shopCover);
 
         return (
             <View style={internalStyles.topContainer}>
@@ -75,6 +84,21 @@ const TopContainer = memo(
 );
 
 const CreateShopPage = () => {
+    const [isWorkingDaysModalVisible, setIsWorkingDaysModalVisible] = React.useState(false);
+    const workingDays = [
+        {
+            label: 'Bazar e. - Cümə',
+            id: '1',
+        },
+        {
+            label: 'Bazar e. - Cümə-Şənbə',
+            id: '2',
+        },
+        {
+            label: 'Hər gün',
+            id: '3',
+        },
+    ];
     const fields = [
         {
             label: 'Adı*',
@@ -135,6 +159,12 @@ const CreateShopPage = () => {
         }
     }, [shopStates?.isOnline]);
 
+    useEffect(() => {
+        return () => {
+            shopStates.resetCreateShop();
+        };
+    }, []);
+
     return (
         <View style={internalStyles.container}>
             <TopContainer />
@@ -149,8 +179,6 @@ const CreateShopPage = () => {
                                 <View
                                     style={{
                                         ...internalStyles?.inputContainer,
-                                        backgroundColor:
-                                            field?.key === 'hours' ? 'transparent' : f5Color,
                                     }}
                                 >
                                     {field?.key === 'phone' ? (
@@ -172,6 +200,56 @@ const CreateShopPage = () => {
                                                 {shopStates?.end_hour}
                                             </CustomText>
                                         </TouchableOpacity>
+                                    ) : field?.key === 'work_days' ? (
+                                        <View style={{ position: 'relative' }}>
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    setIsWorkingDaysModalVisible(
+                                                        !isWorkingDaysModalVisible,
+                                                    )
+                                                }
+                                                style={internalStyles.workDays}
+                                            >
+                                                <CustomText>
+                                                    {defineWorkingDays(shopStates?.work_days)}
+                                                </CustomText>
+                                            </TouchableOpacity>
+                                            <View
+                                                style={{
+                                                    ...internalStyles.workDaysModal,
+                                                    display: isWorkingDaysModalVisible
+                                                        ? 'flex'
+                                                        : 'none',
+                                                }}
+                                            >
+                                                {workingDays.map((day, index) => {
+                                                    return (
+                                                        <TouchableOpacity
+                                                            style={{
+                                                                ...internalStyles.workDayItem,
+                                                                borderBottomWidth:
+                                                                    index === workingDays.length - 1
+                                                                        ? 0
+                                                                        : 1,
+                                                            }}
+                                                            key={index}
+                                                            onPress={() => {
+                                                                shopStates.setWorkDays(
+                                                                    day?.id as '1' | '2' | '3',
+                                                                );
+                                                                setIsWorkingDaysModalVisible(false);
+                                                            }}
+                                                        >
+                                                            <CustomText
+                                                                style={{ fontFamily: NunitoMedium }}
+                                                            >
+                                                                {day?.label}
+                                                            </CustomText>
+                                                        </TouchableOpacity>
+                                                    );
+                                                })}
+                                            </View>
+                                        </View>
                                     ) : (
                                         <CustomTextInput
                                             editable={
@@ -229,7 +307,7 @@ const internalStyles = StyleSheet.create({
     topContainer: {},
     coverImage: {
         width: '100%',
-        height: 120,
+        height: 150,
     },
     logoImage: {
         position: 'absolute',
@@ -312,5 +390,40 @@ const internalStyles = StyleSheet.create({
         width: '50%',
         textAlign: 'center',
         color: primaryColor,
+    },
+    workDays: {
+        height: 48,
+        paddingHorizontal: 16,
+        borderRadius: 8,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    workDaysModal: {
+        position: 'absolute',
+        bottom: 48,
+        width: '100%',
+        minHeight: 90,
+        backgroundColor: 'white',
+        paddingHorizontal: 16,
+        borderTopLeftRadius: 16,
+        borderTopRightRadius: 16,
+        paddingVertical: 16,
+        // shadow top
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: -4,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 5,
+        borderWidth: 1,
+        borderColor: e5Color,
+    },
+    workDayItem: {
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: lightBorder,
     },
 });

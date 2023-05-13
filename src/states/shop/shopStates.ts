@@ -20,10 +20,9 @@ class ShopStates {
     start_hour: string = '';
     end_hour: string = '';
     work_days: '1' | '2' | '3' = '1';
-    img: string = '';
-    cover: string = '';
     isOnline: boolean = false;
     isHourModalOpen: boolean = false;
+    imageDate: string = '';
 
 
     // ------------------------------------------
@@ -98,17 +97,7 @@ class ShopStates {
         })
     }
 
-    setImg(img: string) {
-        runInAction(() => {
-            this.img = img;
-        })
-    }
 
-    setCover(cover: string) {
-        runInAction(() => {
-            this.cover = cover;
-        })
-    }
 
     setIsOnline(isOnline: boolean) {
         runInAction(() => {
@@ -140,6 +129,11 @@ class ShopStates {
         })
     }
 
+    setImageDate(date: string) {
+        runInAction(() => {
+            this.imageDate = date;
+        })
+    }
 
     resetCreateShop() {
         runInAction(() => {
@@ -153,9 +147,9 @@ class ShopStates {
             this.start_hour = '';
             this.end_hour = '';
             this.work_days = '1';
-            this.img = '';
-            this.cover = '';
             this.isOnline = false;
+            this.isHourModalOpen = false;
+            this.imageDate = '';
         })
     }
 

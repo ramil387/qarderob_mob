@@ -55,7 +55,7 @@ const DialogModal = () => {
                     <CustomText style={internalStyles.errorBody}>
                         {generalStates.dialogBody}
                     </CustomText>
-                    <ActionBody />
+                    {generalStates?.dialogAction && <ActionBody />}
                 </View>
             </View>
         </Modal>
