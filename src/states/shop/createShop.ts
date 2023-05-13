@@ -11,13 +11,13 @@ import generalStates from "../general/generalStates";
 
 export const createShop = async () => {
     try {
-        // if (!createShopValidator()) return;
+        if (!createShopValidator()) return;
 
 
         shopStates.setCreateShopLoading(true)
         const body: any = {
             name: shopStates.name,
-            address: shopStates.address,
+            address: shopStates.address ?? "Onlayn mağaza",
             desc: shopStates.desc,
             phone: "0" + shopStates.phone.slice(4),
             email: shopStates.email,

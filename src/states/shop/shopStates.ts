@@ -23,7 +23,9 @@ class ShopStates {
     isOnline: boolean = false;
     isHourModalOpen: boolean = false;
     imageDate: string = '';
-
+    facebook: string = '';
+    instagram: string = '';
+    tiktok: string = '';
 
     // ------------------------------------------
 
@@ -135,6 +137,24 @@ class ShopStates {
         })
     }
 
+    setFacebook(facebook: string) {
+        runInAction(() => {
+            this.facebook = facebook;
+        })
+    }
+
+    setInstagram(instagram: string) {
+        runInAction(() => {
+            this.instagram = instagram;
+        })
+    }
+
+    setTiktok(tiktok: string) {
+        runInAction(() => {
+            this.tiktok = tiktok;
+        })
+    }
+
     resetCreateShop() {
         runInAction(() => {
             this.shopImg = {};
@@ -150,6 +170,9 @@ class ShopStates {
             this.isOnline = false;
             this.isHourModalOpen = false;
             this.imageDate = '';
+            this.facebook = '';
+            this.instagram = '';
+            this.tiktok = '';
         })
     }
 

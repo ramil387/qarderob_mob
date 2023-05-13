@@ -54,8 +54,6 @@ const TopContainer = memo(
             );
         };
 
-        console.log(shopStates?.shopCover);
-
         return (
             <View style={internalStyles.topContainer}>
                 <Image style={internalStyles.coverImage} source={{ uri: coverImgUrl }} />
@@ -91,7 +89,7 @@ const CreateShopPage = () => {
             id: '1',
         },
         {
-            label: 'Bazar e. - Cümə-Şənbə',
+            label: 'Bazar e. - Şənbə',
             id: '2',
         },
         {
@@ -147,7 +145,25 @@ const CreateShopPage = () => {
             placeholder: 'İş günlərini seçin',
             key: 'work_days',
             value: defineWorkingDays(shopStates?.work_days),
-            func: (text: string) => shopStates.setWorkDays(Number(text)),
+            func: (text: string) => shopStates.setWorkDays(text as '1' | '2' | '3'),
+        },
+        {
+            label: 'Facebook linki',
+            placeholder: 'Facebook linkini daxil edin',
+            key: 'facebook',
+            value: shopStates?.facebook,
+        },
+        {
+            label: 'Instagram linki*',
+            placeholder: 'Instagram linkini daxil edin',
+            key: 'instagram',
+            value: shopStates?.instagram,
+        },
+        {
+            label: 'Tiktok linki',
+            placeholder: 'Tiktok linkini daxil edin',
+            key: 'tiktok',
+            value: shopStates?.tiktok,
         },
     ];
 
@@ -282,7 +298,7 @@ const CreateShopPage = () => {
                                         ) : (
                                             <OutlineSquareIcon />
                                         )}
-                                        <CustomText>Online mağaza</CustomText>
+                                        <CustomText>Onlayn mağaza</CustomText>
                                     </TouchableOpacity>
                                 )}
                             </View>

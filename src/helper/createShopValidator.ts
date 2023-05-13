@@ -94,5 +94,13 @@ export const createShopValidator = () => {
         return
     }
 
+
+    if (!shopStates.instagram) {
+        errorStates.setCommonErrorVisible(true);
+        errorStates.setErrorHeader(`Instagram linkini daxil edin`);
+        errorStates.setErrorAction(false);
+        return
+    }
+
     return true
 }
