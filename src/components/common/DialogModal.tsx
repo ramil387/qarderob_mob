@@ -21,13 +21,13 @@ const DialogModal = () => {
                             borderColor: primaryColor,
                         }}
                         titleStyle={{ color: primaryColor, fontSize: 14 }}
-                        func={generalStates.dialogCancelFunc}
+                        func={() => generalStates.dialogCancelFunc()}
                         title={generalStates.dialogCancelText}
                     />
                 </View>
                 <View style={internalStyles.btnItemContainer}>
                     <CustomMainButton
-                        func={generalStates.dialogOkFunc}
+                        func={() => generalStates.dialogOkFunc()}
                         title={generalStates.dialogOkText}
                         titleStyle={{ fontSize: 14 }}
                     />
@@ -35,8 +35,6 @@ const DialogModal = () => {
             </View>
         );
     });
-
-    console.log(generalStates?.commonDialogVisible);
 
     return (
         <Modal animationType='fade' visible={generalStates.commonDialogVisible} transparent={true}>

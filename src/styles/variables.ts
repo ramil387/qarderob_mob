@@ -17,6 +17,13 @@ export const shadowColor = 'rgba(0,0,0,0.2)'
 export const lightBorder = 'rgba(0,0,0,0.05)'
 export const disableColor = '#ccc';
 export const e0Color = "#E0E0E0"
+
+export const successColor = "#00D65B"
+export const successBackground = "rgba(0, 214, 91, 0.04)";
+export const warningColor = "#F7B60F"
+export const warningBackground = "rgba(247, 182, 15, 0.04)";
+export const errorColor = "#E9100C"
+export const errorBackground = "rgba(233, 16, 12, 0.04)";
 // font families
 
 export const NunitoRegular = 'Nunito-Regular';

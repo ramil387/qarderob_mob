@@ -8,10 +8,16 @@ import {
     NunitoBold,
     e0Color,
     e5Color,
+    errorBackground,
+    errorColor,
     inactiveColor,
     mainTextColor,
     phoneWidth,
     primaryColor,
+    successBackground,
+    successColor,
+    warningBackground,
+    warningColor,
 } from '@/styles/variables';
 import { getAdImageBySize } from '@/utils/getImageBySize';
 import CustomText from '@/components/ui/CustomText';
@@ -48,13 +54,15 @@ import { fetchLikeCount } from '@/states/product/fetchLikeCount';
 import FillHeartIcon from '@/icons/home/FillHeartIcon';
 import addProductStates from '@/states/product/addProduct/addProductStates';
 import { fillUpdateProductForm } from '@/helper/fillUpdateProductForm';
-import generalStates from '@/states/general/generalStates';
-import { showDeleteProductDialog } from '@/helper/showDeleteProductDialog';
+import { showProductActionDialog } from '@/helper/showProductActionDialog';
+import { defineProductVerifiedMessage } from '@/helper/defineProductVerifiedMessage';
+import CheckIcon from '@/icons/categories/CheckIcon';
+import ClockIcon from '@/icons/product/ClockIcon';
+import CloseIcon from '@/icons/error/CloseIcon';
 
 const ProductImages = memo(
     observer(() => {
         const product = toJS(productStates.selectedProduct);
-        console.log({ product });
         return (
             <Carousel<any>
                 style={{ height: 400 }}
@@ -94,6 +102,69 @@ const ProductImages = memo(
                     );
                 }}
             />
+        );
+    }),
+);
+
+const ProductVerifiedStatus = memo(
+    observer(() => {
+        const product = toJS(productStates.selectedProduct);
+        const verified = product?.verified;
+
+        const borderColor =
+            verified === 'false'
+                ? successColor
+                : verified === 'exp'
+                ? warningColor
+                : verified === 'rej'
+                ? errorColor
+                : inactiveColor;
+
+        const backgroundColor =
+            verified === 'false'
+                ? successBackground
+                : verified === 'exp'
+                ? warningBackground
+                : verified === 'rej' && errorBackground;
+
+        const headText = defineProductVerifiedMessage(product?.verified)?.split('\n')[0];
+
+        const tailText = defineProductVerifiedMessage(product?.verified)
+            ?.split('\n')[1]
+            ?.split(' ')
+            ?.map((d) => d)
+            ?.join(' ');
+
+        const badCoolor =
+            verified === 'false' ? 'green' : verified === 'exp' ? warningColor : 'red';
+
+        const Icon = () =>
+            verified === 'false' ? (
+                <CheckIcon style={internalStyles.iconStyle} />
+            ) : verified === 'exp' ? (
+                <ClockIcon style={internalStyles.iconStyle} />
+            ) : verified === 'rej' ? (
+                <CloseIcon style={internalStyles.iconStyle} />
+            ) : null;
+
+        console.log(headText);
+
+        return (
+            <View
+                style={{
+                    ...internalStyles?.verifiedMessageContainer,
+                    borderColor: borderColor,
+                    backgroundColor: backgroundColor,
+                }}
+            >
+                <View style={{ display: 'flex', flexDirection: 'row', gap: 8 }}>
+                    <View style={{ ...internalStyles.badge, backgroundColor: badCoolor }}>
+                        <Icon />
+                    </View>
+                    <CustomText style={internalStyles.headVerifiedText}>{headText}</CustomText>
+                </View>
+                <CustomText style={internalStyles?.bodyVeifiedText}>{tailText}</CustomText>
+            </View>
         );
     }),
 );
@@ -366,13 +437,16 @@ const ProductDetailPage = () => {
     };
 
     const deleteProduct = () => {
-        showDeleteProductDialog();
+        showProductActionDialog();
     };
 
     return (
         <View style={{ flex: 1 }}>
             <ScrollView>
                 <ProductImages />
+                {productStates?.selectedProduct?.user_id === profileStates.user?.id && (
+                    <ProductVerifiedStatus />
+                )}
                 <View style={internalStyles.contentContainer}>
                     <CustomText style={internalStyles.catName}>
                         {product?.category?.name_az}
@@ -562,4 +636,33 @@ const internalStyles = StyleSheet.create({
     footerItemContainer: {
         width: '48%',
     },
+    verifiedMessageContainer: {
+        padding: 16,
+        borderWidth: 1,
+        borderRadius: 8,
+        margin: 16,
+    },
+    headVerifiedText: {
+        fontSize: 16,
+        fontFamily: NunitoBold,
+        marginBottom: 4,
+        width: phoneWidth - 84,
+    },
+    bodyVeifiedText: {
+        color: inactiveColor,
+        fontSize: 16,
+        marginTop: 8,
+    },
+    badge: {
+        borderRadius: 100,
+        backgroundColor: 'green',
+        padding: 4,
+        width: 24,
+        height: 24,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        top: 4,
+    },
+    iconStyle: { color: '#fff', width: 14, height: 14 },
 });

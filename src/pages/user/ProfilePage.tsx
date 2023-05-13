@@ -12,6 +12,7 @@ import {
     f5Color,
     f8Color,
     inactiveColor,
+    phoneHeight,
     primaryColor,
 } from '@/styles/variables';
 import CalendarIcon from '@/icons/user/CalendarIcon';
@@ -96,7 +97,13 @@ const ProductSection = observer(() => {
         }
 
         return (
-            <View style={{ paddingTop: 0, backgroundColor: f8Color, flex: 1 }}>
+            <View
+                style={{
+                    paddingTop: 0,
+                    backgroundColor: f8Color,
+                    flex: 1,
+                }}
+            >
                 <ProductList
                     data={userStates.userProducts?.data || []}
                     loadMore={loadMore}

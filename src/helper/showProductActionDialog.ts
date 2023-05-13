@@ -1,6 +1,8 @@
 import generalStates from "@/states/general/generalStates";
+import { deleteProduct } from "@/states/product/deleteProduct";
+import productStates from "@/states/product/productStates";
 
-export const showDeleteProductDialog = () => {
+export const showProductActionDialog = () => {
     generalStates?.setDialogType('warning');
     generalStates?.setCommonDialogVisible(true);
     generalStates?.setDialogHeader("Elan silinsin?")
@@ -8,5 +10,9 @@ export const showDeleteProductDialog = () => {
     generalStates?.setDialogAction(true);
     generalStates?.setDialogOkText("Sil")
     generalStates?.setDialogCancelText("İmtina et")
-
+    generalStates?.setOkFunc(async () => {
+        await deleteProduct(productStates?.selectedProduct?.id)
+        generalStates?.setCommonDialogVisible(false);
+    })
 }
+

@@ -11,6 +11,7 @@ import CommonBottomSheet from '../common/CommonBottomSheet';
 import FillRadioButtonIcon from '@/icons/product/FillRadioButtonIcon';
 import filterStates from '@/states/filter/filterStates';
 import OutlineRadioButton from '@/icons/product/OutlineRadioButton';
+import DownArrowIcon from '@/icons/arrows/DownArrowIcon';
 
 const ProductList = ({
     type,
@@ -81,6 +82,36 @@ const ProductList = ({
                                 <View>
                                     <ActivityIndicator size='large' color={primaryColor} />
                                 </View>
+                            );
+                        }
+                        if (generalStates.curPage === 'ProfilePage') {
+                            return (
+                                <TouchableOpacity
+                                    onPress={() =>
+                                        productStates?.setProductListScrollDirection('up')
+                                    }
+                                    style={{
+                                        backgroundColor: primaryColor,
+                                        alignSelf: 'center',
+                                        width: 30,
+                                        height: 30,
+                                        borderRadius: 100,
+                                        padding: 10,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        elevation: 5,
+                                        shadowColor: '#000',
+                                        shadowOffset: {
+                                            width: 0,
+                                            height: 2,
+                                        },
+                                        shadowOpacity: 0.25,
+                                        shadowRadius: 3.84,
+                                    }}
+                                >
+                                    <DownArrowIcon style={{ color: 'white' }} />
+                                </TouchableOpacity>
                             );
                         }
                         return null;
