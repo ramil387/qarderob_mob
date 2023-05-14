@@ -15,4 +15,6 @@ export const fillShopForm = (shop: ShopType) => {
     shopStates.setFacebook(shop?.social_links?.facebook ?? "");
     shopStates.setInstagram(shop?.social_links?.instagram ?? "");
     shopStates.setTiktok(shop?.social_links?.tiktok ?? "");
+    if (shop?.img) shopStates.setShopCover({ name: shop?.img })
+    if (shop?.cover) shopStates.setShopImg({ name: shop?.cover })
 }

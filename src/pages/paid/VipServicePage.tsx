@@ -2,7 +2,7 @@ import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-nat
 import React from 'react';
 import InfoCircleIcon from '@/icons/paid/InfoCircleIcon';
 import CustomText from '@/components/ui/CustomText';
-import { NunitoBold, e5Color } from '@/styles/variables';
+import { NunitoBold, NunitoMedium, e5Color } from '@/styles/variables';
 import { http } from '@/services/httpMethods';
 import { APIS } from '@/constants';
 import { toJS } from 'mobx';
@@ -117,7 +117,9 @@ const VipServicePage = () => {
                 />
                 <View style={internalStyles.payInfo}>
                     <InfoCircleIcon />
-                    <CustomText>Diqqət ödəniş geri qaytarılmır.</CustomText>
+                    <CustomText style={{ fontFamily: NunitoMedium }}>
+                        Diqqət ödəniş geri qaytarılmır.
+                    </CustomText>
                 </View>
             </View>
         </View>

@@ -87,7 +87,7 @@ export const FilterContainer = memo(
 const ProductsPage = () => {
     const [isLoadingMore, setIsLoadingMore] = React.useState<boolean>(false);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
-
+    const [localQuery, setLocalQuery] = React.useState<any>({});
     useFocusEffect(
         useCallback(() => {
             fetchProducts(1)

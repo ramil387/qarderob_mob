@@ -8,8 +8,8 @@ class ProfileStates {
 
     // editProfile ------------------------------
     isProfileEditLoading: boolean = false;
-    shopImg: any = {};
-    shopCover: any = {};
+    profileImg: any = {};
+    profileCover: any = {};
     imageDate: string = '';
     full_name: string = '';
     username: string = '';
@@ -40,15 +40,15 @@ class ProfileStates {
     }
 
     // editProfile ------------------------------
-    setShopImg(shopImg: any) {
+    setProfileImg(shopImg: any) {
         runInAction(() => {
-            this.shopImg = shopImg;
+            this.profileImg = shopImg;
         })
     }
 
-    setShopCover(shopCover: any) {
+    setProfileCover(shopCover: any) {
         runInAction(() => {
-            this.shopCover = shopCover;
+            this.profileCover = shopCover;
         })
     }
 
@@ -91,8 +91,8 @@ class ProfileStates {
 
     resetForm() {
         runInAction(() => {
-            this.shopImg = {};
-            this.shopCover = {};
+            this.profileImg = {};
+            this.profileCover = {};
             this.imageDate = '';
             this.full_name = '';
             this.username = '';

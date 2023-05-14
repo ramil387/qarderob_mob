@@ -7,11 +7,12 @@ import { setImageName } from "@/helper/setImageName";
 import { Platform } from "react-native";
 import { uploadImage } from "../product/addProduct/uploadImage";
 import { errorMessageForImage } from "@/helper/errorMessageForImage";
+import { fetchMe } from "./fetchMe";
 
 export const editProfile = async () => {
     try {
         profileStates.setProfileEditLoading(true)
-        const body = {
+        const body: any = {
             full_name: profileStates.full_name,
             username: profileStates.username,
             email: profileStates.email,
@@ -20,8 +21,21 @@ export const editProfile = async () => {
 
         if (!editProfileValidator(body)) return;
 
+        if (body.phone.length === 13) {
+            body.phone = "0" + body.phone.slice(4)
+        }
+
+        if (Object.keys(profileStates?.profileImg).length > 1) {
+            body['photo'] = [profileStates?.profileImg?.name];
+        }
+
+        if (Object.keys(profileStates?.profileCover).length > 1) {
+            body['cover'] = [profileStates?.profileCover?.name];
+        }
+
         const resp = await http.patch(APIS.updateProfile, body)
         if (resp.status === 200) {
+            await fetchMe()
             profileStates.resetForm()
             generalStates.navigationRef.current?.navigate('ProfilePage')
             generalStates.setDialogAction(false)
@@ -65,15 +79,14 @@ export const uploadProfileImage = async (img: any, img_publish_date: string, typ
             return;
         }
 
-        console.log({ type })
         if (type === 'img') {
-            profileStates.setShopImg({
+            profileStates.setProfileImg({
                 ...img,
                 name: JSON.parse(getImageName)?.data?.name
             });
             return
         }
-        profileStates.setShopCover({
+        profileStates.setProfileCover({
             ...img,
             name: JSON.parse(getImageName)?.data?.name
         });

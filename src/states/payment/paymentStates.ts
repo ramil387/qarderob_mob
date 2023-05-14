@@ -34,6 +34,15 @@ class PaymentStates {
         })
     }
 
+    resetPaymentStates() {
+        runInAction(() => {
+            this.paymentUrl = '';
+            this.paymentPageVisible = false;
+            this.paymentType = '';
+            this.paymentModalVisible = false;
+        })
+    }
+
 }
 
 export default new PaymentStates();

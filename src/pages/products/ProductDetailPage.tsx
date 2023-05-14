@@ -147,7 +147,7 @@ const ProductVerifiedStatus = memo(
                 <CloseIcon style={internalStyles.iconStyle} />
             ) : null;
 
-        console.log(headText);
+        if (verified === 'true') return null;
 
         return (
             <View

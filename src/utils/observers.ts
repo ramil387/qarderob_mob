@@ -46,22 +46,25 @@ export const routerObserver = (e: any) => {
 
 export const footerVisibleObserver = () => {
     const footerVisibles = [
-        "LoginPage",
-        "RegisterPage",
-        "BurgerMenuPage",
-        "FilterPage",
-        "ProductDetailPage",
-        "CategoryFilterPage",
-        "BrandFilterPage",
-        "PriceFilterPage",
-        "ProductStatusFilterPage",
-        "ColorFilterPage",
-        "SizeFilterPage",
-        "CityFilterPage",
-        "ContactPage",
-        "AddProductPage",
-        "CreateShopPage",
-        "ProfileEditPage"
+        'LoginPage',
+        'RegisterPage',
+        'BurgerMenuPage',
+        'FilterPage',
+        'ProductDetailPage',
+        'CategoryFilterPage',
+        'BrandFilterPage',
+        'PriceFilterPage',
+        'ProductStatusFilterPage',
+        'ColorFilterPage',
+        'SizeFilterPage',
+        'CityFilterPage',
+        'ContactPage',
+        'AddProductPage',
+        'CreateShopPage',
+        'ProfileEditPage',
+        'AddBalancePage',
+        'MoveForwardPage',
+        'VipServicePage'
     ]
     const isVisiable = footerVisibles.includes(generalStates.curPage);
 

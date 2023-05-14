@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { toJS } from 'mobx';
 import profileStates from '@/states/profile/profileStates';
@@ -15,8 +15,6 @@ import {
     f8Color,
     inactiveColor,
     mainTextColor,
-    phoneHeight,
-    phoneWidth,
     primaryColor,
     successBackground,
     successColor,
@@ -46,7 +44,6 @@ import NotFoundIcon from '@/icons/user/NotFoundIcon';
 import ShopIcon from '@/icons/shop/ShopIcon';
 import PackageIcon from '@/icons/user/PackageIcon';
 import GiftIcon from '@/icons/user/GiftIcon';
-import shopStates from '@/states/shop/shopStates';
 import { fillShopForm } from '@/helper/fillShopForm';
 import { ShopType } from '@/types/shopType';
 import CheckIcon from '@/icons/categories/CheckIcon';
@@ -210,7 +207,7 @@ const VerifiedMessage = memo(() => {
                 </View>
                 <CustomText style={internalStyles.verifiedMessageText}>
                     <CustomText style={{ fontFamily: NunitoBold, color: mainTextColor }}>
-                        {headRejectText}
+                        {headRejectText}.
                     </CustomText>{' '}
                     {'\n'}
                     {tailRejectText}
@@ -262,13 +259,15 @@ const ProfilePage = () => {
                 changeUserContainerHeight(initialHeight, 16);
             }
         }
-    }, [productStates.productListScrollDirection, initialHeight, profileStates?.storeMode]);
+    }, [productStates.productListScrollDirection, initialHeight]);
 
     useEffect(() => {
         setInitialHeight(null);
     }, [profileStates.storeMode]);
 
-    const addUserBalance = () => {};
+    const addUserBalance = () => {
+        navigate.navigate('AddBalancePage');
+    };
     const goShopEditPage = (status: boolean) => {
         if (status) {
             fillShopForm(shop as ShopType);
@@ -506,7 +505,9 @@ const ProfilePage = () => {
             {(profileStates?.storeMode && shop?.verified) || !profileStates?.storeMode ? (
                 <TabView />
             ) : (
-                <VerifiedMessage />
+                <ScrollView>
+                    <VerifiedMessage />
+                </ScrollView>
             )}
         </View>
     );

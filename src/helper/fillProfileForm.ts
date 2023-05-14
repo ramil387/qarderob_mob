@@ -7,4 +7,6 @@ export const fillProfileForm = () => {
     profileStates.setFullName(user?.full_name ?? "");
     profileStates.setUsername(user?.username ?? "");
     profileStates.setPhone('+994' + user?.phone.slice(1) ?? "");
+    if (user?.photo) profileStates.setProfileCover({ name: user?.photo })
+    if (user?.cover) profileStates.setProfileImg({ name: user?.cover })
 }

@@ -106,6 +106,12 @@ class FilterStates {
         })
     }
 
+    setQueriesAll = (queries: any) => {
+        runInAction(() => {
+            this.query = queries
+        })
+    }
+
     removeQuery = (key: keyof QueryType) => {
         runInAction(() => {
             delete this.query[key]

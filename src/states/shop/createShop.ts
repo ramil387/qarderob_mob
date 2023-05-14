@@ -98,7 +98,6 @@ export const uploadShopImage = async (img: any, img_publish_date: string, type?:
             getImageName
         );
 
-        console.log(getImageName, 'xxxxxx')
 
         fd.append('fileupload', {
             ...img,
@@ -115,7 +114,6 @@ export const uploadShopImage = async (img: any, img_publish_date: string, type?:
             return;
         }
 
-        console.log({ type })
         if (type === 'img') {
             shopStates.setShopImg({
                 ...img,

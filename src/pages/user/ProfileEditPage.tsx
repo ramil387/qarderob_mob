@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import React, { memo } from 'react';
 import { NunitoMedium, e5Color, f5Color, lightBorder, primaryColor } from '@/styles/variables';
 import { observer } from 'mobx-react-lite';
@@ -6,7 +6,6 @@ import { toJS } from 'mobx';
 import profileStates from '@/states/profile/profileStates';
 import { shopCoverImage, userProfileImage } from '@/constants';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { uploadShopImage } from '@/states/shop/createShop';
 import { Image } from 'react-native';
 import { Avatar } from '@rneui/themed';
 import { TouchableOpacity } from 'react-native';
@@ -15,19 +14,21 @@ import { ScrollView } from 'react-native';
 import CustomText from '@/components/ui/CustomText';
 import PhoneInput from '@/components/common/PhoneInput';
 import CustomTextInput from '@/components/ui/CustomTextInput';
+import { editProfile, uploadProfileImage } from '@/states/profile/editProfile';
+import CustomMainButton from '@/components/ui/CustomMainButton';
 
 const TopContainer = memo(
     observer(() => {
         const user = toJS(profileStates?.user);
         const coverImgUrl =
-            Object.keys(profileStates?.shopCover).length > 0
-                ? `data:image/png;base64,${profileStates?.shopCover?.base64}`
+            Object.keys(profileStates?.setProfileCover).length > 1
+                ? `data:image/png;base64,${profileStates?.setProfileCover?.base64}`
                 : user?.cover
                 ? user?.cover
                 : shopCoverImage;
         const profileImgUrl =
-            Object.keys(profileStates?.shopImg).length > 0
-                ? `data:image/png;base64,${profileStates?.shopImg?.base64}`
+            Object.keys(profileStates?.profileImg).length > 1
+                ? `data:image/png;base64,${profileStates?.profileImg?.base64}`
                 : user?.photo
                 ? user?.photo
                 : userProfileImage;
@@ -46,7 +47,7 @@ const TopContainer = memo(
                         profileStates.setImageDate(Date.now().toString());
                     }
                     if (response?.assets) {
-                        uploadShopImage(image[0], profileStates?.imageDate, type);
+                        uploadProfileImage(image[0], profileStates?.imageDate, type);
                     }
                 },
             );
@@ -54,8 +55,20 @@ const TopContainer = memo(
 
         return (
             <View style={internalStyles.topContainer}>
-                <Image style={internalStyles.coverImage} source={{ uri: coverImgUrl }} />
-                <View style={internalStyles.logoImage}>
+                <Image
+                    style={{
+                        ...internalStyles.coverImage,
+                        display: user?.is_inf === 'true' || user?.isFamous ? 'flex' : 'none',
+                    }}
+                    source={{ uri: coverImgUrl }}
+                />
+                <View
+                    style={{
+                        ...internalStyles.logoImage,
+                        position:
+                            user?.is_inf === 'true' || user?.isFamous ? 'absolute' : 'relative',
+                    }}
+                >
                     <Avatar
                         source={{ uri: profileImgUrl }}
                         containerStyle={{ width: 92, height: 92 }}
@@ -70,7 +83,10 @@ const TopContainer = memo(
                 </View>
                 <TouchableOpacity
                     onPress={() => setImg('cover')}
-                    style={internalStyles.coverAddIcon}
+                    style={{
+                        ...internalStyles.coverAddIcon,
+                        display: user?.is_inf === 'true' || user?.isFamous ? 'flex' : 'none',
+                    }}
                 >
                     <AddPhotoIcon style={{ color: primaryColor, width: 24, height: 24 }} />
                 </TouchableOpacity>
@@ -143,6 +159,9 @@ const ProfileEditPage = () => {
                     })}
                 </ScrollView>
             </View>
+            <View style={internalStyles.submitBtn}>
+                <CustomMainButton func={editProfile} title={'Düzəliş et'} />
+            </View>
         </View>
     );
 };
@@ -179,7 +198,7 @@ const internalStyles = StyleSheet.create({
     },
     submitBtn: {
         position: 'absolute',
-        bottom: 0,
+        bottom: 8,
         width: '100%',
         alignSelf: 'center',
         backgroundColor: 'white',

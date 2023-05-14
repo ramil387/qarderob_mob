@@ -191,7 +191,7 @@ const UserProductsPage = () => {
     useEffect(() => {
         return () => {
             filterStates.resetQuery();
-            productStates.setSelectedProduct(null);
+            // productStates.setSelectedProduct(null);
         };
     }, []);
 

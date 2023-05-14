@@ -3,13 +3,13 @@ import shopStates from "@/states/shop/shopStates"
 import validator from 'validator';
 
 export const createShopValidator = () => {
-    if (!shopStates.shopImg) {
+    if (!Object.keys(shopStates.shopImg).length) {
         errorStates.setCommonErrorVisible(true);
         errorStates.setErrorHeader('Mağaza logosu yükləyin');
         errorStates.setErrorAction(false);
         return;
     }
-    if (!shopStates.shopCover) {
+    if (!Object.keys(shopStates.shopCover).length) {
         errorStates.setCommonErrorVisible(true);
         errorStates.setErrorHeader('Mağaza üçün cover yükləyin');
         errorStates.setErrorAction(false);

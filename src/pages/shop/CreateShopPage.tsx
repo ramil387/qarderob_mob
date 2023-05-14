@@ -25,13 +25,13 @@ const TopContainer = memo(
         const user = toJS(profileStates?.user);
         const shop = toJS(user?._store);
         const coverImgUrl =
-            Object.keys(shopStates?.shopCover).length > 0
+            Object.keys(shopStates?.shopCover).length > 1
                 ? `data:image/png;base64,${shopStates?.shopCover?.base64}`
                 : shop?.cover
                 ? shop?.cover
                 : shopCoverImage;
         const profileImgUrl =
-            Object.keys(shopStates?.shopImg).length > 0
+            Object.keys(shopStates?.shopImg).length > 1
                 ? `data:image/png;base64,${shopStates?.shopImg?.base64}`
                 : shop?.img
                 ? shop?.img
@@ -329,7 +329,7 @@ const internalStyles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    topContainer: {},
+    topContainer: { zIndex: 999 },
     coverImage: {
         width: '100%',
         height: 150,
@@ -355,7 +355,7 @@ const internalStyles = StyleSheet.create({
     },
     submitBtn: {
         position: 'absolute',
-        bottom: 0,
+        bottom: 8,
         width: '100%',
         alignSelf: 'center',
         backgroundColor: 'white',

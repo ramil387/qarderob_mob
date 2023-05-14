@@ -112,6 +112,12 @@ const ProductList = ({
                                         },
                                         shadowOpacity: 0.25,
                                         shadowRadius: 3.84,
+                                        bottom:
+                                            generalStates.screenSize === 'sm'
+                                                ? 30
+                                                : generalStates.screenSize === 'md'
+                                                ? 15
+                                                : 8,
                                     }}
                                 >
                                     <DownArrowIcon style={{ color: 'white' }} />

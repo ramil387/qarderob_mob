@@ -49,6 +49,7 @@ import CreateShopPageHeader from '@/components/headers/CreateShopPageHeader';
 import { f8Color } from '@/styles/variables';
 import ProfileEditPage from '@/pages/user/ProfileEditPage';
 import ProfileEditHeader from '@/components/headers/ProfileEditHeader';
+import AddBalancePage from '@/pages/paid/AddBalancePage';
 
 type StackListType = {
     name: string;
@@ -370,6 +371,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <ProfileEditHeader />,
+            statusBarTranslucent: false,
+            statusBarColor: f8Color,
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'AddBalancePage',
+        component: AddBalancePage,
+        options: {
+            headerShown: true,
+            header: () => <PaidServicePageHeader title='Şəxsi balansınızı artırın' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
