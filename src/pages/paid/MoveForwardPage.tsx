@@ -12,11 +12,17 @@ import generalStates from '@/states/general/generalStates';
 import FillRadioButtonIcon from '@/icons/product/FillRadioButtonIcon';
 import OutlineRadioButton from '@/icons/product/OutlineRadioButton';
 import CustomMainButton from '@/components/ui/CustomMainButton';
+import { fetchSingleProduct } from '@/states/product/fetchSingleProduct';
+import { fetchMe } from '@/states/profile/fetchMe';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import { observer } from 'mobx-react-lite';
 
 const MoveForwardPage = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
+
     const [paymentType, setPaymentType] = React.useState<'u_balance' | 'card'>('u_balance');
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
-    const [selected, setSelected] = React.useState<number>(0);
+    const [price, setPrice] = React.useState<number>(1);
     const product = toJS(productStates.selectedProduct);
     const packages = [
         {
@@ -37,13 +43,14 @@ const MoveForwardPage = () => {
     ];
     const pay = async () => {
         try {
-            if (paymentType === 'u_balance') {
-                const val = packages[selected].count;
+            if (paymentType === 'card') {
+                const selected = packages.findIndex((item) => item.value === price);
+                const count = packages[selected].count;
                 setIsLoading(true);
                 const body = {
-                    count: val,
-                    service: { type: `up_service-${val}` },
-                    amount: val,
+                    count,
+                    service: { type: `up_service-${price}` },
+                    amount: price,
                     ad_id: product?.id,
                 };
                 const resp = await http.post(APIS.payment + `/create`, body);
@@ -54,8 +61,39 @@ const MoveForwardPage = () => {
                     paymentStates.setPaymentType('vip');
                     paymentStates.setPaymentModalVisible(true);
                 }
-            } else if (paymentType === 'card') {
+            } else if (paymentType === 'u_balance') {
+                const selected = packages.findIndex((item) => item.value === price);
+                const count = packages[selected].count;
+                const body = {
+                    count,
+                    service: { type: `my_balance-${price}`, service: 'up_service' },
+                    amount: price,
+                    ad_id: productStates.selectedProduct?.id,
+                };
                 generalStates.setCommonDialogVisible(true);
+                generalStates.setDialogAction(true);
+                generalStates.setDialogOkText('Bəli');
+                generalStates.setDialogType('warning');
+                generalStates.setDialogCancelText('Xeyr');
+                generalStates.setDialogHeader('Ödəniş şəxsi balansdan çıxılacaq');
+                generalStates.setDialogBody(
+                    `Elanınızın irəli çəkilməsi üçün şəxsi balansınızdan ${price}₼ çıxılacaq. Davam etmək istəyirsiniz?`,
+                );
+                generalStates.setOkFunc(async () => {
+                    const resp = await http.post(APIS.auth + `/update-balance`, body);
+                    if (resp.status === 200) {
+                        await fetchMe();
+                        await fetchSingleProduct(
+                            productStates.selectedProduct?.id,
+                            productStates.selectedProduct?.slug,
+                        );
+                        generalStates.setCommonDialogVisible(false);
+                        navigate.goBack();
+                    }
+                });
+                generalStates.setCancelFunc(() => {
+                    generalStates.setCommonDialogVisible(false);
+                });
             }
         } catch (error) {
             console.log(error);
@@ -77,9 +115,10 @@ const MoveForwardPage = () => {
             <View style={internalStyles.midContainer}>
                 <CustomText style={internalStyles.vipHeadText}>Elanınızı irəli çəkin:</CustomText>
                 {packages.map((item, index) => {
+                    const selected = packages.findIndex((item) => item.value === price);
                     return (
                         <TouchableOpacity
-                            onPress={() => setSelected(index)}
+                            onPress={() => setPrice(item.value)}
                             style={internalStyles.itemContainer}
                             key={index}
                         >
@@ -98,14 +137,14 @@ const MoveForwardPage = () => {
                     onPress={() => setPaymentType('card')}
                 >
                     {paymentType === 'card' ? <FillRadioButtonIcon /> : <OutlineRadioButton />}
-                    <CustomText>Bank kartı</CustomText>
+                    <CustomText style={internalStyles.itemText}>Bank kartı</CustomText>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={{ ...internalStyles.itemContainer, paddingVertical: 0 }}
                     onPress={() => setPaymentType('u_balance')}
                 >
                     {paymentType === 'u_balance' ? <FillRadioButtonIcon /> : <OutlineRadioButton />}
-                    <CustomText>Şəxsi balans</CustomText>
+                    <CustomText style={internalStyles.itemText}>Şəxsi balans</CustomText>
                 </TouchableOpacity>
             </View>
 
@@ -126,7 +165,7 @@ const MoveForwardPage = () => {
     );
 };
 
-export default MoveForwardPage;
+export default observer(MoveForwardPage);
 
 const internalStyles = StyleSheet.create({
     container: {

@@ -7,6 +7,7 @@ export const assetUrl = ASSET_URL
 export const website = WEBSITE
 export const serverBase = SERVER_BASE
 export const APIS = {
+    auth: 'auth',
     home: 'home/mobile',
     filter: 'home/filter-data',
     banners: 'banners',

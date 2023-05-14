@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import React from 'react';
 import CustomText from '@/components/ui/CustomText';
 import CustomTextInput from '@/components/ui/CustomTextInput';
@@ -10,33 +10,31 @@ import { http } from '@/services/httpMethods';
 import { APIS } from '@/constants';
 import paymentStates from '@/states/payment/paymentStates';
 import validator from 'validator';
-import generalStates from '@/states/general/generalStates';
 
 const AddBalancePage = () => {
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const fields = ['5', '10', '20', '50'];
     const [price, setPrice] = React.useState<string>('5');
     const pay = async () => {
-        generalStates.navigationRef.current.navigate('PaymentSuccessPage');
-        // try {
-        //     setIsLoading(true);
-        //     const body = {
-        //         count: price,
-        //         service: { type: `u_balance-${price}` },
-        //         amount: price,
-        //         type: 'add_balance',
-        //     };
-        //     paymentStates.setPaymentBody(body);
-        //     const resp = await http.post(APIS.payment + `/create`, body);
-        //     if (resp.data.url) {
-        //         paymentStates.setPaymentUrl(resp.data.url);
-        //         paymentStates.setPaymentModalVisible(true);
-        //         paymentStates.setPaymentType('add_balance');
-        //     }
-        // } catch (error) {
-        // } finally {
-        //     setIsLoading(false);
-        // }
+        try {
+            setIsLoading(true);
+            const body = {
+                count: price,
+                service: { type: `u_balance-${price}` },
+                amount: price,
+                type: 'add_balance',
+            };
+            paymentStates.setPaymentBody(body);
+            const resp = await http.post(APIS.payment + `/create`, body);
+            if (resp.data.url) {
+                paymentStates.setPaymentUrl(resp.data.url);
+                paymentStates.setPaymentModalVisible(true);
+                paymentStates.setPaymentType('add_balance');
+            }
+        } catch (error) {
+        } finally {
+            setIsLoading(false);
+        }
     };
     return (
         <View style={internalStyles.container}>

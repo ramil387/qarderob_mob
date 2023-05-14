@@ -8,13 +8,27 @@ import CustomText from '@/components/ui/CustomText';
 import { NunitoBold, NunitoMedium, e5Color, inactiveColor, primaryColor } from '@/styles/variables';
 import { APIS } from '@/constants';
 import paymentStates from '@/states/payment/paymentStates';
+import { fetchMe } from '@/states/profile/fetchMe';
+import LoadingComponent from '@/components/common/LoadingComponent';
 
 const PaymentSuccessPage = () => {
     const [paymenResult, setPaymentResult] = useState({} as PaymentStatusType);
+    const [isLoading, setIsLoading] = useState(true);
 
     const getPaymentStatus = async () => {
-        const resp = await http.get(`${APIS.checkOrder}/${paymentStates.paymenRusulUrl}`);
-        setPaymentResult(resp.data);
+        const retry = async () => {
+            const resp = await http.get(`${APIS.checkOrder}/${paymentStates.paymenRusulUrl}`);
+            if (resp.status === 200) {
+                setPaymentResult(resp.data);
+                setIsLoading(false);
+                fetchMe();
+            } else {
+                setTimeout(() => {
+                    retry();
+                }, 1000);
+            }
+        };
+        retry();
     };
 
     useEffect(() => {
@@ -39,6 +53,8 @@ const PaymentSuccessPage = () => {
             value: paymenResult.createdAt,
         },
     ];
+
+    if (isLoading) return <LoadingComponent />;
 
     return (
         <View style={internalStyles.container}>
