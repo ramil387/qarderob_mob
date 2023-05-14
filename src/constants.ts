@@ -26,7 +26,8 @@ export const APIS = {
     rules: 'rules',
     deals: 'deals',
     upload: 'upload/create',
-    checkOrder: 'payment/check-payment'
+    checkOrder: 'payment/check-payment',
+    forgotPassword: 'auth/forgot-mobile-password'
 }
 
 export const shopCoverImage = `${serverBase}/shop_cover.png`

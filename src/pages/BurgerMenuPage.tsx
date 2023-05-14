@@ -156,6 +156,7 @@ const ProfileBurgerMenu = observer(() => {
         {
             label: 'Şifrəni dəyiş',
             icon: <KeyIcon style={{ color: primaryColor }} />,
+            func: () => navigate.navigate('ChangePassPage'),
         },
         {
             label: 'Bizimlə əlaqə',

@@ -51,6 +51,7 @@ import ProfileEditPage from '@/pages/user/ProfileEditPage';
 import ProfileEditHeader from '@/components/headers/ProfileEditHeader';
 import AddBalancePage from '@/pages/paid/AddBalancePage';
 import PaymentSuccessPage from '@/pages/paid/PaymentSuccessPage';
+import ChangePassPage from '@/pages/auth/ChangePassPage';
 
 type StackListType = {
     name: string;
@@ -394,6 +395,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <PaidServicePageHeader title='Ödəniş statusu' />,
+            statusBarTranslucent: false,
+            statusBarColor: f8Color,
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'ChangePassPage',
+        component: ChangePassPage,
+        options: {
+            headerShown: true,
+            header: () => <CommonAuthHeader title='Şifrəni dəyiş' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',

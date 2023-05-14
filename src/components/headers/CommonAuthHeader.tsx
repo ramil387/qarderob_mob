@@ -3,8 +3,9 @@ import React from 'react';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import BackIcon from '@/icons/product/BackIcon';
 import { NunitoBold } from '@/styles/variables';
+import CustomText from '../ui/CustomText';
 
-const CommonAuthHeader = () => {
+const CommonAuthHeader = ({ title }: { title?: string }) => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
 
     return (
@@ -16,6 +17,10 @@ const CommonAuthHeader = () => {
             >
                 <BackIcon />
             </TouchableOpacity>
+            <View>
+                <CustomText style={internalStyles.midText}>{title}</CustomText>
+            </View>
+            <View />
         </View>
     );
 };
