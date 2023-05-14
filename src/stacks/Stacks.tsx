@@ -50,6 +50,7 @@ import { f8Color } from '@/styles/variables';
 import ProfileEditPage from '@/pages/user/ProfileEditPage';
 import ProfileEditHeader from '@/components/headers/ProfileEditHeader';
 import AddBalancePage from '@/pages/paid/AddBalancePage';
+import PaymentSuccessPage from '@/pages/paid/PaymentSuccessPage';
 
 type StackListType = {
     name: string;
@@ -382,6 +383,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <PaidServicePageHeader title='Şəxsi balansınızı artırın' />,
+            statusBarTranslucent: false,
+            statusBarColor: f8Color,
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'PaymentSuccessPage',
+        component: PaymentSuccessPage,
+        options: {
+            headerShown: true,
+            header: () => <PaidServicePageHeader title='Ödəniş statusu' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',

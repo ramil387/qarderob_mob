@@ -9,33 +9,50 @@ import InfoCircleIcon from '@/icons/paid/InfoCircleIcon';
 import { http } from '@/services/httpMethods';
 import { APIS } from '@/constants';
 import paymentStates from '@/states/payment/paymentStates';
+import validator from 'validator';
+import generalStates from '@/states/general/generalStates';
 
 const AddBalancePage = () => {
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const fields = ['5', '10', '20', '50'];
     const [price, setPrice] = React.useState<string>('5');
     const pay = async () => {
-        try {
-            const body = {
-                count: price,
-                service: { type: `u_balance-${price}` },
-                amount: price,
-            };
-            const resp = await http.post(APIS.payment + `/create`, body);
-            if (resp.data.url) {
-                paymentStates.setPaymentUrl(resp.data.url);
-                paymentStates.setPaymentModalVisible(true);
-            }
-        } catch (error) {
-        } finally {
-            setIsLoading(false);
-        }
+        generalStates.navigationRef.current.navigate('PaymentSuccessPage');
+        // try {
+        //     setIsLoading(true);
+        //     const body = {
+        //         count: price,
+        //         service: { type: `u_balance-${price}` },
+        //         amount: price,
+        //         type: 'add_balance',
+        //     };
+        //     paymentStates.setPaymentBody(body);
+        //     const resp = await http.post(APIS.payment + `/create`, body);
+        //     if (resp.data.url) {
+        //         paymentStates.setPaymentUrl(resp.data.url);
+        //         paymentStates.setPaymentModalVisible(true);
+        //         paymentStates.setPaymentType('add_balance');
+        //     }
+        // } catch (error) {
+        // } finally {
+        //     setIsLoading(false);
+        // }
     };
     return (
         <View style={internalStyles.container}>
             <CustomText style={internalStyles.headText}>Artırılacaq məbləği daxil edin</CustomText>
             <View style={internalStyles.inpContainer}>
-                <CustomTextInput value={price} style={internalStyles.inp} />
+                <CustomTextInput
+                    onChangeText={(text) => {
+                        if (validator.isNumeric(text)) {
+                            if (Number(text) > 0) {
+                                setPrice(text);
+                            }
+                        }
+                    }}
+                    value={price}
+                    style={internalStyles.inp}
+                />
             </View>
             <View style={internalStyles.pricesContainer}>
                 {fields.map((price) => {

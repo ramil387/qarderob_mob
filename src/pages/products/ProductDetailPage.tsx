@@ -153,7 +153,7 @@ const ProductVerifiedStatus = memo(
             <View
                 style={{
                     ...internalStyles?.verifiedMessageContainer,
-                    borderColor: borderColor,
+                    borderColor,
                     backgroundColor: backgroundColor,
                 }}
             >

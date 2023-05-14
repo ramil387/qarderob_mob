@@ -1,9 +1,14 @@
 import React from 'react';
 import { Defs, G, Image, LinearGradient, Path, Pattern, Stop, Svg, Use } from 'react-native-svg';
 
-const CheckIcon = () => {
+const CheckIcon = ({ style }: { style?: any }) => {
     return (
-        <Svg width='76' height='70' viewBox='0 0 159 159' fill='none'>
+        <Svg
+            width={style?.width || '76'}
+            height={style?.height || '70'}
+            viewBox='0 0 159 159'
+            fill='none'
+        >
             <Path
                 fillRule='evenodd'
                 clipRule='evenodd'
@@ -39,7 +44,7 @@ const CheckIcon = () => {
             </G>
             <Defs>
                 <Pattern id='pattern0' patternContentUnits='objectBoundingBox' width='1' height='1'>
-                    <Use transform='translate(-0.227273) scale(0.00181818)' />
+                    <Use href='#myElement' transform='translate(-0.227273) scale(0.00181818)' />
                 </Pattern>
                 <LinearGradient
                     id='paint0_linear_217_5725'

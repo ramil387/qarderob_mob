@@ -5,6 +5,9 @@ class PaymentStates {
     paymentPageVisible: boolean = false
     paymentType: string = ''
     paymentModalVisible: boolean = false
+    paymentLoading: boolean = false
+    paymentBody: any = {}
+    paymenRusulUrl: string = ''
 
     constructor() {
         makeAutoObservable(this);
@@ -34,12 +37,35 @@ class PaymentStates {
         })
     }
 
+    setPaymentLoading(loading: boolean) {
+        runInAction(() => {
+            this.paymentLoading = loading;
+        })
+    }
+
+    setPaymentBody(body: any) {
+        runInAction(() => {
+            this.paymentBody = body;
+        })
+    }
+
+    setPaymentRusulUrl(url: string) {
+        runInAction(() => {
+            this.paymenRusulUrl = url;
+        })
+    }
+
+
+
     resetPaymentStates() {
         runInAction(() => {
             this.paymentUrl = '';
             this.paymentPageVisible = false;
             this.paymentType = '';
             this.paymentModalVisible = false;
+            this.paymentLoading = false;
+            this.paymentBody = {};
+            this.paymenRusulUrl = '';
         })
     }
 

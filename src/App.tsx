@@ -15,6 +15,7 @@ import { useFooterVisible } from './hooks/useFooterVisible';
 import ErrorModal from './components/common/ErrorModal';
 import { useKeyboardObserver } from './hooks/useKeyboardObserver';
 import DialogModal from './components/common/DialogModal';
+import PaymentModal from './components/common/PaymentModal';
 
 generateStyles(phoneWidth);
 generalStates.setScreenSize(phoneWidth >= 428 ? 'lg' : phoneWidth >= 390 ? 'md' : 'sm');
@@ -37,6 +38,7 @@ const App = () => {
             {!generalStates.footerVisible && <CommonFooter />}
             <ErrorModal />
             <DialogModal />
+            <PaymentModal />
         </Layout>
     );
 };
