@@ -1,4 +1,4 @@
-import { View, Image, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { View, Image, TouchableOpacity, ScrollView, FlatList, Pressable } from 'react-native';
 import React, { memo, useCallback } from 'react';
 import { observer } from 'mobx-react-lite';
 import productStates from '@/states/product/productStates';
@@ -59,49 +59,66 @@ import { defineProductVerifiedMessage } from '@/helper/defineProductVerifiedMess
 import CheckIcon from '@/icons/categories/CheckIcon';
 import ClockIcon from '@/icons/product/ClockIcon';
 import CloseIcon from '@/icons/error/CloseIcon';
+import ZoomImageModal from '@/components/products/ZoomImageModal';
 
 const ProductImages = memo(
     observer(() => {
         const product = toJS(productStates.selectedProduct);
         return (
-            <Carousel<any>
-                style={{ height: 400 }}
-                loop={false}
-                enabled={product?.images?.length === 1 ? false : true}
-                width={phoneWidth}
-                data={product?.images || []}
-                renderItem={({ image, index }: any) => {
-                    return (
-                        <View>
-                            <Image
-                                style={{ width: phoneWidth, height: 400, resizeMode: 'cover' }}
-                                source={{
-                                    uri: getAdImageBySize(
-                                        'lg',
-                                        product!.id,
-                                        product!.images[index],
-                                    ),
-                                }}
-                            />
-                            <View
-                                style={{
-                                    position: 'absolute',
-                                    bottom: 16,
-                                    right: 16,
-                                    backgroundColor: '#000',
-                                    opacity: 0.8,
-                                    borderRadius: 8,
-                                    padding: 8,
-                                }}
-                            >
-                                <CustomText style={{ color: '#fff', fontFamily: NunitoBold }}>
-                                    {index + 1}/{product?.images.length}
-                                </CustomText>
+            <View>
+                <Carousel<any>
+                    style={{ height: 400 }}
+                    loop={false}
+                    enabled={product?.images?.length === 1 ? false : true}
+                    width={phoneWidth}
+                    // index
+
+                    data={product?.images || []}
+                    renderItem={({ image, index }: any) => {
+                        return (
+                            <View>
+                                <Pressable
+                                    onPress={() => {
+                                        productStates.setSelectedImageIndex(index);
+                                        productStates.setShowZoomImageModal(true);
+                                    }}
+                                >
+                                    <Image
+                                        style={{
+                                            width: phoneWidth,
+                                            height: 400,
+                                            resizeMode: 'cover',
+                                        }}
+                                        source={{
+                                            uri: getAdImageBySize(
+                                                'lg',
+                                                product?.id,
+                                                product?.images[index],
+                                            ),
+                                        }}
+                                    />
+                                </Pressable>
+                                <View
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: 16,
+                                        right: 16,
+                                        backgroundColor: '#000',
+                                        opacity: 0.8,
+                                        borderRadius: 8,
+                                        padding: 8,
+                                    }}
+                                >
+                                    <CustomText style={{ color: '#fff', fontFamily: NunitoBold }}>
+                                        {index + 1}/{product?.images.length}
+                                    </CustomText>
+                                </View>
                             </View>
-                        </View>
-                    );
-                }}
-            />
+                        );
+                    }}
+                />
+                <ZoomImageModal visible={true} images={product?.images} id={product?.id} />
+            </View>
         );
     }),
 );

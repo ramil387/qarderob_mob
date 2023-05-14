@@ -64,7 +64,7 @@ const VipServicePage = () => {
                 const selected = packages.findIndex((item) => item.value === price);
                 const body = {
                     count: selected === 1 ? 3 : selected === 2 ? 9 : 15,
-                    service: { type: `my_balance-${price}`, service: 'up_service' },
+                    service: { type: `my_balance-${price}`, service: 'vip' },
                     amount: price,
                     ad_id: productStates.selectedProduct?.id,
                 };

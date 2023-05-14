@@ -7,6 +7,8 @@ class ProductStates {
     selectedProduct: AdListType | null = null;
     productListScrollDirection: "up" | "down" | null = null;
     relatedProducts: ProdListType | null = null;
+    selectedImageIndex: number = 0;
+    showZoomImageModal: boolean = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -47,6 +49,19 @@ class ProductStates {
             this.relatedProducts = null;
         })
     }
+
+    setSelectedImageIndex(index: number) {
+        runInAction(() => {
+            this.selectedImageIndex = index;
+        })
+    }
+
+    setShowZoomImageModal(show: boolean) {
+        runInAction(() => {
+            this.showZoomImageModal = show;
+        })
+    }
+
 
 }
 

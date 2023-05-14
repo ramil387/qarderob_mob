@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import CustomTextInput from '@/components/ui/CustomTextInput';
@@ -15,6 +15,7 @@ import EyeIcon from '@/icons/user/EyeIcon';
 import { TouchableOpacity } from 'react-native';
 import ClosedEyeIcon from '@/icons/user/ClosedEyeIcon';
 import { ActivityIndicator } from 'react-native';
+import { observer } from 'mobx-react-lite';
 
 type SuffixIconProps = {
     hide: () => void;
@@ -212,7 +213,7 @@ const ChangePassPage = () => {
     );
 };
 
-export default ChangePassPage;
+export default observer(ChangePassPage);
 
 const internalStyles = StyleSheet.create({
     container: {
