@@ -34,13 +34,13 @@ type ProductType = {
 
 const ProductCard = styled(View)<{ phoneWidth: number }>`
     width: ${(props) => props.phoneWidth / 2 - 24}px;
-    height: 240px;
+    height: ${(props) => props.phoneWidth / 2 - 24 + 55}px;
     border-radius: 8px;
 `;
 
-const ImageCard = styled(Image)`
-    width: 100%;
-    height: 180px;
+const ImageCard = styled(Image)<{ phoneWidth: number }>`
+    width: ${(props) => props.phoneWidth / 2 - 24}px;
+    height: ${(props) => props.phoneWidth / 2 - 24}px;
     border-radius: 16px;
 `;
 
@@ -131,6 +131,7 @@ const Product = ({ item, setToggleCheckLike, toggleCheckLike, type }: ProductTyp
             <View>
                 <TouchableOpacity onPress={() => goProduct(item)}>
                     <ImageCard
+                        phoneWidth={phoneWidth}
                         style={{
                             transform: getImageRotations(item),
                         }}

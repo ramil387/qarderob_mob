@@ -60,10 +60,12 @@ import CheckIcon from '@/icons/categories/CheckIcon';
 import ClockIcon from '@/icons/product/ClockIcon';
 import CloseIcon from '@/icons/error/CloseIcon';
 import ZoomImageModal from '@/components/products/ZoomImageModal';
+import { getImageRotations } from '@/helper/getImageRotations';
 
 const ProductImages = memo(
     observer(() => {
         const product = toJS(productStates.selectedProduct);
+        console.log(getImageRotations(product));
         return (
             <View>
                 <Carousel<any>
@@ -88,6 +90,7 @@ const ProductImages = memo(
                                             width: phoneWidth,
                                             height: 400,
                                             resizeMode: 'cover',
+                                            transform: getImageRotations(product),
                                         }}
                                         source={{
                                             uri: getAdImageBySize(
@@ -117,7 +120,6 @@ const ProductImages = memo(
                         );
                     }}
                 />
-                <ZoomImageModal visible={true} images={product?.images} id={product?.id} />
             </View>
         );
     }),
@@ -506,6 +508,7 @@ const ProductDetailPage = () => {
                     <CustomMainButton func={updateProduct} title='Düzəliş et' />
                 </View>
             </View>
+            <ZoomImageModal />
         </View>
     );
 };

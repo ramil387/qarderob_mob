@@ -1,53 +1,51 @@
-import { View, Text, Modal, StyleSheet, Image } from 'react-native';
-import React from 'react';
-import { observer } from 'mobx-react-lite';
-import { zoomImageBackground } from '@/styles/variables';
-import { toJS } from 'mobx';
+import { getImageRotations } from '@/helper/getImageRotations';
+import CloseIcon from '@/icons/error/CloseIcon';
 import productStates from '@/states/product/productStates';
 import { getAdImageBySize } from '@/utils/getImageBySize';
-import Animated, { useSharedValue } from 'react-native-reanimated';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import { toJS } from 'mobx';
+import { observer } from 'mobx-react-lite';
+import { Image, Modal, TouchableOpacity } from 'react-native';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
-const ZoomImageModal = () => {
+const ImageZoomModal = () => {
     const product = toJS(productStates.selectedProduct);
-    const scaleValue = useSharedValue(1);
+    const imgUrls: any = productStates.selectedProduct?.images.map((img: any) => {
+        return {
+            url: getAdImageBySize('lg', productStates.selectedProduct?.id, img),
+        };
+    });
 
     return (
-        <Modal visible={true} transparent={false} animationType='fade'>
-            <View style={internalStyles.container}>
-                <PanGestureHandler
-                    onGestureEvent={(e) => {
-                        console.log(e.nativeEvent.y);
-                    }}
-                >
-                    {product?.images.map((image, index) => {
-                        return (
-                            <Image
-                                key={index}
-                                style={{
-                                    resizeMode: 'contain',
-                                    width: '100%',
-                                    height: '100%',
-                                    transform: [{ scale: 1 }],
-                                }}
-                                source={{
-                                    uri: getAdImageBySize('lg', product?.id, image),
-                                }}
-                            />
-                        );
-                    })}
-                </PanGestureHandler>
-            </View>
+        <Modal visible={productStates.showZoomImageModal} transparent={true}>
+            <TouchableOpacity
+                onPress={() => productStates.setShowZoomImageModal(false)}
+                style={{
+                    position: 'absolute',
+                    right: 16,
+                    top: 16,
+                    zIndex: 999999,
+                }}
+            >
+                <CloseIcon style={{ color: '#fff', width: 30, height: 30 }} />
+            </TouchableOpacity>
+            <ImageViewer
+                imageUrls={imgUrls}
+                renderImage={(props) => {
+                    return (
+                        <Image
+                            source={{ uri: props.source.uri }}
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                transform: getImageRotations(product as any),
+                                resizeMode: 'contain',
+                            }}
+                        />
+                    );
+                }}
+            />
         </Modal>
     );
 };
 
-export default observer(ZoomImageModal);
-
-const internalStyles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: zoomImageBackground,
-        zIndex: 999,
-    },
-});
+export default observer(ImageZoomModal);
