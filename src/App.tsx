@@ -16,6 +16,7 @@ import ErrorModal from './components/common/ErrorModal';
 import { useKeyboardObserver } from './hooks/useKeyboardObserver';
 import DialogModal from './components/common/DialogModal';
 import PaymentModal from './components/common/PaymentModal';
+import { useNotificationListener } from './hooks/useNotificationListener';
 
 generateStyles(phoneWidth);
 generalStates.setScreenSize(phoneWidth >= 428 ? 'lg' : phoneWidth >= 390 ? 'md' : 'sm');
@@ -32,10 +33,12 @@ const App = () => {
     }, []);
 
     useFooterVisible();
+    useNotificationListener();
+
     return (
         <Layout>
             <CombineStacks />
-            {!generalStates.footerVisible && <CommonFooter />}
+            {!generalStates.footerVisible && !generalStates.bottomSheetVisible && <CommonFooter />}
             <ErrorModal />
             <DialogModal />
             <PaymentModal />

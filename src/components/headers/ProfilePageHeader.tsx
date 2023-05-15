@@ -2,7 +2,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
 import BackIcon from '@/icons/product/BackIcon';
 import CustomText from '../ui/CustomText';
-import { NunitoBold, primaryColor } from '@/styles/variables';
+import { NunitoBold, mainTextColor, primaryColor } from '@/styles/variables';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import CogIcon from '@/icons/user/CogIcon';
@@ -24,7 +24,7 @@ const ProfilePageHeader = () => {
             </TouchableOpacity>
             <CustomText style={internalStyles.midText}>{profileStates.user?.username}</CustomText>
             <TouchableOpacity onPress={goBurgerMenuPage}>
-                <CogIcon style={{ color: 'black' }} />
+                <CogIcon style={{ color: mainTextColor }} />
             </TouchableOpacity>
         </View>
     );

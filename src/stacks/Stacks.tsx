@@ -14,13 +14,11 @@ import ColorFilterPage from '@/pages/filter/parts/ColorFilterPage';
 import SizesFilterPage from '@/pages/filter/parts/SizesFilterPage';
 import CityFilterPage from '@/pages/filter/parts/CityFilterPage';
 import CategoriesPage from '@/pages/CategoriesPage';
-import CategoriesPageHeader from '@/components/headers/CategoriesPageHeader';
 import InfluencerPage from '@/pages/user/InfluencerPage';
 import ShopPage from '@/pages/shop/ShopPage';
 import InfluencerPageHeader from '@/components/headers/InfluencerPageHeader';
 import ShopPageHeader from '@/components/headers/ShopPageHeader';
 import BurgerMenuPage from '@/pages/BurgerMenuPage';
-import BurgerMenuPageHeader from '@/components/headers/BurgerMenuPageHeader';
 import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
 import ProfilePage from '@/pages/user/ProfilePage';
@@ -32,26 +30,23 @@ import ProductsPageHeader from '@/components/headers/ProductsPageHeader';
 import UserProductsPage from '@/pages/user/UserProductsPage';
 import UserProductsPageHeader from '@/components/headers/UserProductsPageHeader';
 import VipServicePage from '@/pages/paid/VipServicePage';
-import PaidServicePageHeader from '@/components/headers/PaidServicePageHeader';
 import MoveForwardPage from '@/pages/paid/MoveForwardPage';
-import CommonAuthHeader from '@/components/headers/CommonAuthHeader';
 import ShopProductsPage from '@/pages/shop/ShopProductsPage';
 import ShopProductsPageHeader from '@/components/headers/ShopProductsPageHeader';
 import ContactPage from '@/pages/ContactPage';
-import ContactPageHeader from '@/components/headers/ContactPageHeader';
 import RulesPage from '@/pages/RulesPage';
-import DealsAndRulesHeader from '@/components/headers/DealsAndRulesHeader';
 import DealsPage from '@/pages/DealsPage';
 import AddProductPage from '@/pages/products/AddProductPage';
-import AddProductPageHeader from '@/components/headers/AddProductPageHeader';
 import CreateShopPage from '@/pages/shop/CreateShopPage';
-import CreateShopPageHeader from '@/components/headers/CreateShopPageHeader';
 import { f8Color } from '@/styles/variables';
 import ProfileEditPage from '@/pages/user/ProfileEditPage';
-import ProfileEditHeader from '@/components/headers/ProfileEditHeader';
 import AddBalancePage from '@/pages/paid/AddBalancePage';
 import PaymentSuccessPage from '@/pages/paid/PaymentSuccessPage';
 import ChangePassPage from '@/pages/auth/ChangePassPage';
+import NotificationPage from '@/pages/notifications/NotificationPage';
+import CommonHeader from '@/components/headers/CommonHeader';
+import profileStates from '@/states/profile/profileStates';
+import CommentsPage from '@/pages/products/CommentsPage';
 
 type StackListType = {
     name: string;
@@ -174,7 +169,7 @@ export const StackList: StackListType[] = [
         component: CategoriesPage,
         options: {
             headerShown: true,
-            header: () => <CategoriesPageHeader />,
+            header: () => <CommonHeader title='Kateqoriyalar' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
@@ -207,7 +202,7 @@ export const StackList: StackListType[] = [
         component: BurgerMenuPage,
         options: {
             headerShown: true,
-            header: () => <BurgerMenuPageHeader />,
+            header: () => <CommonHeader title='Parametrlər' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
@@ -218,7 +213,7 @@ export const StackList: StackListType[] = [
         component: LoginPage,
         options: {
             headerShown: true,
-            header: () => <CommonAuthHeader />,
+            header: () => <CommonHeader title='Daxil ol' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
@@ -229,7 +224,7 @@ export const StackList: StackListType[] = [
         component: RegisterPage,
         options: {
             headerShown: true,
-            header: () => <CommonAuthHeader />,
+            header: () => <CommonHeader title='Qeydiyyatdan keç' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
@@ -284,7 +279,7 @@ export const StackList: StackListType[] = [
         component: VipServicePage,
         options: {
             headerShown: true,
-            header: () => <PaidServicePageHeader title='Elanı VIP et' />,
+            header: () => <CommonHeader title='Elanı VIP et' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
@@ -295,7 +290,7 @@ export const StackList: StackListType[] = [
         component: MoveForwardPage,
         options: {
             headerShown: true,
-            header: () => <PaidServicePageHeader title='Elanı irəli çək' />,
+            header: () => <CommonHeader title='Elanı irəli çək' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
@@ -317,7 +312,7 @@ export const StackList: StackListType[] = [
         component: ContactPage,
         options: {
             headerShown: true,
-            header: () => <ContactPageHeader />,
+            header: () => <CommonHeader title='Bizimlə əlaqə' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
@@ -328,7 +323,7 @@ export const StackList: StackListType[] = [
         component: RulesPage,
         options: {
             headerShown: true,
-            header: () => <DealsAndRulesHeader title='Qaydalar' />,
+            header: () => <CommonHeader title='Qaydalar' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
@@ -339,7 +334,7 @@ export const StackList: StackListType[] = [
         component: DealsPage,
         options: {
             headerShown: true,
-            header: () => <DealsAndRulesHeader title='İstifadəçi razılaşması' />,
+            header: () => <CommonHeader title='İstifadəçi razılaşması' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
@@ -350,7 +345,7 @@ export const StackList: StackListType[] = [
         component: AddProductPage,
         options: {
             headerShown: true,
-            header: () => <AddProductPageHeader />,
+            header: () => <CommonHeader title='Yeni elan' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
@@ -361,7 +356,9 @@ export const StackList: StackListType[] = [
         component: CreateShopPage,
         options: {
             headerShown: true,
-            header: () => <CreateShopPageHeader />,
+            header: () => (
+                <CommonHeader title={profileStates?.user?._store?.name || 'Mağaza yarat'} />
+            ),
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
@@ -372,7 +369,7 @@ export const StackList: StackListType[] = [
         component: ProfileEditPage,
         options: {
             headerShown: true,
-            header: () => <ProfileEditHeader />,
+            header: () => <CommonHeader title={profileStates.user?.username} />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
@@ -383,7 +380,7 @@ export const StackList: StackListType[] = [
         component: AddBalancePage,
         options: {
             headerShown: true,
-            header: () => <PaidServicePageHeader title='Şəxsi balansınızı artırın' />,
+            header: () => <CommonHeader title='Şəxsi balansınızı artırın' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
@@ -394,7 +391,7 @@ export const StackList: StackListType[] = [
         component: PaymentSuccessPage,
         options: {
             headerShown: true,
-            header: () => <PaidServicePageHeader title='Ödəniş statusu' />,
+            header: () => <CommonHeader title='Ödəniş statusu' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',
@@ -405,7 +402,29 @@ export const StackList: StackListType[] = [
         component: ChangePassPage,
         options: {
             headerShown: true,
-            header: () => <CommonAuthHeader title='Şifrəni dəyiş' />,
+            header: () => <CommonHeader title='Şifrəni dəyiş' />,
+            statusBarTranslucent: false,
+            statusBarColor: f8Color,
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'NotificationPage',
+        component: NotificationPage,
+        options: {
+            headerShown: true,
+            header: () => <CommonHeader title='Bildirişlər' />,
+            statusBarTranslucent: false,
+            statusBarColor: f8Color,
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'CommentsPage',
+        component: CommentsPage,
+        options: {
+            headerShown: false,
+            header: () => null,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',

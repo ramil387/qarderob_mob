@@ -11,6 +11,7 @@ import filterStates from '@/states/filter/filterStates';
 import { Badge } from '@rneui/themed';
 import { primaryColor } from '@/styles/variables';
 import { showShouldAuth } from '@/helper/showShouldAuth';
+import notificationStates from '@/states/notifications/notificationStates';
 
 const HomePageHeader = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
@@ -25,6 +26,8 @@ const HomePageHeader = () => {
             showShouldAuth(navigate, 'Bildiriş', 'Bildirişləri görmək üçün daxil olmalısınız.');
             return;
         }
+
+        navigate.navigate('NotificationPage');
     };
 
     const filterCount = defineFilterCount(filterStates.query);
@@ -47,6 +50,16 @@ const HomePageHeader = () => {
                 </TouchableOpacity>
                 <TouchableOpacity onPress={goNotification} style={{ marginLeft: 26 }}>
                     <NotificationIcon />
+                    <Badge
+                        containerStyle={{
+                            position: 'absolute',
+                            top: -4,
+                            right: -8,
+                            display: notificationStates.notificationCount > 0 ? 'flex' : 'none',
+                        }}
+                        value={notificationStates.notificationCount}
+                        badgeStyle={{ backgroundColor: primaryColor }}
+                    />
                 </TouchableOpacity>
             </View>
         </View>

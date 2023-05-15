@@ -29,6 +29,7 @@ export const APIS = {
     checkOrder: 'payment/check-payment',
     forgotPassword: 'auth/forgot-mobile-password',
     notifications: 'notifications',
+    comments: 'comments',
 }
 
 export const shopCoverImage = `${serverBase}/shop_cover.png`
