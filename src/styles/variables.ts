@@ -30,6 +30,7 @@ export const NunitoRegular = 'Nunito-Regular';
 export const NunitoBold = 'Nunito-Bold';
 export const NunitoMedium = 'Nunito-Medium';
 export const NunitoSemiBold = 'Nunito-SemiBold';
+export const chatItemBackground = '#F0F2F5'
 
 export const kometaThin = 'Kometa-Thin';
 export const size10 = 10;

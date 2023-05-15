@@ -66,7 +66,8 @@ export const footerVisibleObserver = () => {
         'MoveForwardPage',
         'VipServicePage',
         'PaymentSuccessPage',
-        'ChangePassPage'
+        'ChangePassPage',
+        'CommentsPage'
     ]
     const isVisiable = footerVisibles.includes(generalStates.curPage);
 
