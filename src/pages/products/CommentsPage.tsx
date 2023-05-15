@@ -109,17 +109,24 @@ const CommentItem = ({ item }: { item: CommentType }) => {
                 >
                     <CustomText style={internalStyles.username}>{item.sender?.username}</CustomText>
                     <CustomText style={internalStyles.comment}>
-                        <CustomText
-                            onPress={() => {
-                                console.log(item);
-                            }}
-                            style={{ fontFamily: NunitoBold }}
-                        >
-                            @{item?.receiver?.username}
-                        </CustomText>{' '}
-                        {item?.comment.includes(`${item?.receiver?.username}`)
-                            ? item?.comment.split(`${item?.receiver?.username}`)[1]
-                            : item?.comment}
+                        {/* regex bold startwith charAt @ react native */}
+                        {item.comment.split(' ').map((word, index) =>
+                            word.startsWith('@') ? (
+                                <CustomText
+                                    onPress={() => {
+                                        console.log('necesen');
+                                    }}
+                                    key={index}
+                                    style={{
+                                        fontFamily: NunitoBold,
+                                    }}
+                                >
+                                    {word}{' '}
+                                </CustomText>
+                            ) : (
+                                <CustomText key={index}>{word} </CustomText>
+                            ),
+                        )}
                     </CustomText>
                 </View>
             </View>
