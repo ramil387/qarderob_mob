@@ -34,7 +34,7 @@ type ProductType = {
 
 const ProductCard = styled(View)<{ phoneWidth: number }>`
     width: ${(props) => props.phoneWidth / 2 - 24}px;
-    height: ${(props) => props.phoneWidth / 2 - 24 + 55}px;
+    height: ${(props) => props.phoneWidth / 2 - 24 + 70}px;
     border-radius: 8px;
 `;
 

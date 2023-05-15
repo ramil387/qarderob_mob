@@ -42,7 +42,7 @@ const ProductList = ({
 
     return (
         <View style={internalStyles.container}>
-            <View style={{ paddingHorizontal: 16 }}>
+            <View style={{ paddingHorizontal: 16, flex: 1, paddingBottom: 16 }}>
                 <FlatList
                     onScrollEndDrag={(e) => {
                         const yOffset = e.nativeEvent.contentOffset.y;
@@ -84,46 +84,46 @@ const ProductList = ({
                                 </View>
                             );
                         }
-                        if (
-                            generalStates.curPage === 'ProfilePage' ||
-                            generalStates.curPage === 'ShopProductsPage' ||
-                            generalStates.curPage === 'UserProductsPage'
-                        ) {
-                            return (
-                                <TouchableOpacity
-                                    onPress={() =>
-                                        productStates?.setProductListScrollDirection('up')
-                                    }
-                                    style={{
-                                        backgroundColor: primaryColor,
-                                        alignSelf: 'center',
-                                        width: 30,
-                                        height: 30,
-                                        borderRadius: 100,
-                                        padding: 10,
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        elevation: 5,
-                                        shadowColor: '#000',
-                                        shadowOffset: {
-                                            width: 0,
-                                            height: 2,
-                                        },
-                                        shadowOpacity: 0.25,
-                                        shadowRadius: 3.84,
-                                        bottom:
-                                            generalStates.screenSize === 'sm'
-                                                ? 30
-                                                : generalStates.screenSize === 'md'
-                                                ? 15
-                                                : 8,
-                                    }}
-                                >
-                                    <DownArrowIcon style={{ color: 'white' }} />
-                                </TouchableOpacity>
-                            );
-                        }
+                        // if (
+                        //     generalStates.curPage === 'ProfilePage' ||
+                        //     generalStates.curPage === 'ShopProductsPage' ||
+                        //     generalStates.curPage === 'UserProductsPage'
+                        // ) {
+                        //     return (
+                        //         <TouchableOpacity
+                        //             onPress={() =>
+                        //                 productStates?.setProductListScrollDirection('up')
+                        //             }
+                        //             style={{
+                        //                 backgroundColor: primaryColor,
+                        //                 alignSelf: 'center',
+                        //                 width: 30,
+                        //                 height: 30,
+                        //                 borderRadius: 100,
+                        //                 padding: 10,
+                        //                 display: 'flex',
+                        //                 justifyContent: 'center',
+                        //                 alignItems: 'center',
+                        //                 elevation: 5,
+                        //                 shadowColor: '#000',
+                        //                 shadowOffset: {
+                        //                     width: 0,
+                        //                     height: 2,
+                        //                 },
+                        //                 shadowOpacity: 0.25,
+                        //                 shadowRadius: 3.84,
+                        //                 top:
+                        //                     generalStates.screenSize === 'sm'
+                        //                         ? 30
+                        //                         : generalStates.screenSize === 'md'
+                        //                         ? 15
+                        //                         : 8,
+                        //             }}
+                        //         >
+                        //             <DownArrowIcon style={{ color: 'white' }} />
+                        //         </TouchableOpacity>
+                        //     );
+                        // }
                         return null;
                     }}
                 />
@@ -179,6 +179,7 @@ export default memo(observer(ProductList));
 const internalStyles = StyleSheet.create({
     container: {
         marginTop: 24,
+        flex: 1,
     },
     headContainer: {
         display: 'flex',

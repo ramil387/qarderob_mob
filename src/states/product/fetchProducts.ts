@@ -30,15 +30,13 @@ export const fetchProducts = async (page: number) => {
             user_id: filterStates.query?.user_id,
             q: filterStates.query?.q,
             store_id: filterStates.query?.store_id,
-            isVip: filterStates.query?.isVip,
+            isVip: filterStates.query?.isVip ? 'true' : 'false',
         }
-
-        // console.log({ data: Object.entries(queries) })
 
         const queryStrings = [];
 
-
         for (const [key, value] of Object.entries(queries)) {
+            console.log({ key, value })
             if (Array.isArray(value)) {
                 value.forEach((v) => queryStrings.push(`${key}=${v}`));
             } else if (value) {
@@ -48,6 +46,8 @@ export const fetchProducts = async (page: number) => {
 
         const queryString = queryStrings.join('&');
         const resp = await http.get(`${APIS.ads}?page=${page}&${queryString}&verified=true`);
+
+
 
         return resp.data
 

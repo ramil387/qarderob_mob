@@ -32,59 +32,75 @@ const VipProducts = memo(
                     flexWrap: 'wrap',
                 }}
             >
-                {vip.map((product: AdListType) => {
-                    return <Product key={product?.id} item={product} />;
+                {vip?.map((product: AdListType) => {
+                    return (
+                        <View key={product?.id}>
+                            <Product item={product} />
+                        </View>
+                    );
                 })}
             </View>
         );
     }),
 );
 
-const HomeTopContainer = memo(() => {
-    const navigate: NavigationProp<ParamListBase> = useNavigation();
-    const goProducts = (type: string) => {
-        if (type === 'vip') {
-            filterStates.setQuery('isVip', true);
-        } else {
-            filterStates.setQuery('isVip', false);
-        }
-        navigate.navigate('ProductsPage');
-    };
-    return (
-        <View>
-            <View style={{ marginBottom: 24 }}>
-                <SearchInput />
-                <Intro />
-                <CateogrySection />
-            </View>
-            <View style={internalStyles.headContainer}>
-                <View>
-                    <CustomText style={internalStyles.headText}>VIP ELANLAR</CustomText>
+const HomeTopContainer = memo(
+    observer(() => {
+        const navigate: NavigationProp<ParamListBase> = useNavigation();
+        const goProducts = (type: string) => {
+            if (type === 'vip') {
+                filterStates.setQuery('isVip', true);
+            } else {
+                filterStates.setQuery('isVip', false);
+            }
+            navigate.navigate('ProductsPage');
+        };
+
+        const isVipExist =
+            generalStates.homeDatas?.vip_ads && generalStates.homeDatas?.vip_ads?.length > 0;
+
+        return (
+            <View>
+                <View style={{ marginBottom: 24 }}>
+                    <SearchInput />
+                    <Intro />
+                    <CateogrySection />
                 </View>
-                <TouchableOpacity
-                    onPress={() => goProducts('vip')}
-                    style={internalStyles.rightContainer}
-                >
-                    <CustomText style={internalStyles.showMore}>Hamısına bax</CustomText>
-                    <ChevronRightIcon />
-                </TouchableOpacity>
-            </View>
-            <VipProducts />
-            <View style={{ ...internalStyles.headContainer, paddingVertical: 16 }}>
-                <View>
-                    <CustomText style={internalStyles.headText}>SON ELANLAR</CustomText>
+                {isVipExist && (
+                    <View>
+                        <View style={internalStyles.headContainer}>
+                            <View>
+                                <CustomText style={internalStyles.headText}>VIP ELANLAR</CustomText>
+                            </View>
+                            <TouchableOpacity
+                                onPress={() => goProducts('vip')}
+                                style={internalStyles.rightContainer}
+                            >
+                                <CustomText style={internalStyles.showMore}>
+                                    Hamısına bax
+                                </CustomText>
+                                <ChevronRightIcon />
+                            </TouchableOpacity>
+                        </View>
+                        <VipProducts />
+                    </View>
+                )}
+                <View style={{ ...internalStyles.headContainer, paddingTop: isVipExist ? 16 : 0 }}>
+                    <View>
+                        <CustomText style={internalStyles.headText}>SON ELANLAR</CustomText>
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => goProducts('all')}
+                        style={internalStyles.rightContainer}
+                    >
+                        <CustomText style={internalStyles.showMore}>Hamısına bax</CustomText>
+                        <ChevronRightIcon />
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                    onPress={() => goProducts('all')}
-                    style={internalStyles.rightContainer}
-                >
-                    <CustomText style={internalStyles.showMore}>Hamısına bax</CustomText>
-                    <ChevronRightIcon />
-                </TouchableOpacity>
             </View>
-        </View>
-    );
-});
+        );
+    }),
+);
 
 const LastAds = () => {
     const products: AdListType[] = generalStates.homeDatas?.last_ads;

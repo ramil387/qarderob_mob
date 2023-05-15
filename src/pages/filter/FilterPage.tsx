@@ -126,6 +126,7 @@ const FilterPage = () => {
                             navigate.navigate('ShopProductsPage');
                             return;
                         }
+                        filterStates.setQuery('isVip', false);
                         navigate.navigate('ProductsPage');
                     }}
                     title='Filtrlə'

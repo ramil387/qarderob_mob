@@ -129,6 +129,12 @@ const ProductsPage = () => {
         });
     };
 
+    useEffect(() => {
+        return () => {
+            filterStates.setQuery('isVip', false);
+        };
+    }, []);
+
     return (
         <View style={internalStyles.container}>
             <FilterContainer search={true} />

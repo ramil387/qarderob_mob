@@ -5,6 +5,10 @@ import OutlineLogo from '@/icons/logo/OutlineLogo';
 import BackIcon from '@/icons/product/BackIcon';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import NotificationIcon from '@/icons/home/NotificationIcon';
+import { NunitoBold, primaryColor } from '@/styles/variables';
+import CustomText from '../ui/CustomText';
+import filterStates from '@/states/filter/filterStates';
+import { observer } from 'mobx-react-lite';
 
 const ProductsPageHeader = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
@@ -14,7 +18,11 @@ const ProductsPageHeader = () => {
                 <BackIcon />
             </TouchableOpacity>
             <View>
-                <OutlineLogo />
+                {filterStates.query?.isVip ? (
+                    <CustomText style={internalStyles.midText}>VIP Elanlar</CustomText>
+                ) : (
+                    <OutlineLogo />
+                )}
             </View>
             <View>
                 <NotificationIcon />
@@ -23,7 +31,7 @@ const ProductsPageHeader = () => {
     );
 };
 
-export default ProductsPageHeader;
+export default observer(ProductsPageHeader);
 
 const internalStyles = StyleSheet.create({
     container: {
@@ -33,5 +41,10 @@ const internalStyles = StyleSheet.create({
         flexDirection: 'row',
         padding: 16,
         paddingBottom: 0,
+    },
+    midText: {
+        fontSize: 20,
+        fontFamily: NunitoBold,
+        color: primaryColor,
     },
 });

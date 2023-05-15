@@ -44,6 +44,7 @@ class FilterStates {
         user_id: undefined,
         q: undefined,
         store_id: undefined,
+        isVip: undefined,
     };
 
     isLoadingFilter: boolean = false;
@@ -135,6 +136,7 @@ class FilterStates {
         if (page === 'FilterPage') {
             runInAction(() => {
                 this.query = {
+                    ...this.query,
                     brand: {},
                     city: {},
                     color: [],

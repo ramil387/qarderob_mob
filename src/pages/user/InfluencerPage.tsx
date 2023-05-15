@@ -114,7 +114,7 @@ const InfluencerPage = () => {
                         contentContainerStyle={{
                             rowGap: 8,
                             marginTop: profileStates?.token ? 16 : 0,
-                            paddingBottom: 16,
+                            paddingBottom: 32,
                         }}
                         data={influencers}
                         keyExtractor={(item) => item.id.toString()}
