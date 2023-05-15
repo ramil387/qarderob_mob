@@ -30,6 +30,7 @@ export const fetchProducts = async (page: number) => {
             user_id: filterStates.query?.user_id,
             q: filterStates.query?.q,
             store_id: filterStates.query?.store_id,
+            isVip: filterStates.query?.isVip,
         }
 
         // console.log({ data: Object.entries(queries) })

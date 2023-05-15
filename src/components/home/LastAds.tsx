@@ -8,16 +8,46 @@ import SearchInput from '../common/SearchInput';
 import Intro from './Intro';
 import CateogrySection from './CateogrySection';
 import CustomText from '../ui/CustomText';
-import { NunitoBold, NunitoMedium } from '@/styles/variables';
+import { NunitoBold, NunitoMedium, e5Color } from '@/styles/variables';
 import ChevronRightIcon from '@/icons/home/ChevronRightIcon';
 import { RefreshControl } from 'react-native';
 import { fetchHome } from '@/states/general/fetchHome';
 import LoadingComponent from '../common/LoadingComponent';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import { toJS } from 'mobx';
+import filterStates from '@/states/filter/filterStates';
+
+const VipProducts = memo(
+    observer(() => {
+        const vip = toJS(generalStates.homeDatas?.vip_ads);
+        return (
+            <View
+                style={{
+                    paddingVertical: 16,
+                    borderBottomWidth: 1,
+                    borderBottomColor: e5Color,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: 16,
+                    flexWrap: 'wrap',
+                }}
+            >
+                {vip.map((product: AdListType) => {
+                    return <Product key={product?.id} item={product} />;
+                })}
+            </View>
+        );
+    }),
+);
 
 const HomeTopContainer = memo(() => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
-    const goProducts = () => {
+    const goProducts = (type: string) => {
+        if (type === 'vip') {
+            filterStates.setQuery('isVip', true);
+        } else {
+            filterStates.setQuery('isVip', false);
+        }
         navigate.navigate('ProductsPage');
     };
     return (
@@ -29,9 +59,25 @@ const HomeTopContainer = memo(() => {
             </View>
             <View style={internalStyles.headContainer}>
                 <View>
+                    <CustomText style={internalStyles.headText}>VIP ELANLAR</CustomText>
+                </View>
+                <TouchableOpacity
+                    onPress={() => goProducts('vip')}
+                    style={internalStyles.rightContainer}
+                >
+                    <CustomText style={internalStyles.showMore}>Hamısına bax</CustomText>
+                    <ChevronRightIcon />
+                </TouchableOpacity>
+            </View>
+            <VipProducts />
+            <View style={{ ...internalStyles.headContainer, paddingVertical: 16 }}>
+                <View>
                     <CustomText style={internalStyles.headText}>SON ELANLAR</CustomText>
                 </View>
-                <TouchableOpacity onPress={goProducts} style={internalStyles.rightContainer}>
+                <TouchableOpacity
+                    onPress={() => goProducts('all')}
+                    style={internalStyles.rightContainer}
+                >
                     <CustomText style={internalStyles.showMore}>Hamısına bax</CustomText>
                     <ChevronRightIcon />
                 </TouchableOpacity>

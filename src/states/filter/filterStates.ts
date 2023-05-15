@@ -20,6 +20,7 @@ type QueryType = {
     user_id?: number,
     q?: string,
     store_id?: number,
+    isVip?: boolean,
 }
 class FilterStates {
 
