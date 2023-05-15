@@ -32,6 +32,8 @@ import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/
 import { http } from '@/services/httpMethods';
 import { APIS } from '@/constants';
 import { fetchComments } from '@/states/notifications/fetchComments';
+import { fetchUserInfo } from '@/states/user/fetchUserInfo';
+import filterStates from '@/states/filter/filterStates';
 
 const SuffixIcon = ({ sendComment }: { sendComment: () => void }) => {
     return (
@@ -43,9 +45,15 @@ const SuffixIcon = ({ sendComment }: { sendComment: () => void }) => {
 
 const TopContainer = memo(
     observer(() => {
+        const navigate: NavigationProp<ParamListBase> = useNavigation();
         const product = toJS(productStates.selectedProduct);
         return (
-            <View style={internalStyles.topContainer}>
+            <TouchableOpacity
+                onPress={() => {
+                    navigate.navigate('ProductDetailPage');
+                }}
+                style={internalStyles.topContainer}
+            >
                 <Image
                     style={{
                         transform: getImageRotations(product),
@@ -82,91 +90,122 @@ const TopContainer = memo(
                         </View>
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         );
     }),
 );
 
-const CommentItem = ({ item }: { item: CommentType }) => {
-    return (
-        <>
-            <View style={internalStyles.commentItem}>
-                <Avatar
-                    onPress={() => {
-                        console.log('necesen');
-                    }}
-                    size={36}
-                    source={{ uri: item?.sender.photo }}
-                    rounded
-                />
+const CommentItem = observer(
+    ({
+        item,
+        index,
+        flatRef,
+        parentId,
+    }: {
+        item: CommentType;
+        index: number;
+        flatRef: React.RefObject<FlatList>;
+        parentId?: number;
+    }) => {
+        const navigate: NavigationProp<ParamListBase> = useNavigation();
+        const reply = (index: number, item: any) => {
+            flatRef.current?.scrollToIndex({ index, animated: true });
+            notificationStates.setCommentText(`@${item.sender.username} `);
+            notificationStates.setReceiver(item.receiver);
+            if (parentId && !isNaN(Number(parentId)) > 0) {
+                notificationStates.setParentCommentId(parentId);
+                return;
+            }
+            notificationStates.setParentCommentId(item.id);
+        };
+
+        const goUserPage = async (userId?: number) => {
+            if (!userId) return;
+            await fetchUserInfo(userId);
+            navigate.navigate('UserProductsPage');
+        };
+
+        return (
+            <>
+                <View style={internalStyles.commentItem}>
+                    <TouchableOpacity onPress={() => goUserPage(item?.sender?.id)}>
+                        <Avatar size={36} source={{ uri: item?.sender.photo }} rounded />
+                    </TouchableOpacity>
+                    <View
+                        style={{
+                            backgroundColor: chatItemBackground,
+                            padding: 16,
+                            borderRadius: 16,
+                            width: phoneWidth - 32 - 24 - 36 - 16,
+                        }}
+                    >
+                        <CustomText style={internalStyles.username}>
+                            {item.sender?.username}
+                        </CustomText>
+                        <CustomText style={internalStyles.comment}>
+                            {/* regex bold startwith charAt @ react native */}
+                            {item.comment.split(' ').map((word, index) =>
+                                word.startsWith('@') ? (
+                                    <CustomText
+                                        onPress={() => goUserPage(item?.sender?.id)}
+                                        key={index}
+                                        style={{
+                                            fontFamily: NunitoBold,
+                                        }}
+                                    >
+                                        {word}{' '}
+                                    </CustomText>
+                                ) : (
+                                    <CustomText key={index}>{word} </CustomText>
+                                ),
+                            )}
+                        </CustomText>
+                    </View>
+                </View>
                 <View
                     style={{
-                        backgroundColor: chatItemBackground,
-                        padding: 16,
-                        borderRadius: 16,
-                        width: phoneWidth - 32 - 24 - 36 - 16,
+                        display: 'flex',
+                        gap: 24,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginTop: 4,
                     }}
                 >
-                    <CustomText style={internalStyles.username}>{item.sender?.username}</CustomText>
-                    <CustomText style={internalStyles.comment}>
-                        {/* regex bold startwith charAt @ react native */}
-                        {item.comment.split(' ').map((word, index) =>
-                            word.startsWith('@') ? (
-                                <CustomText
-                                    onPress={() => {
-                                        console.log('necesen');
-                                    }}
-                                    key={index}
-                                    style={{
-                                        fontFamily: NunitoBold,
-                                    }}
-                                >
-                                    {word}{' '}
-                                </CustomText>
-                            ) : (
-                                <CustomText key={index}>{word} </CustomText>
-                            ),
-                        )}
+                    <CustomText style={{ paddingLeft: 44, color: inactiveColor, fontSize: 12 }}>
+                        {moment(item.createdAt).format('DD.MM.YYYY HH:mm:ss')}
                     </CustomText>
+                    <View style={internalStyles.commentActions}>
+                        <TouchableOpacity>
+                            <CustomText style={internalStyles.deleteText}>Sil</CustomText>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => reply(index, item)}>
+                            <CustomText style={internalStyles.deleteText}>Cavabla</CustomText>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
-            <View
-                style={{
-                    display: 'flex',
-                    gap: 24,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginTop: 4,
-                }}
-            >
-                <CustomText style={{ paddingLeft: 44, color: inactiveColor, fontSize: 12 }}>
-                    {moment(item.createdAt).format('DD.MM.YYYY HH:mm:ss')}
-                </CustomText>
-                <View style={internalStyles.commentActions}>
-                    <TouchableOpacity>
-                        <CustomText style={internalStyles.deleteText}>Sil</CustomText>
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <CustomText style={internalStyles.deleteText}>Cavabla</CustomText>
-                    </TouchableOpacity>
+                <View style={{ paddingHorizontal: 24 }}>
+                    <FlatList
+                        initialNumToRender={10}
+                        maxToRenderPerBatch={10}
+                        windowSize={10}
+                        data={item.replies}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item }) => {
+                            return (
+                                <CommentItem
+                                    flatRef={flatRef}
+                                    index={index}
+                                    parentId={item.parent_id}
+                                    item={item}
+                                />
+                            );
+                        }}
+                    />
                 </View>
-            </View>
-            <View style={{ paddingHorizontal: 24, flex: 1 }}>
-                <FlatList
-                    // optimize
-                    initialNumToRender={10}
-                    maxToRenderPerBatch={10}
-                    windowSize={10}
-                    data={item.replies}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) => {
-                        return <CommentItem item={item} />;
-                    }}
-                />
-            </View>
-        </>
-    );
-};
+            </>
+        );
+    },
+);
 
 const CommentsPage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
@@ -176,15 +215,24 @@ const CommentsPage = () => {
         if (profileStates.token) {
             const body = {
                 comment: notificationStates.commentText,
-                receiver_id: notificationStates.receiver || productStates?.selectedProduct?.user_id,
+                receiver_id:
+                    notificationStates.receiver?.id || productStates?.selectedProduct?.user_id,
                 parent_id: notificationStates.parentCommentId,
                 ad_id: productStates?.selectedProduct?.id,
             };
+
             const resp = await http.post(`${APIS.comments}/create`, body);
             if (resp?.status === 201) {
                 await fetchComments(productStates?.selectedProduct?.id);
                 notificationStates.setCommentText('');
-                flatRef.current?.scrollToEnd();
+                if (body.parent_id > 0) {
+                    const selectedIndex = comments.findIndex(
+                        (item) => item.id === notificationStates.parentCommentId,
+                    );
+                    if (selectedIndex > -1) {
+                        flatRef.current?.scrollToIndex({ index: selectedIndex, animated: true });
+                    }
+                }
             }
         } else {
             showShouldAuth(
@@ -194,6 +242,7 @@ const CommentsPage = () => {
             );
         }
     };
+
     return (
         <View style={internalStyles.container}>
             <TopContainer />
@@ -214,8 +263,8 @@ const CommentsPage = () => {
                     }}
                     data={comments}
                     keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) => {
-                        return <CommentItem item={item} />;
+                    renderItem={({ item, index }) => {
+                        return <CommentItem flatRef={flatRef} index={index} item={item} />;
                     }}
                 />
             </View>
@@ -242,12 +291,12 @@ export default observer(CommentsPage);
 const internalStyles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
+        paddingHorizontal: 16,
     },
     topContainer: {
         display: 'flex',
         borderBottomWidth: 1,
-        paddingVertical: 16,
+        paddingBottom: 16,
         borderBottomColor: lightBorder,
         flexDirection: 'row',
         alignItems: 'center',

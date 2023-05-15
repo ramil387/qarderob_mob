@@ -423,8 +423,8 @@ export const StackList: StackListType[] = [
         name: 'CommentsPage',
         component: CommentsPage,
         options: {
-            headerShown: false,
-            header: () => null,
+            headerShown: true,
+            header: () => <CommonHeader />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',

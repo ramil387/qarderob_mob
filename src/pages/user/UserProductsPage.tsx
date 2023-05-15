@@ -30,7 +30,7 @@ import Animated, {
 
 const TopContainer = memo(
     observer(() => {
-        const user = toJS(productStates.selectedProduct?._user || userStates.selectedAdOwner);
+        const user = toJS(userStates.selectedAdOwner);
         const countOfSocialLinks = Object.keys(user?.social_links || {}).length;
         return (
             <View>
@@ -76,6 +76,7 @@ const TopContainer = memo(
                         ...internalStyles.socialContainer,
                         justifyContent: countOfSocialLinks === 3 ? 'space-between' : 'flex-start',
                         gap: countOfSocialLinks === 3 ? 0 : 10,
+                        display: user?.is_inf === 'true' ? 'flex' : 'none',
                     }}
                 >
                     {user?.social_links &&
@@ -110,7 +111,7 @@ const TopContainer = memo(
 );
 
 const UserProductsPage = () => {
-    const user = toJS(productStates.selectedProduct?._user || userStates.selectedAdOwner);
+    const user = toJS(userStates.selectedAdOwner);
     const userProducts = toJS(userStates.userProducts?.data);
     const [isLoadingMore, setIsLoadingMore] = React.useState<boolean>(false);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
@@ -256,7 +257,7 @@ const internalStyles = StyleSheet.create({
     },
     userInfoContainer: {
         marginLeft: 126,
-        marginTop: 8,
+        marginVertical: 8,
     },
     fullName: {
         fontFamily: NunitoBold,
