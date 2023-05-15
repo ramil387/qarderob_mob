@@ -1,5 +1,5 @@
 import { View, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import CustomText from '@/components/ui/CustomText';
 import { toJS } from 'mobx';
@@ -26,10 +26,16 @@ import { defineProductStatus } from '@/helper/defineProductStatus';
 import moment from 'moment';
 import CustomTextInput from '@/components/ui/CustomTextInput';
 import SendIcon from '@/icons/notification/SendIcon';
+import profileStates from '@/states/profile/profileStates';
+import { showShouldAuth } from '@/helper/showShouldAuth';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import { http } from '@/services/httpMethods';
+import { APIS } from '@/constants';
+import { fetchComments } from '@/states/notifications/fetchComments';
 
-const SuffixIcon = () => {
+const SuffixIcon = ({ sendComment }: { sendComment: () => void }) => {
     return (
-        <TouchableOpacity style={internalStyles.suffix}>
+        <TouchableOpacity onPress={sendComment} style={internalStyles.suffix}>
             <SendIcon />
         </TouchableOpacity>
     );
@@ -93,19 +99,27 @@ const CommentItem = ({ item }: { item: CommentType }) => {
                     source={{ uri: item?.sender.photo }}
                     rounded
                 />
-                <View style={{ backgroundColor: chatItemBackground, padding: 8, borderRadius: 16 }}>
+                <View
+                    style={{
+                        backgroundColor: chatItemBackground,
+                        padding: 16,
+                        borderRadius: 16,
+                        width: phoneWidth - 32 - 24 - 36 - 16,
+                    }}
+                >
                     <CustomText style={internalStyles.username}>{item.sender?.username}</CustomText>
                     <CustomText style={internalStyles.comment}>
                         <CustomText
                             onPress={() => {
-                                console.log('salam');
+                                console.log(item);
                             }}
                             style={{ fontFamily: NunitoBold }}
                         >
                             @{item?.receiver?.username}
                         </CustomText>{' '}
-                        {item?.comment.split(`${item?.receiver?.username}`)[1]}
-                        sasasaszxzxz
+                        {item?.comment.includes(`${item?.receiver?.username}`)
+                            ? item?.comment.split(`${item?.receiver?.username}`)[1]
+                            : item?.comment}
                     </CustomText>
                 </View>
             </View>
@@ -130,7 +144,7 @@ const CommentItem = ({ item }: { item: CommentType }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <View style={{ marginHorizontal: 24, flex: 1 }}>
+            <View style={{ paddingHorizontal: 24, flex: 1 }}>
                 <FlatList
                     // optimize
                     initialNumToRender={10}
@@ -148,13 +162,37 @@ const CommentItem = ({ item }: { item: CommentType }) => {
 };
 
 const CommentsPage = () => {
+    const navigate: NavigationProp<ParamListBase> = useNavigation();
     const comments = toJS(notificationStates.comments?.data);
-
+    const flatRef = useRef<FlatList>(null);
+    const sendComment = async () => {
+        if (profileStates.token) {
+            const body = {
+                comment: notificationStates.commentText,
+                receiver_id: notificationStates.receiver || productStates?.selectedProduct?.user_id,
+                parent_id: notificationStates.parentCommentId,
+                ad_id: productStates?.selectedProduct?.id,
+            };
+            const resp = await http.post(`${APIS.comments}/create`, body);
+            if (resp?.status === 201) {
+                await fetchComments(productStates?.selectedProduct?.id);
+                notificationStates.setCommentText('');
+                flatRef.current?.scrollToEnd();
+            }
+        } else {
+            showShouldAuth(
+                navigate,
+                'Rəyiniz göndərilmədi',
+                'Rəy bildirmək üçün hesabınıza daxil olun',
+            );
+        }
+    };
     return (
         <View style={internalStyles.container}>
             <TopContainer />
             <View style={{ flex: 1, paddingBottom: 66 }}>
                 <FlatList
+                    ref={flatRef}
                     showsVerticalScrollIndicator={false}
                     // optimize
                     initialNumToRender={10}
@@ -176,9 +214,16 @@ const CommentsPage = () => {
             </View>
             <View style={internalStyles.inputContainer}>
                 <CustomTextInput
-                    icon={<SuffixIcon />}
+                    onPressIn={() => {
+                        flatRef.current?.scrollToEnd();
+                    }}
+                    icon={<SuffixIcon sendComment={sendComment} />}
                     style={{ paddingHorizontal: 16 }}
                     placeholder='Rəy bildir...'
+                    onChangeText={(text) => {
+                        notificationStates.setCommentText(text);
+                    }}
+                    value={notificationStates.commentText}
                 />
             </View>
         </View>
@@ -231,7 +276,6 @@ const internalStyles = StyleSheet.create({
         flexDirection: 'row',
         gap: 8,
         marginTop: 16,
-        paddingHorizontal: 4,
     },
     username: {
         fontFamily: NunitoBold,

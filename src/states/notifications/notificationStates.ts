@@ -23,6 +23,12 @@ class NotificationStates {
     selectedNotification: NotificationType | null = null;
     comments: CommentDataType | null = null;
 
+    // comments
+    commentText: string = '';
+    commentLoading: boolean = false;
+    receiver: any = null;
+    parentCommentId: number = 0;
+
     constructor() {
         makeAutoObservable(this)
     }
@@ -51,6 +57,40 @@ class NotificationStates {
             this.comments = comments;
         })
     }
+
+    setCommentText(text: string) {
+        runInAction(() => {
+            this.commentText = text;
+        })
+    }
+
+    setCommentLoading(loading: boolean) {
+        runInAction(() => {
+            this.commentLoading = loading;
+        })
+    }
+
+    setReceiver(receiver: any) {
+        runInAction(() => {
+            this.receiver = receiver;
+        })
+    }
+
+    setParentCommentId(id: number) {
+        runInAction(() => {
+            this.parentCommentId = id;
+        })
+    }
+
+    resetCommentStates() {
+        runInAction(() => {
+            this.commentText = '';
+            this.commentLoading = false;
+            this.receiver = null;
+            this.parentCommentId = 0;
+        })
+    }
+
 
 
 }
