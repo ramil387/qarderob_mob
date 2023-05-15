@@ -1,5 +1,5 @@
 import { View, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
-import React, { memo, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import CustomText from '@/components/ui/CustomText';
 import { toJS } from 'mobx';
@@ -34,6 +34,7 @@ import { APIS } from '@/constants';
 import { fetchComments } from '@/states/notifications/fetchComments';
 import { fetchUserInfo } from '@/states/user/fetchUserInfo';
 import filterStates from '@/states/filter/filterStates';
+import { readNotification } from '@/states/notifications/readNotification';
 
 const SuffixIcon = ({ sendComment }: { sendComment: () => void }) => {
     return (
@@ -226,6 +227,7 @@ const CommentsPage = () => {
                 await fetchComments(productStates?.selectedProduct?.id);
                 notificationStates.setCommentText('');
                 if (body.parent_id > 0) {
+                    if (!comments) return;
                     const selectedIndex = comments.findIndex(
                         (item) => item.id === notificationStates.parentCommentId,
                     );
@@ -242,6 +244,13 @@ const CommentsPage = () => {
             );
         }
     };
+
+    useEffect(() => {
+        if (notificationStates.selectedNotification?.id) {
+            console.log(notificationStates.selectedNotification?.id);
+            readNotification(notificationStates.selectedNotification?.id);
+        }
+    }, [notificationStates.selectedNotification?.id]);
 
     return (
         <View style={internalStyles.container}>

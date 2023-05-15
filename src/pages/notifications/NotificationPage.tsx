@@ -42,6 +42,7 @@ const NotificationPage = () => {
             productStates.setSelectedProduct(resp.data);
         }
         await fetchComments(id);
+        generalStates.setBottomSheetVisible(false);
         navigate.navigate('CommentsPage');
     };
 
@@ -94,6 +95,7 @@ const NotificationPage = () => {
                             <TouchableOpacity
                                 onPress={() => {
                                     goCommentsPage(item?.ad?.id);
+                                    notificationStates.setSelectedNotification(item);
                                 }}
                             >
                                 <View style={internalStyles.notItem}>
@@ -104,7 +106,7 @@ const NotificationPage = () => {
                                             rounded
                                         />
                                     </View>
-                                    <View style={{ width: '70%' }}>
+                                    <View style={{ width: '68%' }}>
                                         <CustomText style={internalStyles.title}>
                                             <CustomText
                                                 style={{
@@ -126,7 +128,7 @@ const NotificationPage = () => {
                                             notificationStates.setSelectedNotification(item);
                                             generalStates.setBottomSheetVisible(true);
                                         }}
-                                        style={{ width: '10%', height: 30 }}
+                                        style={{ width: '12%', height: 30 }}
                                     >
                                         <DotsIcon />
                                     </TouchableOpacity>
