@@ -31,7 +31,7 @@ const RegisterPage = () => {
     };
 
     const goLoginPage = () => {
-        navigate.navigate('RegisterPage');
+        navigate.navigate('LoginPage');
     };
 
     return (
