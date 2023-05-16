@@ -176,6 +176,7 @@ const ProfileBurgerMenu = observer(() => {
         {
             label: 'Hesabı sil',
             icon: <UserSquareIcon style={{ color: primaryColor }} />,
+            func: () => navigate.navigate('DeleteAccountPage'),
         },
         {
             label: 'Çıxış',

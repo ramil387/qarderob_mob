@@ -49,6 +49,7 @@ import profileStates from '@/states/profile/profileStates';
 import CommentsPage from '@/pages/products/CommentsPage';
 import MessagesPage from '@/pages/messages/MessagesPage';
 import ShopPackagesPage from '@/pages/shop/ShopPackagesPage';
+import DeleteAccountPage from '@/pages/user/DeleteAccountPage';
 
 type StackListType = {
     name: string;
@@ -449,6 +450,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <CommonHeader title='Mağaza paketləri' />,
+            statusBarTranslucent: false,
+            statusBarColor: f8Color,
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'DeleteAccountPage',
+        component: DeleteAccountPage,
+        options: {
+            headerShown: true,
+            header: () => <CommonHeader title='Hesabın silinməsi' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',

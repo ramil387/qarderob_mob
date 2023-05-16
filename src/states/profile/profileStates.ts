@@ -89,6 +89,14 @@ class ProfileStates {
     }
 
 
+    resetUserInfo() {
+        runInAction(() => {
+            this.user = null;
+            this.token = null;
+            this.storeMode = false;
+        })
+    }
+
     resetForm() {
         runInAction(() => {
             this.profileImg = {};
