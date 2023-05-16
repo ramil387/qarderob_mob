@@ -7,17 +7,17 @@ import { NunitoBold, e5Color, mainTextColor, phoneHeight, phoneWidth } from '@/s
 import CustomText from '@/components/ui/CustomText';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import paymentStates from '@/states/payment/paymentStates';
+import { ActivityIndicator } from 'react-native';
 
 const ShopPackagesPage = () => {
     const [packages, setPackages] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
-    const [price, setPrice] = React.useState<string>('');
+    const [price, setPrice] = React.useState<string>(packages[1]?.price || 49);
     const fetchPackages = async () => {
         try {
             const response = await http.get(APIS.packages);
             if (response.data) {
-                console.log(response.data);
-                setPackages(response.data.data);
+                setPackages(response.data.data.slice(1));
             }
         } catch (error) {
             console.error(error);
@@ -32,8 +32,10 @@ const ShopPackagesPage = () => {
                 service: { type: `s_balance-${price}` },
                 amount: price,
             };
+            console.log(body);
             const resp = await http.post(APIS.payment + `/create`, body);
             if (resp?.data.url) {
+                console.log(resp?.data.url);
                 paymentStates.setPaymentModalVisible(true);
                 paymentStates.setPaymentUrl(resp?.data.url);
                 paymentStates.setPaymentBody(body);
@@ -41,6 +43,8 @@ const ShopPackagesPage = () => {
             }
         } catch (error) {
             console.log(error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -53,6 +57,10 @@ const ShopPackagesPage = () => {
             <Carousel
                 data={packages}
                 loop={false}
+                onSnapToItem={(index: number) => {
+                    const data: any = packages[index];
+                    setPrice(data?.price);
+                }}
                 renderItem={({ item, index }) => {
                     const data: any = packages[index];
                     return (
@@ -86,13 +94,18 @@ const ShopPackagesPage = () => {
                                 })}
                             </View>
                             <View style={internalStyles.btn}>
-                                <CustomMainButton func={pay} title={'Paketi al'} />
+                                <CustomMainButton
+                                    func={pay}
+                                    title={
+                                        isLoading ? <ActivityIndicator color='#fff' /> : 'Paketi al'
+                                    }
+                                />
                             </View>
                         </View>
                     );
                 }}
-                width={phoneWidth - 60}
-                height={phoneHeight * 0.75}
+                width={340}
+                height={540}
                 defaultIndex={1}
                 pagingEnabled={true}
                 style={{ overflow: 'visible', marginLeft: 32 }}
@@ -114,7 +127,7 @@ const internalStyles = StyleSheet.create({
         height: '100%',
     },
     topContainer: {
-        padding: 16,
+        padding: 8,
         borderTopLeftRadius: 8,
         borderTopRightRadius: 8,
     },
@@ -134,7 +147,7 @@ const internalStyles = StyleSheet.create({
         fontFamily: NunitoBold,
         fontSize: 28,
         letterSpacing: 1.5,
-        paddingVertical: 16,
+        paddingVertical: 4,
     },
     desc: {
         textAlign: 'center',
@@ -142,7 +155,7 @@ const internalStyles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: e5Color,
         width: '100%',
-        fontSize: 16,
+        fontSize: 15,
         paddingHorizontal: 16,
     },
     btn: {
