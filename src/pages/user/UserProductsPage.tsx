@@ -80,29 +80,32 @@ const TopContainer = memo(
                     }}
                 >
                     {user?.social_links &&
-                        Object.keys(user?.social_links).map((key) => {
-                            return (
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        Linking.openURL(user?.social_links[key]);
-                                    }}
-                                    style={internalStyles.socialLinkContainer}
-                                    key={key}
-                                >
-                                    {key === 'instagram' ? (
-                                        <InstagramIcon />
-                                    ) : key === 'facebook' ? (
-                                        <FacebookCircleIcon />
-                                    ) : (
-                                        key === 'tiktok' && <TiktokIcon />
-                                    )}
-                                    {user?.social_links[key] && (
-                                        <CustomText style={internalStyles.socialText}>
-                                            {key}
-                                        </CustomText>
-                                    )}
-                                </TouchableOpacity>
-                            );
+                        Object.keys(user?.social_links).map((key: any) => {
+                            if (!user?.social_links[key]) {
+                                return (
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            Linking.openURL(user?.social_links[key]);
+                                        }}
+                                        style={internalStyles.socialLinkContainer}
+                                        key={key}
+                                    >
+                                        {key === 'instagram' ? (
+                                            <InstagramIcon />
+                                        ) : key === 'facebook' ? (
+                                            <FacebookCircleIcon />
+                                        ) : (
+                                            key === 'tiktok' && <TiktokIcon />
+                                        )}
+                                        {user?.social_links[key] && (
+                                            <CustomText style={internalStyles.socialText}>
+                                                {key}
+                                            </CustomText>
+                                        )}
+                                    </TouchableOpacity>
+                                );
+                            }
+                            return null;
                         })}
                 </View>
             </View>

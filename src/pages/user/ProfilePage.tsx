@@ -279,6 +279,10 @@ const ProfilePage = () => {
         navigate.navigate('ProfileEditPage');
     };
 
+    const shopPackagesPage = () => {
+        navigate.navigate('ShopPackagesPage');
+    };
+
     const UserActions = () => {
         return (
             <View>
@@ -368,10 +372,11 @@ const ProfilePage = () => {
                         }}
                     >
                         <CustomMainButton
+                            disabled={shop?.verified ? false : true}
                             containerStyle={internalStyles.addBtn}
                             titleStyle={{ fontSize: 14, fontFamily: NunitoBold }}
                             style={internalStyles.addBtn}
-                            func={addUserBalance}
+                            func={shopPackagesPage}
                             title='Artır'
                         />
                     </View>

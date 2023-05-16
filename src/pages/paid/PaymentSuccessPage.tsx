@@ -17,7 +17,7 @@ const PaymentSuccessPage = () => {
 
     const getPaymentStatus = async () => {
         const retry = async () => {
-            const resp = await http.get(`${APIS.checkOrder}/${paymentStates.paymenRusulUrl}`);
+            const resp = await http.get(`${APIS.checkOrder}/${paymentStates.paymentResult}`);
             if (resp.status === 200) {
                 setPaymentResult(resp.data);
                 setIsLoading(false);

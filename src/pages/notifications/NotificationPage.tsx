@@ -34,7 +34,6 @@ const NotificationPage = () => {
     const notifications = toJS(notificationStates.notifications?.data);
     const [isLoading, setIsLoading] = React.useState(true);
     const [isLoadingMore, setIsLoadingMore] = React.useState(false);
-
     const goCommentsPage = async (id: number | null) => {
         if (!id) return;
         const resp = await fetchSingleProductById(id);
@@ -61,7 +60,6 @@ const NotificationPage = () => {
             });
         }
     };
-
     useEffect(() => {
         fetchNotifications().finally(() => {
             setIsLoading(false);
@@ -72,7 +70,7 @@ const NotificationPage = () => {
 
     return (
         <View style={internalStyles.container}>
-            {notificationStates.notificationCount === 0 ? (
+            {notificationStates.notifications?.count === 0 ? (
                 <View style={internalStyles.notFoundContainer}>
                     <NotificationCircleIcon />
                     <CustomText style={internalStyles.notFoundText}>
@@ -90,7 +88,6 @@ const NotificationPage = () => {
                     data={notifications}
                     keyExtractor={(item) => item?.id.toString()}
                     renderItem={({ item }) => {
-                        console.log(item?.ad);
                         return (
                             <TouchableOpacity
                                 onPress={() => {

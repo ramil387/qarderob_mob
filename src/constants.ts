@@ -30,6 +30,7 @@ export const APIS = {
     forgotPassword: 'auth/forgot-mobile-password',
     notifications: 'notifications',
     comments: 'comments',
+    packages: 'packages'
 }
 
 export const shopCoverImage = `${serverBase}/shop_cover.png`

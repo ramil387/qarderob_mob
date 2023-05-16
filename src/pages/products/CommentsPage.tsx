@@ -104,20 +104,20 @@ const CommentItem = observer(
         parentId,
     }: {
         item: CommentType;
-        index: number;
-        flatRef: React.RefObject<FlatList>;
+        index?: number;
+        flatRef?: React.RefObject<FlatList>;
         parentId?: number;
     }) => {
         const navigate: NavigationProp<ParamListBase> = useNavigation();
         const reply = (index: number, item: any) => {
-            flatRef.current?.scrollToIndex({ index, animated: true });
             notificationStates.setCommentText(`@${item.sender.username} `);
             notificationStates.setReceiver(item.receiver);
-            if (parentId && !isNaN(Number(parentId)) > 0) {
+            if (parentId) {
                 notificationStates.setParentCommentId(parentId);
-                return;
+            } else {
+                notificationStates.setParentCommentId(item.id);
             }
-            notificationStates.setParentCommentId(item.id);
+            if (flatRef?.current) flatRef.current?.scrollToIndex({ index, animated: true });
         };
 
         const goUserPage = async (userId?: number) => {
@@ -134,7 +134,10 @@ const CommentItem = observer(
                     </TouchableOpacity>
                     <View
                         style={{
-                            backgroundColor: chatItemBackground,
+                            backgroundColor:
+                                notificationStates?.selectedNotification?.commentId === item?.id
+                                    ? '#ccc'
+                                    : chatItemBackground,
                             padding: 16,
                             borderRadius: 16,
                             width: phoneWidth - 32 - 24 - 36 - 16,
@@ -189,15 +192,21 @@ const CommentItem = observer(
                         initialNumToRender={10}
                         maxToRenderPerBatch={10}
                         windowSize={10}
+                        getItemLayout={(data, index) => {
+                            return {
+                                length: 150,
+                                offset: 150 * index,
+                                index,
+                            };
+                        }}
                         data={item.replies}
                         keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item }) => {
+                        renderItem={({ item, index }) => {
                             return (
                                 <CommentItem
-                                    flatRef={flatRef}
-                                    index={index}
                                     parentId={item.parent_id}
                                     item={item}
+                                    flatRef={flatRef}
                                 />
                             );
                         }}
@@ -247,8 +256,17 @@ const CommentsPage = () => {
 
     useEffect(() => {
         if (notificationStates.selectedNotification?.id) {
-            console.log(notificationStates.selectedNotification?.id);
             readNotification(notificationStates.selectedNotification?.id);
+            if (!comments) return;
+            const selectedIndex = comments.findIndex(
+                (item) => item.id === notificationStates.selectedNotification?.commentId,
+            );
+            if (selectedIndex > -1) {
+                flatRef.current?.scrollToItem({
+                    item: comments[selectedIndex],
+                    animated: true,
+                });
+            }
         }
     }, [notificationStates.selectedNotification?.id]);
 
@@ -258,8 +276,16 @@ const CommentsPage = () => {
             <View style={{ flex: 1, paddingBottom: 66 }}>
                 <FlatList
                     ref={flatRef}
+                    // getItem={(data, index) => data[index]}
+                    getItemLayout={(data, index) => {
+                        return {
+                            length: 200,
+                            offset: 200 * index,
+                            index,
+                        };
+                    }}
                     showsVerticalScrollIndicator={false}
-                    // optimize
+                    nestedScrollEnabled={true}
                     initialNumToRender={10}
                     maxToRenderPerBatch={10}
                     windowSize={10}

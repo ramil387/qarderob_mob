@@ -7,7 +7,7 @@ class PaymentStates {
     paymentModalVisible: boolean = false
     paymentLoading: boolean = false
     paymentBody: any = {}
-    paymenRusulUrl: string = ''
+    paymentResult: string = ''
 
     constructor() {
         makeAutoObservable(this);
@@ -51,7 +51,7 @@ class PaymentStates {
 
     setPaymentRusulUrl(url: string) {
         runInAction(() => {
-            this.paymenRusulUrl = url;
+            this.paymentResult = url;
         })
     }
 
@@ -65,7 +65,7 @@ class PaymentStates {
             this.paymentModalVisible = false;
             this.paymentLoading = false;
             this.paymentBody = {};
-            this.paymenRusulUrl = '';
+            this.paymentResult = '';
         })
     }
 

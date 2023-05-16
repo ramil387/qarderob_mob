@@ -47,6 +47,8 @@ import NotificationPage from '@/pages/notifications/NotificationPage';
 import CommonHeader from '@/components/headers/CommonHeader';
 import profileStates from '@/states/profile/profileStates';
 import CommentsPage from '@/pages/products/CommentsPage';
+import MessagesPage from '@/pages/messages/MessagesPage';
+import ShopPackagesPage from '@/pages/shop/ShopPackagesPage';
 
 type StackListType = {
     name: string;
@@ -425,6 +427,28 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <CommonHeader />,
+            statusBarTranslucent: false,
+            statusBarColor: f8Color,
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'MessagesPage',
+        component: MessagesPage,
+        options: {
+            headerShown: true,
+            header: () => <CommonHeader title='Mesajlar' />,
+            statusBarTranslucent: false,
+            statusBarColor: f8Color,
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'ShopPackagesPage',
+        component: ShopPackagesPage,
+        options: {
+            headerShown: true,
+            header: () => <CommonHeader title='Mağaza paketləri' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',

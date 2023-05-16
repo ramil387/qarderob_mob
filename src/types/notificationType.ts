@@ -8,5 +8,6 @@ export type NotificationType = {
     id: number,
     is_read: boolean,
     sender: UserType,
-    title: string
+    title: string,
+    commentId: number,
 }
