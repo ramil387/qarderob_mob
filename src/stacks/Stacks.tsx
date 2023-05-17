@@ -51,6 +51,7 @@ import MessagesPage from '@/pages/messages/MessagesPage';
 import ShopPackagesPage from '@/pages/shop/ShopPackagesPage';
 import DeleteAccountPage from '@/pages/user/DeleteAccountPage';
 import ConfirmPage from '@/pages/auth/ConfirmPage';
+import ChatPage from '@/pages/messages/ChatPage';
 
 type StackListType = {
     name: string;
@@ -473,6 +474,17 @@ export const StackList: StackListType[] = [
         options: {
             headerShown: true,
             header: () => <CommonHeader title='Hesabın təsdiqlənməsi' />,
+            statusBarTranslucent: false,
+            statusBarColor: f8Color,
+            statusBarStyle: 'dark',
+        },
+    },
+    {
+        name: 'ChatPage',
+        component: ChatPage,
+        options: {
+            headerShown: true,
+            header: () => <CommonHeader title='Söhbət' />,
             statusBarTranslucent: false,
             statusBarColor: f8Color,
             statusBarStyle: 'dark',

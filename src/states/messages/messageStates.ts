@@ -11,6 +11,10 @@ class MessageStates {
     inbox: Inbox | null = null;
     inboxType: string = 'all';
 
+    selectedInbox: MessageType | null = null;
+    selectedConversationUUID: string | null = null;
+    chat: any = {}
+
     constructor() {
         makeAutoObservable(this);
     }
@@ -26,6 +30,25 @@ class MessageStates {
             this.inboxType = type;
         })
     }
+
+    setSelectedInbox(message: MessageType | null) {
+        runInAction(() => {
+            this.selectedInbox = message;
+        })
+    }
+
+    setSelectedConversationUUID(uuid: string | null) {
+        runInAction(() => {
+            this.selectedConversationUUID = uuid;
+        })
+    }
+
+    setChat(chat: any) {
+        runInAction(() => {
+            this.chat = chat
+        })
+    }
+
 
 }
 
