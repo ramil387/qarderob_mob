@@ -1,11 +1,158 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Pressable } from 'react-native';
 import React from 'react';
 import { observer } from 'mobx-react-lite';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {
+    NunitoBold,
+    blueColor,
+    f5Color,
+    f8Color,
+    inactiveColor,
+    lightBorder,
+    phoneWidth,
+    primaryColor,
+    shadowColor,
+} from '@/styles/variables';
+import { useFocusEffect, useRoute } from '@react-navigation/native';
+import { fetchInbox } from '@/states/messages/fetchInbox';
+import { toJS } from 'mobx';
+import messageStates from '@/states/messages/messageStates';
+import { MessageType } from '@/types/messageType';
+import { Avatar } from '@rneui/themed';
+import CustomText from '@/components/ui/CustomText';
+import BlockIcon from '@/icons/message/BlockIcon';
+import DeleteIcon from '@/icons/message/DeleteIcon';
+import LoadingComponent from '@/components/common/LoadingComponent';
+import { blockUser } from '@/states/messages/blockUser';
+
+const Tab = createMaterialTopTabNavigator();
+
+const InboxItem = ({ item }: { item: MessageType }) => {
+    const block = (userId: number) => {
+        blockUser(userId);
+    };
+
+    return (
+        <Pressable onPress={() => {}} style={internalStyles.inboxItemContainer}>
+            <View style={internalStyles.avatarContainer}>
+                <Avatar size={52} rounded source={{ uri: item.conversation_partner?.img }} />
+                {item?.conversation_partner.is_blocked && (
+                    <View style={internalStyles.blockedContainer}>
+                        <BlockIcon style={{ color: 'red' }} />
+                    </View>
+                )}
+            </View>
+            <View style={internalStyles.infoContainer}>
+                <CustomText style={internalStyles.username}>
+                    {item?.conversation_partner.name}
+                </CustomText>
+                <CustomText style={internalStyles.productName}>{item?.ad?.title}</CustomText>
+                <CustomText numberOfLines={1}>
+                    {item?.message}
+                    adnsajkdnasjkndjkasndjkasndjkasndjkasndjka
+                </CustomText>
+            </View>
+            <View style={internalStyles.actionContainer}>
+                <TouchableOpacity
+                    onPress={() => block(item?.conversation_partner.user_id)}
+                    style={{ ...internalStyles.actionItemContainer }}
+                >
+                    <BlockIcon style={{ color: blueColor }} />
+                </TouchableOpacity>
+                <TouchableOpacity style={{ ...internalStyles.actionItemContainer }}>
+                    <DeleteIcon style={{ color: primaryColor }} />
+                </TouchableOpacity>
+            </View>
+        </Pressable>
+    );
+};
+
+const InboxComponent = observer(() => {
+    const [isLoading, setIsLoading] = React.useState(false);
+    const route = useRoute();
+    const inbox = toJS(messageStates.inbox);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            messageStates.setInboxType(route.name.toLowerCase());
+            setIsLoading(true);
+            fetchInbox(route.name.toLowerCase()).finally(() => {
+                setIsLoading(false);
+            });
+        }, [route.name]),
+    );
+
+    if (isLoading) {
+        return <LoadingComponent />;
+    }
+
+    return (
+        <View style={internalStyles.inboxContainer}>
+            <FlatList
+                data={inbox?.data}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={InboxItem}
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
+                windowSize={10}
+            />
+        </View>
+    );
+});
 
 const MessagesPage = () => {
     return (
         <View style={internalStyles.container}>
-            <Text>MessagesPage</Text>
+            <Tab.Navigator
+                // content background color red
+
+                screenOptions={{
+                    // remove ripple effect
+                    tabBarPressColor: 'transparent',
+                    tabBarActiveTintColor: primaryColor,
+                    tabBarIndicatorStyle: {
+                        backgroundColor: primaryColor,
+                    },
+                    tabBarInactiveTintColor: inactiveColor,
+                    tabBarLabelStyle: {
+                        fontFamily: NunitoBold,
+                    },
+                    tabBarStyle: {
+                        backgroundColor: f5Color,
+                        shadowColor: 'none',
+                        elevation: 0,
+                    },
+                    tabBarItemStyle: {
+                        width: phoneWidth / 3,
+                    },
+                    tabBarScrollEnabled: true,
+                }}
+                sceneContainerStyle={{
+                    backgroundColor: f8Color,
+                }}
+            >
+                <Tab.Screen
+                    navigationKey='true'
+                    name={'All'}
+                    key='all'
+                    component={InboxComponent}
+                    options={{ tabBarLabel: 'Hamısı' }}
+                />
+                <Tab.Screen
+                    navigationKey='true'
+                    name={'Incoming'}
+                    key='sell'
+                    component={InboxComponent}
+                    options={{ tabBarLabel: 'Satış' }}
+                />
+                <Tab.Screen
+                    navigationKey='true'
+                    name={'Outgoing'}
+                    key='true'
+                    component={InboxComponent}
+                    options={{ tabBarLabel: 'Alış' }}
+                />
+            </Tab.Navigator>
         </View>
     );
 };
@@ -15,6 +162,58 @@ export default observer(MessagesPage);
 const internalStyles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    inboxContainer: {
         padding: 16,
+        flex: 1,
+    },
+    inboxItemContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingVertical: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: lightBorder,
+    },
+    avatarContainer: {
+        width: '15%',
+    },
+    infoContainer: {
+        width: '70%',
+    },
+    username: {
+        fontSize: 16,
+        fontFamily: NunitoBold,
+    },
+    productName: {
+        color: inactiveColor,
+    },
+    actionContainer: {
+        width: '10%',
+    },
+    actionItemContainer: {
+        width: '100%',
+        height: 32,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 8,
+        borderLeftWidth: 1,
+        paddingLeft: 4,
+        borderBottomWidth: 1,
+        borderBottomColor: shadowColor,
+        borderLeftColor: shadowColor,
+    },
+    blockedContainer: {
+        width: 52,
+        height: 52,
+        borderRadius: 100,
+        backgroundColor: 'white',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        opacity: 0.5,
     },
 });

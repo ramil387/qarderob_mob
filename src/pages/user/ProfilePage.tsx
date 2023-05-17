@@ -157,6 +157,9 @@ const TabView = memo(() => {
                 },
                 tabBarScrollEnabled: true,
             }}
+            sceneContainerStyle={{
+                backgroundColor: f8Color,
+            }}
         >
             <Tab.Screen
                 navigationKey='true'
