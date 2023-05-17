@@ -1,20 +1,21 @@
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { NunitoMedium, e5Color, f5Color } from '@/styles/variables';
 import { toJS } from 'mobx';
 import filterStates from '@/states/filter/filterStates';
+import { BrandType } from '@/types/brandType';
 import CustomText from '@/components/ui/CustomText';
 import { observer } from 'mobx-react-lite';
 import FillSquareIcon from '@/icons/filter/FillSquareIcon';
 import OutlineSquareIcon from '@/icons/filter/OutlineSquareIcon';
 import CustomTextInput from '@/components/ui/CustomTextInput';
 import SearchIcon from '@/icons/home/SearchIcon';
-import { CityType } from '@/types/cityType';
 import { makeSlugify } from '@/helper/makeSlugify';
 import CustomMainButton from '@/components/ui/CustomMainButton';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import generalStates from '@/states/general/generalStates';
 import addProductStates from '@/states/product/addProduct/addProductStates';
+import { CityType } from '@/types/cityType';
 
 const PrefixIcon = () => {
     return (
@@ -24,7 +25,7 @@ const PrefixIcon = () => {
     );
 };
 
-const CityItem = React.memo(({ item, onSelect, selected }: any) => {
+const BrandItem = React.memo(({ item, onSelect, selected }: any) => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
     const shownFillSquare = selected;
     const handleSelect = useCallback(() => {
@@ -39,44 +40,53 @@ const CityItem = React.memo(({ item, onSelect, selected }: any) => {
     return (
         <TouchableOpacity onPress={handleSelect} style={internalStyles.item}>
             <CustomText style={internalStyles.brandName}>{item.name_az}</CustomText>
-            {shownFillSquare || addProductStates?.cityId === item?.id ? (
+            <View
+                style={{
+                    display:
+                        shownFillSquare || item?.id === addProductStates?.cityId ? 'flex' : 'none',
+                }}
+            >
                 <FillSquareIcon />
-            ) : (
+            </View>
+            <View
+                style={{
+                    display:
+                        shownFillSquare || item?.id === addProductStates?.cityId ? 'none' : 'flex',
+                }}
+            >
                 <OutlineSquareIcon />
-            )}
+            </View>
         </TouchableOpacity>
     );
 });
 
-const CityFilterPage = () => {
+const BrandFilterPage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
-
     const cities = useMemo(() => toJS(filterStates.cities), []);
     const [searchKey, setSearchKey] = useState('');
+    const selectedCities = toJS(filterStates.query.city || {});
 
-    const selectCity = useCallback((city: CityType) => {
-        filterStates.setSelectedCities((prev: any) => {
-            const selected = prev[city.id];
-            return { ...prev, [city.id]: !selected };
-        });
-    }, []);
-
-    const renderedBrand = useCallback(
-        ({ item }: { item: CityType }) => {
-            const selected = Boolean(filterStates.selectedCities[item.id]);
-            return <CityItem item={item} onSelect={selectCity} selected={selected} />;
+    const selectCity = useCallback(
+        (city: CityType) => {
+            const selected = selectedCities[city?.id];
+            const newCities = { ...selectedCities, [city.id]: !selected };
+            filterStates.setQuery('city', newCities);
         },
-        [filterStates.selectedCities, selectCity],
+        [filterStates.query.city],
+    );
+
+    const renderedCity = useCallback(
+        ({ item }: { item: CityType }) => {
+            const selected = Boolean(selectedCities[item.id]);
+            return <BrandItem item={item} onSelect={selectCity} selected={selected} />;
+        },
+        [selectedCities, selectCity],
     );
 
     const filteredCities = useMemo(
         () => cities.filter((city) => makeSlugify(city.name_az).includes(makeSlugify(searchKey))),
         [cities, searchKey],
     );
-
-    useEffect(() => {
-        filterStates.setQuery('city', filterStates.selectedCities);
-    }, [filterStates.selectedCities]);
 
     return (
         <View style={internalStyles.container}>
@@ -94,14 +104,18 @@ const CityFilterPage = () => {
                     initialNumToRender={20}
                     showsVerticalScrollIndicator={false}
                     data={filteredCities}
-                    extraData={filterStates.selectedCities}
-                    renderItem={renderedBrand}
+                    extraData={selectedCities}
+                    renderItem={renderedCity}
                     keyExtractor={(item) => item.id.toString()}
                 />
             </View>
             <View style={internalStyles.btn}>
                 <CustomMainButton
                     func={() => {
+                        if (generalStates.prevPage === 'HomePage') {
+                            navigate.navigate('ProductsPage');
+                            return;
+                        }
                         navigate.goBack();
                     }}
                     title='Təsdiqlə'
@@ -111,7 +125,7 @@ const CityFilterPage = () => {
     );
 };
 
-export default observer(CityFilterPage);
+export default observer(BrandFilterPage);
 
 const internalStyles = StyleSheet.create({
     container: {
@@ -149,9 +163,9 @@ const internalStyles = StyleSheet.create({
         fontFamily: NunitoMedium,
     },
     btn: {
-        marginTop: 16,
         width: '100%',
         alignSelf: 'center',
         backgroundColor: 'white',
+        marginTop: 16,
     },
 });
