@@ -10,8 +10,10 @@ import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/
 import validator from 'validator';
 import generalStates from '@/states/general/generalStates';
 import { observer } from 'mobx-react-lite';
-import { website } from '@/constants';
+import { APIS, website } from '@/constants';
 import PhoneInput from '@/components/common/PhoneInput';
+import { http } from '@/services/httpMethods';
+import { ActivityIndicator } from 'react-native';
 
 const SuffixIcon = ({ hide, showPassword }: { hide: boolean; showPassword: () => void }) => {
     return (
@@ -24,7 +26,16 @@ const SuffixIcon = ({ hide, showPassword }: { hide: boolean; showPassword: () =>
 const RegisterPage = () => {
     const navigate: NavigationProp<ParamListBase> = useNavigation();
     const [hide, setHide] = React.useState<boolean>(true);
-    const [phone, setPhone] = React.useState<string>('');
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const [phone, setPhone] = React.useState<string>('+994');
+    const [fullName, setFullName] = React.useState<string>('');
+    const [email, setEmail] = React.useState<string>('');
+    const [password, setPassword] = React.useState<string>('');
+
+    const [fullNameError, setFullNameError] = React.useState<string>('');
+    const [emailError, setEmailError] = React.useState<string>('');
+    const [passwordError, setPasswordError] = React.useState<string>('');
+    const [phoneError, setPhoneError] = React.useState<string>('');
 
     const showPassword = () => {
         setHide(!hide);
@@ -34,39 +45,126 @@ const RegisterPage = () => {
         navigate.navigate('LoginPage');
     };
 
+    const register = async () => {
+        try {
+            setIsLoading(true);
+            const body = {
+                full_name: fullName,
+                email: email?.trim()?.toLowerCase(),
+                password: password,
+                phone: phone,
+            };
+            console.log(body);
+            if (!body?.full_name) {
+                setFullNameError('Ad / soyad daxil edin');
+            } else if (!validator.isLength(body?.full_name, { min: 6, max: 255 })) {
+                setFullNameError('Ad / soyad ən az 6 hərf olmalıdır');
+                return false;
+            } else {
+                setFullNameError('');
+            }
+            if (!body?.email) {
+                setEmailError('E-mail daxil edin');
+                return false;
+            } else if (!validator.isEmail(body?.email)) {
+                setEmailError('E-mail düzgün deyil');
+                return false;
+            } else {
+                setEmailError('');
+            }
+
+            if (!body?.phone) {
+                setPhoneError('Telefon nömrəsi daxil edin');
+                return false;
+            } else if (!validator.isMobilePhone(body?.phone)) {
+                setPhoneError('Telefon nömrəsi düzgün deyil');
+                return false;
+            } else {
+                setPhoneError('');
+            }
+
+            if (!body?.password) {
+                setPasswordError('Şifrə daxil edin');
+                return false;
+            } else if (!validator.isLength(body?.password, { min: 6, max: 255 })) {
+                setPasswordError('Şifrə ən az 6 hərf olmalıdır');
+                return false;
+            } else {
+                setPasswordError('');
+            }
+            body['phone'] = '0' + body?.phone.slice(4);
+            const resp = await http.post(`${APIS.auth}/register`, body);
+            if (resp.status === 201) {
+                navigate.navigate('ConfirmPage', { phone: phone, email });
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <View style={internalStyles.container}>
             <CustomText style={internalStyles.welcomeText}>Qarderoba xoş gəldiniz!</CustomText>
             <CustomText style={internalStyles.continueText}>Davam etmək üçün daxil olun</CustomText>
+
             <View style={{ marginTop: 16 }}>
                 <View style={internalStyles.inputContainer}>
-                    <CustomTextInput placeholder='Ad / soyad' />
-                </View>
-                <View style={internalStyles.inputContainer}>
-                    <CustomTextInput placeholder='E-mail' />
-                </View>
-                <View style={{ ...internalStyles.inputContainer, paddingLeft: 0 }}>
-                    <PhoneInput
-                        blur={() => {
-                            // if (!phone) {
-                            //     generalStates.setErrors({ ...generalStates.errors, phone: 'Telefon nömrəsi daxil edin' });
-                            // } else if (!validator.isMobilePhone(phone)) {
-                            //     generalStates.setErrors({ ...generalStates.errors, phone: 'Telefon nömrəsi düzgün deyil' });
-                            // } else {
-                            //     generalStates.setErrors({ ...generalStates.errors, phone: '' });
-                            // }
-                        }}
-                        setPhone={setPhone}
-                        phone={phone}
+                    <CustomTextInput
+                        onChangeText={(text) => setFullName(text)}
+                        placeholder='Ad / soyad'
                     />
                 </View>
+                <CustomText
+                    style={{ ...internalStyles.error, display: fullNameError ? 'flex' : 'none' }}
+                >
+                    {fullNameError}
+                </CustomText>
+
                 <View style={internalStyles.inputContainer}>
                     <CustomTextInput
+                        autoCapitalize='none'
+                        onChangeText={(text) => setEmail(text)}
+                        placeholder='E-mail'
+                    />
+                </View>
+                <CustomText
+                    style={{
+                        ...internalStyles.error,
+                        display: emailError.length > 0 ? 'flex' : 'none',
+                    }}
+                >
+                    {emailError}
+                </CustomText>
+
+                <View style={{ ...internalStyles.inputContainer, paddingLeft: 0 }}>
+                    <PhoneInput setPhone={setPhone} phone={phone} />
+                </View>
+                <CustomText
+                    style={{
+                        ...internalStyles.error,
+                        display: phoneError.length > 0 ? 'flex' : 'none',
+                    }}
+                >
+                    {phoneError}
+                </CustomText>
+                <View style={internalStyles.inputContainer}>
+                    <CustomTextInput
+                        onChangeText={(text) => setPassword(text)}
                         secureTextEntry={hide}
                         icon={<SuffixIcon showPassword={showPassword} hide={hide} />}
                         placeholder='Şifrə'
                     />
                 </View>
+                <CustomText
+                    style={{
+                        ...internalStyles.error,
+                        display: passwordError.length > 0 ? 'flex' : 'none',
+                    }}
+                >
+                    {passwordError}
+                </CustomText>
             </View>
             <TouchableOpacity
                 onPress={() => {
@@ -83,7 +181,11 @@ const RegisterPage = () => {
                 </CustomText>
             </TouchableOpacity>
             <View style={internalStyles.btnContainer}>
-                <CustomMainButton func={() => {}} title='Daxil ol' />
+                <CustomMainButton
+                    disabled={isLoading}
+                    func={register}
+                    title={isLoading ? <ActivityIndicator color={primaryColor} /> : 'Daxil ol'}
+                />
             </View>
             <View
                 style={{
@@ -150,5 +252,9 @@ const internalStyles = StyleSheet.create({
         alignSelf: 'center',
         fontFamily: NunitoMedium,
         fontSize: 16,
+    },
+    error: {
+        color: 'red',
+        bottom: 8,
     },
 });
