@@ -42,7 +42,7 @@ const TopContainer = memo(
             (item) => item.id === product?.category_id,
         )?.name_az;
 
-        const goProductDetailPage = async () => {
+        const goProductDetailPage = async (id?: string) => {
             const resp = await fetchSingleProductById(product?.id);
             if (resp) {
                 productStates.setSelectedProduct(resp.data);
